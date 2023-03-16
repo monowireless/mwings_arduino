@@ -1,0 +1,29 @@
+#######################################
+# Syntax Coloring Map For Test
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MWings                  KEYWORD1
+ParsedAriaPacket        KEYWORD1
+ParsedCuePacket         KEYWORD1
+ParsedPalAmbPacket      KEYWORD1
+ParsedPalMotPacket      KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+on                      KEYWORD2
+debugUsing              KEYWORD2
+update                  KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
