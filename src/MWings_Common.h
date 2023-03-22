@@ -22,11 +22,14 @@ struct BarePacket {
     uint16_t size;
     uint16_t checksum;
 
-    uint8_t at_u8(int index) const { return payload[index]; }
-    uint16_t at_u16(int index) const { return (payload[index] << 8) | payload[index+1]; }
-    int16_t at_i16(int index) const { return static_cast<int16_t>(at_u16(index)); }
-    uint32_t at_u32(int index) const { return (payload[index+0] << 24) | (payload[index+1] << 16) | (payload[index+2] << 8) | (payload[index+3] << 0); }
-    int32_t at_i32(int index) const { return static_cast<int16_t>(at_u16(index)); }
+    inline uint8_t u8At(const int index) const { return payload[index]; }
+    inline int8_t i8At(const int index) const { return static_cast<int8_t>(u8At(index)); }
+    inline uint16_t u16At(const int index) const { return (payload[index] << 8) | payload[index+1]; }
+    inline int16_t i16At(const int index) const { return static_cast<int16_t>(u16At(index)); }
+    inline uint32_t u32At(const int index) const {
+        return (payload[index+0] << 24) | (payload[index+1] << 16) | (payload[index+2] << 8) | (payload[index+3] << 0);
+    }
+    inline int32_t i32At(const int index) const { return static_cast<int16_t>(u16At(index)); }
 };
 
 /**

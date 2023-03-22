@@ -15,16 +15,16 @@ bool aria::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_com
     // WARNING: Note that there is NO RTTI
     ParsedAriaPacket* const parsedAriaPacket = static_cast<ParsedAriaPacket*>(parsedPacket);
 
-    parsedAriaPacket->u32SourceSerialId = barePacket.at_u32(7);
-    parsedAriaPacket->u8SourceLogicalId = barePacket.at_u8(11);
-   	parsedAriaPacket->u16SequenceNumber = barePacket.at_u16(5);
-    parsedAriaPacket->u8Lqi = barePacket.at_u8(4);
-    parsedAriaPacket->u16SupplyVoltage = barePacket.at_u16(34);
+    parsedAriaPacket->u32SourceSerialId = barePacket.u32At(7);
+    parsedAriaPacket->u8SourceLogicalId = barePacket.u8At(11);
+    parsedAriaPacket->u16SequenceNumber = barePacket.u16At(5);
+    parsedAriaPacket->u8Lqi = barePacket.u8At(4);
+    parsedAriaPacket->u16SupplyVoltage = barePacket.u16At(34);
 
-    parsedAriaPacket->i16Temp100x = static_cast<int16_t>(barePacket.at_u16(51));
-    parsedAriaPacket->u16Humid100x = barePacket.at_u16(57);
+    parsedAriaPacket->i16Temp100x = barePacket.i16At(51);
+    parsedAriaPacket->u16Humid100x = barePacket.u16At(57);
 
-    const uint8_t rawMagnetState = barePacket.at_u8(46);
+    const uint8_t rawMagnetState = barePacket.u8At(46);
     parsedAriaPacket->u8MagnetState = rawMagnetState & 0x0F;
     parsedAriaPacket->bMagnetStateChanged = (rawMagnetState & 0x80) ? false : true;
 

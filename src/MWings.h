@@ -1,6 +1,6 @@
 /**
  * @file   MWings.h
- * @brief  Mono Wireless TWELITE Wings API for Arduino on ESP32.
+ * @brief  Mono Wireless TWELITE Wings API for 32-bit Arduinos.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
@@ -24,10 +24,10 @@
 class MWings {
 public:
     MWings() : _serial(nullptr),
-               _resetPin(-1), _programPin(-1), _indicatorPin(-1),
-               _buffer(nullptr), _bufferSize(0), _characterCount(0), _checksum(0),
-               _latestTimestamp(UINT32_MAX), _timeout(0),
+               _indicatorPin(-1), _resetPin(-1), _programPin(-1),
                _isIndicatorOn(false), _indicatorTimestamp(UINT32_MAX), _indicatorDuration(0),
+               _buffer(nullptr), _bufferSize(0), _characterCount(0), _checksum(0),
+               _timeout(0), _latestTimestamp(UINT32_MAX),
                _debugSerial(nullptr),
                //// AriaParser for App_ARIA (ARIA mode)
                _onAriaPacket(nullptr),
@@ -42,9 +42,9 @@ public:
 
     inline void debugUsing(HardwareSerial& debugSerial) { _debugSerial = &debugSerial; }
 
-    void setup(HardwareSerial& serial,
-               const int resetPin = -1, const int programPin = -1, const int indicatorPin = -1,
-               const int bufferSize = 1024);
+    bool setup(HardwareSerial& serial,
+               const int indicatorPin = -1, const int resetPin = -1, const int programPin = -1,
+               const int bufferSize = 1024, const int timeout = 100);
 
     bool begin(const uint8_t channel = 18, const uint32_t appId = 0x67720102);
 
@@ -54,11 +54,13 @@ public:
 
 private:
     enum class State {
-        WAITING_FOR_COLON,
-        READING_PAYLOAD,
+        WAITING_FOR_HEADER,
+        RETRIEVING_PAYLOAD,
+        WAITING_FOR_FOOTER,
         COMPLETED,
         UNKNOWN_ERROR,
-        CHECKSUM_ERROR
+        CHECKSUM_ERROR,
+        TIMEOUT_ERROR
     };
 
     enum class Command : uint8_t {
@@ -91,16 +93,13 @@ private:
     inline void debugWrite(const uint8_t data) const {
         if (_debugSerial) {
             _debugSerial->write(data);
-            _debugSerial->flush();
         }
     }
 
     inline void debugPrint(const char* const str) const {
         if (_debugSerial) {
-            _debugSerial->write('\n');
             _debugSerial->print(str);
             _debugSerial->write('\n');
-            _debugSerial->flush();
         }
     }
 
@@ -223,12 +222,17 @@ private:
         return find(reinterpret_cast<const uint8_t*>(data), 1024, timeout);
     }
 
+    inline bool isThereAck(const uint32_t timeout) const {
+        if (not _serial) { return false; }
+        return find(":DBF0", timeout);
+    }
+
     inline bool ensureSetParameter(const uint32_t timeout) const {
         if (not _serial) { return false; }
         return find(":DBF3", timeout) and (not (_serial->read() == static_cast<uint8_t>(MWings::Parameter::ERROR)));
     }
 
-    inline bool ensureStarted(const uint32_t timeout) const {
+    inline bool ensureReset(const uint32_t timeout) const {
         if (not _serial) { return false; }
         return find("!INF MW APP_WINGS(Parent)", timeout);
     }
@@ -240,9 +244,9 @@ private:
 
     HardwareSerial* _serial;
 
+    int _indicatorPin;
     int _resetPin;
     int _programPin;
-    int _indicatorPin;
 
     bool _isIndicatorOn;
     uint32_t _indicatorTimestamp;
@@ -277,5 +281,7 @@ private:
     //// PalMotParser for App_PAL (MOT)
     void (*_onPalMotPacket)(const ParsedPalMotPacket& packet);
 };
+
+extern MWings Twelite;
 
 #endif  // MWINGS_H

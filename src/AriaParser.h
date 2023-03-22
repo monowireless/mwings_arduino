@@ -31,10 +31,10 @@ class Parser final : public mwings_common::ParserBase {
 public:
     // Check if the packet is TWELITE ARIA
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
-        if (((barePacket.at_u8(0) & 0x80) == 0x80)
-            and ((barePacket.at_u8(7) & 0x80) == 0x80)
-            and (barePacket.at_u8(12) == 0x80)
-            and (barePacket.at_u8(13) == 0x06)) {
+        if (((barePacket.u8At(0) & 0x80) == 0x80)
+            and ((barePacket.u8At(7) & 0x80) == 0x80)
+            and (barePacket.u8At(12) == 0x80)
+            and (barePacket.u8At(13) == 0x06)) {
             return true;
         }
         return false;

@@ -1,12 +1,14 @@
 /**
  * @file   MWings.cpp
- * @brief  Mono Wireless TWELITE Wings API for Arduino on ESP32.
+ * @brief  Mono Wireless TWELITE Wings API for 32-bit Arduinos.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
 #include "MWings.h"
+
+MWings Twelite;
 
 MWings::~MWings()
 {
@@ -15,14 +17,14 @@ MWings::~MWings()
     }
 }
 
-void MWings::setup(HardwareSerial& serial,
-                   const int resetPin, const int programPin, const int indicatorPin,
-                   const int bufferSize)
+bool MWings::setup(HardwareSerial& serial,
+                   const int indicatorPin, const int resetPin, const int programPin,
+                   const int bufferSize, const int timeout)
 {
     _serial = &serial;
+    _indicatorPin = indicatorPin;
     _resetPin = resetPin;
     _programPin = programPin;
-    _indicatorPin = indicatorPin;
     _isIndicatorOn = false;
     _indicatorTimestamp = UINT32_MAX;
     _indicatorDuration = 0;
@@ -30,75 +32,132 @@ void MWings::setup(HardwareSerial& serial,
     _bufferSize = bufferSize;
     _characterCount = 0;
     _checksum = 0;
-    _timeout = 0;
+    _timeout = timeout;
     _latestTimestamp = UINT32_MAX;
 
-    if (not (_resetPin < 0 or _programPin < 0)) {
-        pinMode(_resetPin, OUTPUT);
-        pinMode(_programPin, OUTPUT);
+    _debugSerial = nullptr;
 
-        digitalWrite(_resetPin, LOW);
-        delay(1);
-        digitalWrite(_programPin, HIGH);
-        delay(1);
-        digitalWrite(_resetPin, HIGH);
-    }
+    //// AriaParser for App_ARIA (ARIA mode)
+    _onAriaPacket = nullptr;
+    //// CueParser for App_CUE (CUE mode)
+    _onCuePacket = nullptr;
+    //// PalAmbParser for App_PAL (AMB)
+    _onPalAmbPacket = nullptr;
+    //// PalMotParser for App_PAL (MOT)
+    _onPalMotPacket = nullptr;
 
     if (not (_indicatorPin < 0)) {
         pinMode(_indicatorPin, OUTPUT);
         digitalWrite(_indicatorPin, HIGH);
     }
 
+    bool resetOrNot = false;
+
     turnOnIndicator();
-    ensureStarted(100);
+    if (_resetPin >= 0 and _programPin >= 0) {
+        const int resetAttempts = 3;
+        for(int i = 0; i < resetAttempts; i++) {
+            pinMode(_resetPin, OUTPUT);
+            pinMode(_programPin, OUTPUT);
+
+            digitalWrite(_resetPin, LOW);
+            delay(1);
+            digitalWrite(_programPin, HIGH);
+            delay(1);
+            digitalWrite(_resetPin, HIGH);
+
+            if (ensureReset(100)) {
+                resetOrNot = true;
+                break;
+            }
+        }
+    }
     turnOffIndicator();
+
+    return resetOrNot;
 }
 
 bool MWings::begin(const uint8_t channel, const uint32_t appId)
 {
-    turnOnIndicator();
+    bool commandsAvailable = false;
 
-    // Set application id
-    beginCommand();
-    writeInAscii(static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
-    writeInAscii(static_cast<uint8_t>(MWings::Parameter::APP_ID));
-    writeInAscii(appId);
-    endCommand();
+    for (int i = 0; i < 3; i++) {
+        // Check if serial commands are available or not
+        beginCommand();
+        writeInAscii(static_cast<uint8_t>(MWings::Command::ACK));
+        endCommand();
+        if (isThereAck(100)) {
+            commandsAvailable = true;
+            break;
+        }
+    }
 
-    if (not ensureSetParameter(100)) { return false; }
-    debugPrint("Successfully set the AppID.");
+    if (commandsAvailable) {
+        const int commandAttempts = 3;
 
-    // Set channel
-    const uint32_t channelMask = 0x00000000 | (1 << channel);
+        // Set application id
+        for (int i = 0; i < commandAttempts; i++) {
+            beginCommand();
+            writeInAscii(static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
+            writeInAscii(static_cast<uint8_t>(MWings::Parameter::APP_ID));
+            writeInAscii(appId);
+            endCommand();
+            if (ensureSetParameter(100)) {
+                break;
+            } else if (not ((i+1) < commandAttempts)) {
+                return false;   // No remaining attempts
+            }
+        }
+        debugPrint("Successfully set Application ID.");
 
-    beginCommand();
-    writeInAscii(static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
-    writeInAscii(static_cast<uint8_t>(MWings::Parameter::CH_MASK));
-    writeInAscii(channelMask);
-    endCommand();
+        // Set channel
+        const uint32_t channelMask = 0x00000000 | (1 << channel);
+        for (int i = 0; i < commandAttempts; i++) {
+            beginCommand();
+            writeInAscii(static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
+            writeInAscii(static_cast<uint8_t>(MWings::Parameter::CH_MASK));
+            writeInAscii(channelMask);
+            endCommand();
+            if (ensureSetParameter(100)) {
+                break;
+            } else if (not ((i+1) < commandAttempts)) {
+                return false;   // No remaining attempts
+            }
+        }
+        debugPrint("Successfully set Channel.");
 
-    if (not ensureSetParameter(100)) { return false; }
-    debugPrint("Successfully set the Channel.");
+        // Save and reset
+        for (int i = 0; i < commandAttempts; i++) {
+            beginCommand();
+            writeInAscii(static_cast<uint8_t>(MWings::Command::SAVE_RESET));
+            endCommand();
+            if (ensureReset(100)) {
+                break;
+            } else if (not ((i+1) < commandAttempts)) {
+                return false;   // No remaining attempts
+            }
+        }
+        debugPrint("Successfully saved parameters.");
 
-    // Save and reset
-    beginCommand();
-    writeInAscii(static_cast<uint8_t>(MWings::Command::SAVE_RESET));
-    endCommand();
+        // Disable silent mode
+        for (int i = 0; i < commandAttempts; i++) {
+            beginCommand();
+            writeInAscii(static_cast<uint8_t>(MWings::Command::CONTROL));
+            writeInAscii(static_cast<uint8_t>(0x10));
+            endCommand();
+            if (ensureControlled(100)) {
+                break;
+            } else if (not ((i+1) < commandAttempts)) {
+                return false;   // No remaining attempts
+            }
+        }
+        debugPrint("Successfully started receiving packets.");
 
-    if (not ensureStarted(100)) { return false; }
-    debugPrint("Successfully saved parameters.");
+        return true;
+    }
 
-    // Disable silent mode
-    beginCommand();
-    writeInAscii(static_cast<uint8_t>(MWings::Command::CONTROL));
-    writeInAscii(static_cast<uint8_t>(0x10));
-    endCommand();
-
-    if (not ensureControlled(100)) { return false; }
-    debugPrint("Successfully started receiving packets.");
-
-    turnOffIndicator();
-    return true;
+    debugPrint("Serial commands are not available or an unknown error occurred.");
+    return false;
 }
 
 void MWings::update()
@@ -109,23 +168,22 @@ void MWings::update()
     // Reference to the serial
     HardwareSerial& serial = *_serial;
 
-    // Process a byte if available
-    if (serial.available()) {
+    // Process all byte in the buffer
+    while (serial.available()) {
         // Read a character
         const int character = serial.read();
 
+        debugWrite(character);
+
         // Abort if the read byte is invalid
         if (not (character >= 0)) { return; }
-
-        debugWrite(character);
 
         // Bare packet storage
         mwings_common::BarePacket barePacket;
 
         // Process packet contents upon parsing completion
         if (processAscii(character, barePacket) == MWings::State::COMPLETED) {
-            turnOnIndicatorFor(50);
-            debugPrint("Successfully received the packet (above).");
+            turnOnIndicatorFor(10);
 
             //// Start: AriaParser for App_ARIA (ARIA mode)
             if (AriaParser.isValid(barePacket) and _onAriaPacket) {
@@ -162,7 +220,6 @@ void MWings::update()
                 }
             }
             //// End: PalMotParser for App_PAL (MOT)
-
         }
     }
 
@@ -172,41 +229,44 @@ void MWings::update()
 
 MWings::State MWings::processAscii(const uint8_t character, mwings_common::BarePacket& barePacket)
 {
-    static MWings::State state = MWings::State::WAITING_FOR_COLON;
+    static MWings::State state = MWings::State::WAITING_FOR_HEADER;
 
     // Reset on timeout
-    if (_timeout > 0 and state not_eq MWings::State::WAITING_FOR_COLON) {
+    if (_timeout > 0 and state not_eq MWings::State::WAITING_FOR_HEADER) {
         if (millis() - _latestTimestamp > _timeout) {
-            state = MWings::State::WAITING_FOR_COLON;
+            state = MWings::State::TIMEOUT_ERROR;
         }
     }
 
     // Reset if the state is error or completed
     if (state == MWings::State::COMPLETED
         or state == MWings::State::UNKNOWN_ERROR
-        or state == MWings::State::CHECKSUM_ERROR) {
-        state = MWings::State::WAITING_FOR_COLON;
+        or state == MWings::State::CHECKSUM_ERROR
+        or state == MWings::State::TIMEOUT_ERROR) {
+        state = MWings::State::WAITING_FOR_HEADER;
     }
 
     // Run state machine
     switch (state) {
-    case MWings::State::WAITING_FOR_COLON: {
+    case MWings::State::WAITING_FOR_HEADER: {
         // If the character is colon, start to read
         if (character == ':') {
-            state = MWings::State::READING_PAYLOAD;
+            state = MWings::State::RETRIEVING_PAYLOAD;
             _latestTimestamp = millis();
             _characterCount = 0;
+            _checksum = 0;
         }
         break;
     }
-    case MWings::State::READING_PAYLOAD: {
+    case MWings::State::RETRIEVING_PAYLOAD: {
         if ((character >= '0' and character <= '9')
             or (character >= 'A' and character <= 'F')) {
-            // Hex character
+            // Valid hex character
 
             // Abort if the buffer is overflowing
             if (byteCountFrom(_characterCount) >= _bufferSize) {
                 state = MWings::State::UNKNOWN_ERROR;
+                debugPrint("OVERFLOW ERROR");
                 break;
             }
 
@@ -225,12 +285,13 @@ MWings::State MWings::processAscii(const uint8_t character, mwings_common::BareP
                 // Even: set 7-4 bit of the new byte
                 *newByte = hexValue << 4;
             }
-        } else if (character == '\r' or character == '\n') {
-            // CR or LF
+        } else if (character == '\r') {
+            // CR
 
             // Abort if received data are not valid
             if (not (_characterCount >= 4 and (_characterCount & 1) == 0)) {
                 state = MWings::State::UNKNOWN_ERROR;
+                debugPrint("LENGTH ERROR");
                 break;
             }
 
@@ -240,17 +301,33 @@ MWings::State MWings::processAscii(const uint8_t character, mwings_common::BareP
             // Abort if the checksum is not valid
             if (not (_checksum == 0)) {
                 state = MWings::State::CHECKSUM_ERROR;
+                debugPrint("CHECKSUM ERROR");
                 break;
             }
 
+            state = MWings::State::WAITING_FOR_FOOTER;
+        } else {
+            // Unknown characters
+            state = MWings::State::UNKNOWN_ERROR;
+            debugPrint("UNKNOWN CHAR ERROR");
+        }
+        break;
+    }
+    case MWings::State::WAITING_FOR_FOOTER: {
+        if (character == '\n') {
             // Completed
             state = MWings::State::COMPLETED;
-        } else if (character == 'X') {
-            state = MWings::State::WAITING_FOR_COLON;
+            //debugPrint("COMPLETED!");
+        } else {
+            // CR only
+            state = MWings::State::UNKNOWN_ERROR;
+            debugPrint("NO LF ERROR");
         }
         break;
     }
     default:
+        state = MWings::State::UNKNOWN_ERROR;
+        debugPrint("UNKNOWN ERROR");
         break;
     }
 
