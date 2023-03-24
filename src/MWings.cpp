@@ -37,6 +37,8 @@ bool MWings::setup(HardwareSerial& serial,
 
     _debugSerial = nullptr;
 
+    //// AppTweliteParser for App_Twelite
+    _onAppTwelitePacket = nullptr;
     //// AriaParser for App_ARIA (ARIA mode)
     _onAriaPacket = nullptr;
     //// CueParser for App_CUE (CUE mode)
@@ -184,6 +186,15 @@ void MWings::update()
         // Process packet contents upon parsing completion
         if (processAscii(character, barePacket) == MWings::State::COMPLETED) {
             turnOnIndicatorFor(10);
+
+            //// Start: AppTweliteParser for App_Twelite
+            if (AppTweliteParser.isValid(barePacket) and _onAppTwelitePacket) {
+                ParsedAppTwelitePacket parsedAppTwelitePacket;
+                if (AppTweliteParser.parse(barePacket, &parsedAppTwelitePacket)) {
+                    _onAppTwelitePacket(parsedAppTwelitePacket);
+                }
+            }
+            //// End: AriaParser for App_ARIA (ARIA mode)
 
             //// Start: AriaParser for App_ARIA (ARIA mode)
             if (AriaParser.isValid(barePacket) and _onAriaPacket) {

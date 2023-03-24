@@ -12,6 +12,8 @@
 #include <Arduino.h>
 #include "MWings_Common.h"
 
+//// AppTweliteParser for App_Twelite
+#include "AppTweliteParser.h"
 //// AriaParser for App_ARIA (ARIA mode)
 #include "AriaParser.h"
 //// CueParser for App_CUE (CUE mode)
@@ -29,6 +31,8 @@ public:
                _buffer(nullptr), _bufferSize(0), _characterCount(0), _checksum(0),
                _timeout(0), _latestTimestamp(UINT32_MAX),
                _debugSerial(nullptr),
+               //// AppTweliteParser for App_Twelite
+               _onAppTwelitePacket(nullptr),
                //// AriaParser for App_ARIA (ARIA mode)
                _onAriaPacket(nullptr),
                //// CueParser for App_CUE (CUE mode)
@@ -262,6 +266,8 @@ private:
     HardwareSerial* _debugSerial;   // optional
 
 public:
+    //// AppTweliteParser for App_Twelite
+    inline void on(void (*callback)(const ParsedAppTwelitePacket& packet)) { _onAppTwelitePacket = callback; }
     //// AriaParser for App_ARIA (ARIA mode)
     inline void on(void (*callback)(const ParsedAriaPacket& packet)) { _onAriaPacket = callback; }
     //// CueParser for App_CUE (CUE mode)
@@ -272,6 +278,8 @@ public:
     inline void on(void (*callback)(const ParsedPalMotPacket& packet)) { _onPalMotPacket = callback; }
 
 private:
+    //// AppTweliteParser for App_Twelite
+    void (*_onAppTwelitePacket)(const ParsedAppTwelitePacket& packet);
     //// AriaParser for App_ARIA (ARIA mode)
     void (*_onAriaPacket)(const ParsedAriaPacket& packet);
     //// CueParser for App_CUE (CUE mode)

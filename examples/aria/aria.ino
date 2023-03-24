@@ -20,13 +20,14 @@ void setup()
             Serial.print("LQI:               ");
             Serial.println(packet.u8Lqi, DEC);
             Serial.print("Supply Voltage:    ");
-            Serial.print(packet.u16SupplyVoltage, DEC); Serial.println(" [mV]");
+            Serial.print(packet.u16SupplyVoltage, DEC); Serial.println("mV");
             Serial.print("Air Temperature:   ");
-            Serial.print(packet.i16Temp100x / 100.0f, 2); Serial.println(" [C]");
+            Serial.print(packet.i16Temp100x / 100.0f, 2); Serial.println("C");
             Serial.print("Relative Humidity: ");
-            Serial.print(packet.u16Humid100x / 100.0f, 2); Serial.println(" [%]");
+            Serial.print(packet.u16Humid100x / 100.0f, 2); Serial.println("%");
             Serial.print("Magnet State:      0x");
             Serial.println(packet.u8MagnetState, HEX);
+            Serial.println("");
         });
     Twelite.begin(18, 0x67720102);
 }

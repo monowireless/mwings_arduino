@@ -28,7 +28,7 @@ struct ParsedPalAmbPacket final : public mwings_common::ParsedPacketBase {
 namespace palamb {
 class Parser final : public mwings_common::ParserBase {
 public:
-    // Check if the packet is TWELITE PALAMB
+    // Check if the packet is App_PAL (AMB)
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)

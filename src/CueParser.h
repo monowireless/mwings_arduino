@@ -33,7 +33,7 @@ struct ParsedCuePacket final : public mwings_common::ParsedPacketBase {
 namespace cue {
 class Parser final : public mwings_common::ParserBase {
 public:
-    // Check if the packet is TWELITE CUE
+    // Check if the packet is from App_CUE (CUE mode)
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)

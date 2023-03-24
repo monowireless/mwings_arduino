@@ -22,17 +22,18 @@ void setup()
             Serial.print("LQI:               ");
             Serial.println(packet.u8Lqi, DEC);
             Serial.print("Supply Voltage:    ");
-            Serial.print(packet.u16SupplyVoltage, DEC); Serial.println(" [mV]");
+            Serial.print(packet.u16SupplyVoltage, DEC); Serial.println("mV");
             Serial.print("Accel Event:       ");
             printlnAccelEvent(packet.u8AccelEvent);
             Serial.print("Accel X Axis [0]:  ");
-            Serial.print(packet.i16SamplesX[0], DEC); Serial.println(" [mG]");
+            Serial.print(packet.i16SamplesX[0], DEC); Serial.println("mG");
             Serial.print("Accel Y Axis [0]:  ");
-            Serial.print(packet.i16SamplesY[0], DEC); Serial.println(" [mG]");
+            Serial.print(packet.i16SamplesY[0], DEC); Serial.println("mG");
             Serial.print("Accel Z Axis [0]:  ");
-            Serial.print(packet.i16SamplesZ[0], DEC); Serial.println(" [mG]");
+            Serial.print(packet.i16SamplesZ[0], DEC); Serial.println("mG");
             Serial.print("Magnet State:      0x");
             Serial.println(packet.u8MagnetState, HEX);
+            Serial.println("");
         });
     Twelite.begin(18, 0x67720102);
 }
