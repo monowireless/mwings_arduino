@@ -20,7 +20,6 @@ namespace mwings_common {
 struct BarePacket {
     uint8_t* payload;
     uint16_t size;
-    uint16_t checksum;
 
     inline uint8_t u8At(const int index) const { return payload[index]; }
     inline int8_t i8At(const int index) const { return static_cast<int8_t>(u8At(index)); }

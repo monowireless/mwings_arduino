@@ -1,21 +1,21 @@
 /**
- * @file   CueParser.h
+ * @file   AppCueParser.h
  * @brief  App_CUE (CUE mode) parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef CUEPARSER_H
-#define CUEPARSER_H
+#ifndef APPCUEPARSER_H
+#define APPCUEPARSER_H
 
 #include "MWings_Common.h"
 
 /**
- * @struct ParsedCuePacket
+ * @struct ParsedAppCuePacket
  * @brief  Packet content for App_CUE
  */
-struct ParsedCuePacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppCuePacket final : public mwings_common::ParsedPacketBase {
     int16_t i16SamplesX[10];
     int16_t i16SamplesY[10];
     int16_t i16SamplesZ[10];
@@ -34,6 +34,7 @@ namespace cue {
 class Parser final : public mwings_common::ParserBase {
 public:
     // Check if the packet is from App_CUE (CUE mode)
+    // I think I've nearly found you
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)
@@ -45,10 +46,11 @@ public:
     }
 
     // Parse from bare packet
+    // I can see clues all around me
     bool parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 
-extern cue::Parser CueParser;
+extern cue::Parser AppCueParser;
 
-#endif  // CUEPARSER_H
+#endif  // APPCUEPARSER_H

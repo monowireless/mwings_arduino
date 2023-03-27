@@ -8,13 +8,16 @@ const int PRG_PIN = 4;
 const int LED_PIN = 18;
 
 void printlnAccelEvent(const uint8_t event);
+void printlnMagnetState(const uint8_t state, const bool changed);
 
 void setup()
 {
     Serial.begin(115200);
+    Serial.println("AppCueParser example");
     Serial2.begin(115200);
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
-    Twelite.on([](const ParsedCuePacket& packet) {
+    Twelite.on([](const ParsedAppCuePacket& packet) {
+            Serial.println("");
             Serial.print("Packet Number:     #");
             Serial.println(packet.u16SequenceNumber, DEC);
             Serial.print("Source Logical ID: 0x");
@@ -31,9 +34,8 @@ void setup()
             Serial.print(packet.i16SamplesY[0], DEC); Serial.println("mG");
             Serial.print("Accel Z Axis [0]:  ");
             Serial.print(packet.i16SamplesZ[0], DEC); Serial.println("mG");
-            Serial.print("Magnet State:      0x");
-            Serial.println(packet.u8MagnetState, HEX);
-            Serial.println("");
+            Serial.print("Magnet State:      ");
+            printlnMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
         });
     Twelite.begin(18, 0x67720102);
 }
@@ -55,6 +57,27 @@ void printlnAccelEvent(const uint8_t event)
     case 0x08: { Serial.print("Shake"); break; }
     case 0x10: { Serial.print("Move"); break; }
     default: break;
+    }
+    Serial.println("");
+}
+
+void printlnMagnetState(const uint8_t state, const bool changed)
+{
+    if (changed) {
+        switch (state) {
+        case 0x0: { Serial.print("Leaving or Not found"); break; }
+        case 0x1: { Serial.print("N-pole is getting closer"); break; }
+        case 0x2: { Serial.print("S-pole is getting closer"); break; }
+        default: break;
+        }
+    } else {
+        switch (state) {
+        case 0x0: { Serial.print("Not found"); break; }
+        case 0x1: { Serial.print("N-pole is close"); break; }
+        case 0x2: { Serial.print("S-pole is close"); break; }
+        default: break;
+        }
+        Serial.print(" (Periodic packet)");
     }
     Serial.println("");
 }

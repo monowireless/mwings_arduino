@@ -1,40 +1,40 @@
 /**
- * @file   AriaParser.h
- * @brief  App_ARIA (ARIA mode) parser for MWings.
+ * @file   AppPalMotParser.h
+ * @brief  App_PAL (MOT) parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef ARIAPARSER_H
-#define ARIAPARSER_H
+#ifndef APPPALMOTPARSER_H
+#define APPPALMOTPARSER_H
 
 #include "MWings_Common.h"
 
 /**
- * @struct ParsedAriaPacket
- * @brief  Packet content for App_ARIA
+ * @struct ParsedAppPalMotPacket
+ * @brief  Packet content for App_PAL
  */
-struct ParsedAriaPacket final : public mwings_common::ParsedPacketBase {
-    int16_t i16Temp100x;
-    uint16_t u16Humid100x;
-    uint8_t u8MagnetState;
-    bool bMagnetStateChanged;
+struct ParsedAppPalMotPacket final : public mwings_common::ParsedPacketBase {
+    int16_t i16SamplesX[16];
+    int16_t i16SamplesY[16];
+    int16_t i16SamplesZ[16];
+    uint8_t u8SampleCount;
 };
 
 /**
- * @class aria::Parser
- * @brief  Packet parser for App_ARIA (ARIA mode)
+ * @class palmot::Parser
+ * @brief  Packet parser for App_PAL (MOT)
  */
-namespace aria {
+namespace palmot {
 class Parser final : public mwings_common::ParserBase {
 public:
-    // Check if the packet is from App_ARIA (ARIA mode)
+    // Check if the packet is from App_PAL (MOT)
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)
             and (barePacket.u8At(12) == 0x80)
-            and (barePacket.u8At(13) == 0x06)) {
+            and (barePacket.u8At(13) == 0x83)) {
             return true;
         }
         return false;
@@ -45,6 +45,6 @@ public:
 };
 }
 
-extern aria::Parser AriaParser;
+extern palmot::Parser AppPalMotParser;
 
-#endif  // ARIAPARSER_H
+#endif  // APPPALMOTPARSER_H
