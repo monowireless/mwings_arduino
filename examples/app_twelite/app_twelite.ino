@@ -23,10 +23,10 @@ void setup()
             Serial.print("Supply Voltage:    ");
             Serial.print(packet.u16SupplyVoltage, DEC); Serial.println("mV");
             Serial.print("Digital Input:     ");
-            Serial.print(packet.bDIState[0] ? "DI1:Hi/" : "DI1:Lo/");
-            Serial.print(packet.bDIState[1] ? "DI2:Hi/" : "DI2:Lo/");
-            Serial.print(packet.bDIState[2] ? "DI3:Hi/" : "DI3:Lo/");
-            Serial.println(packet.bDIState[3] ? "DI4:Hi" : "DI4:Lo");
+            Serial.print(packet.bDIState[0] ? "DI1:Lo/" : "DI1:Hi/");
+            Serial.print(packet.bDIState[1] ? "DI2:Lo/" : "DI2:Hi/");
+            Serial.print(packet.bDIState[2] ? "DI3:Lo/" : "DI3:Hi/");
+            Serial.println(packet.bDIState[3] ? "DI4:Lo" : "DI4:Hi");
             Serial.print("Analog Input:      ");
             Serial.print("AI1:"); Serial.print(packet.u16AIVoltage[0]); Serial.print("mV/");
             Serial.print("AI2:"); Serial.print(packet.u16AIVoltage[1]); Serial.print("mV/");

@@ -14,7 +14,7 @@ void setup()
     Serial.begin(115200);
     Serial2.begin(115200);
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
-    Twelite.on([](const ParsedCuePacket& packet){
+    Twelite.on([](const ParsedCuePacket& packet) {
             Serial.print("Packet Number:     #");
             Serial.println(packet.u16SequenceNumber, DEC);
             Serial.print("Source Logical ID: 0x");
