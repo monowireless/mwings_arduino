@@ -1,44 +1,40 @@
 /**
- * @file   CueParser.h
- * @brief  App_CUE (CUE mode) parser for MWings.
+ * @file   AppPalAmbParser.h
+ * @brief  App_PAL (AMB) parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef CUEPARSER_H
-#define CUEPARSER_H
+#ifndef APPPALAMBPARSER_H
+#define APPPALAMBPARSER_H
 
 #include "MWings_Common.h"
 
 /**
- * @struct ParsedCuePacket
- * @brief  Packet content for App_CUE
+ * @struct ParsedAppPalAmbPacket
+ * @brief  Packet content for App_PAL
  */
-struct ParsedCuePacket final : public mwings_common::ParsedPacketBase {
-    int16_t i16SamplesX[10];
-    int16_t i16SamplesY[10];
-    int16_t i16SamplesZ[10];
-    uint8_t u8SampleCount;
-    bool bHasAccelEvent;
-    uint8_t u8AccelEvent;
-    uint8_t u8MagnetState;
-    bool bMagnetStateChanged;
+struct ParsedAppPalAmbPacket final : public mwings_common::ParsedPacketBase {
+    uint16_t u16Ai1Voltage;
+    int16_t i16Temp100x;
+    uint16_t u16Humid100x;
+    uint32_t u32Illuminance;
 };
 
 /**
- * @class cue::Parser
- * @brief  Packet parser for App_CUE (CUE mode)
+ * @class palamb::Parser
+ * @brief  Packet parser for App_PAL (AMB)
  */
-namespace cue {
+namespace palamb {
 class Parser final : public mwings_common::ParserBase {
 public:
-    // Check if the packet is TWELITE CUE
+    // Check if the packet is from App_PAL (AMB)
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)
             and (barePacket.u8At(12) == 0x80)
-            and (barePacket.u8At(13) == 0x05)) {
+            and (barePacket.u8At(13) == 0x82)) {
             return true;
         }
         return false;
@@ -49,6 +45,6 @@ public:
 };
 }
 
-extern cue::Parser CueParser;
+extern palamb::Parser AppPalAmbParser;
 
-#endif  // CUEPARSER_H
+#endif  // APPPALAMBPARSER_H

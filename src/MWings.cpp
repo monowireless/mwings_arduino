@@ -37,14 +37,20 @@ bool MWings::setup(HardwareSerial& serial,
 
     _debugSerial = nullptr;
 
-    //// AriaParser for App_ARIA (ARIA mode)
-    _onAriaPacket = nullptr;
-    //// CueParser for App_CUE (CUE mode)
-    _onCuePacket = nullptr;
-    //// PalAmbParser for App_PAL (AMB)
-    _onPalAmbPacket = nullptr;
-    //// PalMotParser for App_PAL (MOT)
-    _onPalMotPacket = nullptr;
+    //// AppTweliteParser for App_Twelite
+    _onAppTwelitePacket = nullptr;
+    //// AppIoParser for App_IO
+    _onAppIoPacket = nullptr;
+    //// AppAriaParser for App_ARIA (ARIA mode)
+    _onAppAriaPacket = nullptr;
+    //// AppCueParser for App_CUE (CUE mode)
+    _onAppCuePacket = nullptr;
+    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    _onAppPalOpenClosePacket = nullptr;
+    //// AppPalAmbParser for App_PAL (AMB)
+    _onAppPalAmbPacket = nullptr;
+    //// AppPalMotParser for App_PAL (MOT)
+    _onAppPalMotPacket = nullptr;
 
     if (not (_indicatorPin < 0)) {
         pinMode(_indicatorPin, OUTPUT);
@@ -153,6 +159,8 @@ bool MWings::begin(const uint8_t channel, const uint32_t appId)
         }
         debugPrint("Successfully started receiving packets.");
 
+        flushSerialRxBuffer();
+
         return true;
     }
 
@@ -185,41 +193,68 @@ void MWings::update()
         if (processAscii(character, barePacket) == MWings::State::COMPLETED) {
             turnOnIndicatorFor(10);
 
-            //// Start: AriaParser for App_ARIA (ARIA mode)
-            if (AriaParser.isValid(barePacket) and _onAriaPacket) {
-                ParsedAriaPacket parsedAriaPacket;
-                if (AriaParser.parse(barePacket, &parsedAriaPacket)) {
-                    _onAriaPacket(parsedAriaPacket);
+            //// Start: AppTweliteParser for App_Twelite
+            if (AppTweliteParser.isValid(barePacket) and _onAppTwelitePacket) {
+                ParsedAppTwelitePacket parsedAppTwelitePacket;
+                if (AppTweliteParser.parse(barePacket, &parsedAppTwelitePacket)) {
+                    _onAppTwelitePacket(parsedAppTwelitePacket);
                 }
             }
-            //// End: AriaParser for App_ARIA (ARIA mode)
+            //// End: AppTweliteParser for App_Twelite
 
-            //// Start: CueParser for App_CUE (CUE mode)
-            if (CueParser.isValid(barePacket) and _onCuePacket) {
-                ParsedCuePacket parsedCuePacket;
-                if (CueParser.parse(barePacket, &parsedCuePacket)) {
-                    _onCuePacket(parsedCuePacket);
+            //// Start: AppIoParser for App_IO
+            if (AppIoParser.isValid(barePacket) and _onAppIoPacket) {
+                ParsedAppIoPacket parsedAppIoPacket;
+                if (AppIoParser.parse(barePacket, &parsedAppIoPacket)) {
+                    _onAppIoPacket(parsedAppIoPacket);
                 }
             }
-            //// End: CueParser for App_CUE (CUE mode)
+            //// End: AppIoParser for App_IO
 
-            //// Start: PalAmbParser for App_PAL (AMB)
-            if (PalAmbParser.isValid(barePacket) and _onPalAmbPacket) {
-                ParsedPalAmbPacket parsedPalAmbPacket;
-                if (PalAmbParser.parse(barePacket, &parsedPalAmbPacket)) {
-                    _onPalAmbPacket(parsedPalAmbPacket);
+            //// Start: AppAriaParser for App_ARIA (ARIA mode)
+            if (AppAriaParser.isValid(barePacket) and _onAppAriaPacket) {
+                ParsedAppAriaPacket parsedAppAriaPacket;
+                if (AppAriaParser.parse(barePacket, &parsedAppAriaPacket)) {
+                    _onAppAriaPacket(parsedAppAriaPacket);
                 }
             }
-            //// End: PalAmbParser for App_PAL (AMB)
+            //// End: AppAriaParser for App_ARIA (ARIA mode)
 
-            //// Start: PalMotParser for App_PAL (MOT)
-            if (PalMotParser.isValid(barePacket) and _onPalMotPacket) {
-                ParsedPalMotPacket parsedPalMotPacket;
-                if (PalMotParser.parse(barePacket, &parsedPalMotPacket)) {
-                    _onPalMotPacket(parsedPalMotPacket);
+            //// Start: AppCueParser for App_CUE (CUE mode)
+            if (AppCueParser.isValid(barePacket) and _onAppCuePacket) {
+                ParsedAppCuePacket parsedAppCuePacket;
+                if (AppCueParser.parse(barePacket, &parsedAppCuePacket)) {
+                    _onAppCuePacket(parsedAppCuePacket);
                 }
             }
-            //// End: PalMotParser for App_PAL (MOT)
+            //// End: AppCueParser for App_CUE (CUE mode)
+
+            //// Start: AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+            if (AppPalOpenCloseParser.isValid(barePacket) and _onAppPalOpenClosePacket) {
+                ParsedAppPalOpenClosePacket parsedAppPalOpenClosePacket;
+                if (AppPalOpenCloseParser.parse(barePacket, &parsedAppPalOpenClosePacket)) {
+                    _onAppPalOpenClosePacket(parsedAppPalOpenClosePacket);
+                }
+            }
+            //// End: AppPalAmbParser for App_PAL (AMB)
+
+            //// Start: AppPalAmbParser for App_PAL (AMB)
+            if (AppPalAmbParser.isValid(barePacket) and _onAppPalAmbPacket) {
+                ParsedAppPalAmbPacket parsedAppPalAmbPacket;
+                if (AppPalAmbParser.parse(barePacket, &parsedAppPalAmbPacket)) {
+                    _onAppPalAmbPacket(parsedAppPalAmbPacket);
+                }
+            }
+            //// End: AppPalAmbParser for App_PAL (AMB)
+
+            //// Start: AppPalMotParser for App_PAL (MOT)
+            if (AppPalMotParser.isValid(barePacket) and _onAppPalMotPacket) {
+                ParsedAppPalMotPacket parsedAppPalMotPacket;
+                if (AppPalMotParser.parse(barePacket, &parsedAppPalMotPacket)) {
+                    _onAppPalMotPacket(parsedAppPalMotPacket);
+                }
+            }
+            //// End: AppPalMotParser for App_PAL (MOT)
         }
     }
 
@@ -333,10 +368,8 @@ MWings::State MWings::processAscii(const uint8_t character, mwings_common::BareP
 
     // Make bare packet available when parsing was completed
     if (state == MWings::State::COMPLETED) {
-        barePacket.size = byteCountFrom(_characterCount) - 1;
+        barePacket.size = byteCountFrom(_characterCount);
         barePacket.payload = _buffer;
-        const uint8_t lrc = _buffer[byteCountFrom(_characterCount) - 1];
-        barePacket.checksum = (~(_checksum - lrc) + 1) & 0xFF;
     }
 
     return state;

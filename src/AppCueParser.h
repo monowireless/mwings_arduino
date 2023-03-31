@@ -1,50 +1,56 @@
 /**
- * @file   AriaParser.h
- * @brief  App_ARIA (ARIA mode) parser for MWings.
+ * @file   AppCueParser.h
+ * @brief  App_CUE (CUE mode) parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef ARIAPARSER_H
-#define ARIAPARSER_H
+#ifndef APPCUEPARSER_H
+#define APPCUEPARSER_H
 
 #include "MWings_Common.h"
 
 /**
- * @struct ParsedAriaPacket
- * @brief  Packet content for App_ARIA
+ * @struct ParsedAppCuePacket
+ * @brief  Packet content for App_CUE
  */
-struct ParsedAriaPacket final : public mwings_common::ParsedPacketBase {
-    int16_t i16Temp100x;
-    uint16_t u16Humid100x;
+struct ParsedAppCuePacket final : public mwings_common::ParsedPacketBase {
+    int16_t i16SamplesX[10];
+    int16_t i16SamplesY[10];
+    int16_t i16SamplesZ[10];
+    uint8_t u8SampleCount;
+    bool bHasAccelEvent;
+    uint8_t u8AccelEvent;
     uint8_t u8MagnetState;
     bool bMagnetStateChanged;
 };
 
 /**
- * @class aria::Parser
- * @brief  Packet parser for App_ARIA (ARIA mode)
+ * @class cue::Parser
+ * @brief  Packet parser for App_CUE (CUE mode)
  */
-namespace aria {
+namespace cue {
 class Parser final : public mwings_common::ParserBase {
 public:
-    // Check if the packet is TWELITE ARIA
+    // Check if the packet is from App_CUE (CUE mode)
+    // I think I've nearly found you
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)
             and (barePacket.u8At(12) == 0x80)
-            and (barePacket.u8At(13) == 0x06)) {
+            and (barePacket.u8At(13) == 0x05)) {
             return true;
         }
         return false;
     }
 
     // Parse from bare packet
+    // I can see clues all around me
     bool parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 
-extern aria::Parser AriaParser;
+extern cue::Parser AppCueParser;
 
-#endif  // ARIAPARSER_H
+#endif  // APPCUEPARSER_H

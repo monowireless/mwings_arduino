@@ -12,14 +12,20 @@
 #include <Arduino.h>
 #include "MWings_Common.h"
 
-//// AriaParser for App_ARIA (ARIA mode)
-#include "AriaParser.h"
-//// CueParser for App_CUE (CUE mode)
-#include "CueParser.h"
-//// PalAmbParser for App_PAL (AMB)
-#include "PalAmbParser.h"
-//// PalMotParser for App_PAL (MOT)
-#include "PalMotParser.h"
+//// AppTweliteParser for App_Twelite
+#include "AppTweliteParser.h"
+//// AppIoParser for App_IO
+#include "AppIoParser.h"
+//// AppAriaParser for App_ARIA (ARIA mode)
+#include "AppAriaParser.h"
+//// AppCueParser for App_CUE (CUE mode)
+#include "AppCueParser.h"
+//// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+#include "AppPalOpenCloseParser.h"
+//// AppPalAmbParser for App_PAL (AMB)
+#include "AppPalAmbParser.h"
+//// AppPalMotParser for App_PAL (MOT)
+#include "AppPalMotParser.h"
 
 class MWings {
 public:
@@ -29,14 +35,20 @@ public:
                _buffer(nullptr), _bufferSize(0), _characterCount(0), _checksum(0),
                _timeout(0), _latestTimestamp(UINT32_MAX),
                _debugSerial(nullptr),
-               //// AriaParser for App_ARIA (ARIA mode)
-               _onAriaPacket(nullptr),
-               //// CueParser for App_CUE (CUE mode)
-               _onCuePacket(nullptr),
-               //// PalAmbParser for App_PAL (AMB)
-               _onPalAmbPacket(nullptr),
-               //// PalMotParser for App_PAL (MOT)
-               _onPalMotPacket(nullptr)
+               //// AppTweliteParser for App_Twelite
+               _onAppTwelitePacket(nullptr),
+               //// AppIoParser for App_IO
+               _onAppIoPacket(nullptr),
+               //// AppAriaParser for App_ARIA (ARIA mode)
+               _onAppAriaPacket(nullptr),
+               //// AppCueParser for App_CUE (CUE mode)
+               _onAppCuePacket(nullptr),
+               //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+               _onAppPalOpenClosePacket(nullptr),
+               //// AppPalAmbParser for App_PAL (AMB)
+               _onAppPalAmbPacket(nullptr),
+               //// AppPalMotParser for App_PAL (MOT)
+               _onAppPalMotPacket(nullptr)
         {}
     ~MWings();
 
@@ -98,6 +110,7 @@ private:
 
     inline void debugPrint(const char* const str) const {
         if (_debugSerial) {
+            _debugSerial->write('\n');
             _debugSerial->print(str);
             _debugSerial->write('\n');
         }
@@ -242,6 +255,11 @@ private:
         return find(":DBF8", timeout);
     }
 
+    inline void flushSerialRxBuffer() const {
+        if (not _serial) { return; }
+        while (_serial->available()) { _serial->read(); }
+    }
+
     HardwareSerial* _serial;
 
     int _indicatorPin;
@@ -262,24 +280,36 @@ private:
     HardwareSerial* _debugSerial;   // optional
 
 public:
-    //// AriaParser for App_ARIA (ARIA mode)
-    inline void on(void (*callback)(const ParsedAriaPacket& packet)) { _onAriaPacket = callback; }
-    //// CueParser for App_CUE (CUE mode)
-    inline void on(void (*callback)(const ParsedCuePacket& packet)) { _onCuePacket = callback; }
-    //// PalAmbParser for App_PAL (AMB)
-    inline void on(void (*callback)(const ParsedPalAmbPacket& packet)) { _onPalAmbPacket = callback; }
-    //// PalMotParser for App_PAL (MOT)
-    inline void on(void (*callback)(const ParsedPalMotPacket& packet)) { _onPalMotPacket = callback; }
+    //// AppTweliteParser for App_Twelite
+    inline void on(void (*callback)(const ParsedAppTwelitePacket& packet)) { _onAppTwelitePacket = callback; }
+    //// AppIoParser for App_IO
+    inline void on(void (*callback)(const ParsedAppIoPacket& packet)) { _onAppIoPacket = callback; }
+    //// AppAriaParser for App_ARIA (ARIA mode)
+    inline void on(void (*callback)(const ParsedAppAriaPacket& packet)) { _onAppAriaPacket = callback; }
+    //// AppCueParser for App_CUE (CUE mode)
+    inline void on(void (*callback)(const ParsedAppCuePacket& packet)) { _onAppCuePacket = callback; }
+    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    inline void on(void (*callback)(const ParsedAppPalOpenClosePacket& packet)) { _onAppPalOpenClosePacket = callback; }
+    //// AppPalAmbParser for App_PAL (AMB)
+    inline void on(void (*callback)(const ParsedAppPalAmbPacket& packet)) { _onAppPalAmbPacket = callback; }
+    //// AppPalMotParser for App_PAL (MOT)
+    inline void on(void (*callback)(const ParsedAppPalMotPacket& packet)) { _onAppPalMotPacket = callback; }
 
 private:
-    //// AriaParser for App_ARIA (ARIA mode)
-    void (*_onAriaPacket)(const ParsedAriaPacket& packet);
-    //// CueParser for App_CUE (CUE mode)
-    void (*_onCuePacket)(const ParsedCuePacket& packet);
-    //// PalAmbParser for App_PAL (AMB)
-    void (*_onPalAmbPacket)(const ParsedPalAmbPacket& packet);
-    //// PalMotParser for App_PAL (MOT)
-    void (*_onPalMotPacket)(const ParsedPalMotPacket& packet);
+    //// AppTweliteParser for App_Twelite
+    void (*_onAppTwelitePacket)(const ParsedAppTwelitePacket& packet);
+    //// AppIoParser for App_IO
+    void (*_onAppIoPacket)(const ParsedAppIoPacket& packet);
+    //// AppAriaParser for App_ARIA (ARIA mode)
+    void (*_onAppAriaPacket)(const ParsedAppAriaPacket& packet);
+    //// AppCueParser for App_CUE (CUE mode)
+    void (*_onAppCuePacket)(const ParsedAppCuePacket& packet);
+    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    void (*_onAppPalOpenClosePacket)(const ParsedAppPalOpenClosePacket& packet);
+    //// AppPalAmbParser for App_PAL (AMB)
+    void (*_onAppPalAmbPacket)(const ParsedAppPalAmbPacket& packet);
+    //// AppPalMotParser for App_PAL (MOT)
+    void (*_onAppPalMotPacket)(const ParsedAppPalMotPacket& packet);
 };
 
 extern MWings Twelite;

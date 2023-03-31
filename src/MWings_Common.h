@@ -20,7 +20,6 @@ namespace mwings_common {
 struct BarePacket {
     uint8_t* payload;
     uint16_t size;
-    uint16_t checksum;
 
     inline uint8_t u8At(const int index) const { return payload[index]; }
     inline int8_t i8At(const int index) const { return static_cast<int8_t>(u8At(index)); }
@@ -55,14 +54,12 @@ class ParserBase {
 public:
     // Check if the packet is valid or not
     virtual bool isValid(const BarePacket& barePacket) const = 0;
-
     // Get parsed packet from bare packet
     virtual bool parse(const BarePacket& barePacket, ParsedPacketBase* const parsedPacket) const = 0;
 protected:
     ParserBase() {}
     virtual ~ParserBase() {}
 };
-
 }
 
 #endif  // MWINGS_COMMON_H

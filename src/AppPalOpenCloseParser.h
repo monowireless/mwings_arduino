@@ -1,40 +1,39 @@
 /**
- * @file   PalMotParser.h
- * @brief  App_PAL (MOT) parser for MWings.
+ * @file   AppPalOpenCloseParser.h
+ * @brief  App_PAL (OPENCLOSE) parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef PALMOTPARSER_H
-#define PALMOTPARSER_H
+#ifndef APPPALOPENCLOSEPARSER_H
+#define APPPALOPENCLOSEPARSER_H
 
 #include "MWings_Common.h"
 
 /**
- * @struct ParsedPalMotPacket
+ * @struct ParsedAppPalOpenClosePacket
  * @brief  Packet content for App_PAL
  */
-struct ParsedPalMotPacket final : public mwings_common::ParsedPacketBase {
-    int16_t i16SamplesX[16];
-    int16_t i16SamplesY[16];
-    int16_t i16SamplesZ[16];
-    uint8_t u8SampleCount;
+struct ParsedAppPalOpenClosePacket final : public mwings_common::ParsedPacketBase {
+    uint16_t u16Ai1Voltage;
+    uint8_t u8MagnetState;
+    bool bMagnetStateChanged;
 };
 
 /**
- * @class palmot::Parser
- * @brief  Packet parser for App_PAL (MOT)
+ * @class palopenclose::Parser
+ * @brief  Packet parser for App_PAL (OPENCLOSE)
  */
-namespace palmot {
+namespace palopenclose {
 class Parser final : public mwings_common::ParserBase {
 public:
-    // Check if the packet is TWELITE PALMOT
+    // Check if the packet is from App_PAL (OPENCLOSE)
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)
             and (barePacket.u8At(12) == 0x80)
-            and (barePacket.u8At(13) == 0x83)) {
+            and (barePacket.u8At(13) == 0x81)) {
             return true;
         }
         return false;
@@ -45,6 +44,6 @@ public:
 };
 }
 
-extern palmot::Parser PalMotParser;
+extern palopenclose::Parser AppPalOpenCloseParser;
 
-#endif  // PALMOTPARSER_H
+#endif  // APPPALOPENCLOSEPARSER_H
