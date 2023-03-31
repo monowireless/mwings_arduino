@@ -16,10 +16,12 @@
  * @brief  Packet content for App_PAL
  */
 struct ParsedAppPalMotPacket final : public mwings_common::ParsedPacketBase {
+    uint16_t u16Ai1Voltage;
     int16_t i16SamplesX[16];
     int16_t i16SamplesY[16];
     int16_t i16SamplesZ[16];
     uint8_t u8SampleCount;
+    uint16_t u16SamplingFrequency;
 };
 
 /**

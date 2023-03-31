@@ -6,20 +6,22 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-MWings                  KEYWORD1
-ParsedAppTwelitePacket  KEYWORD1
-ParsedAriaPacket        KEYWORD1
-ParsedCuePacket         KEYWORD1
-ParsedPalAmbPacket      KEYWORD1
-ParsedPalMotPacket      KEYWORD1
+MWings                          KEYWORD1
+ParsedAppTwelitePacket          KEYWORD1
+ParsedAppIoPacket               KEYWORD1
+ParsedAppAriaPacket             KEYWORD1
+ParsedAppCuePacket              KEYWORD1
+ParsedAppPalOpenClosePacket     KEYWORD1
+ParsedAppPalAmbPacket           KEYWORD1
+ParsedAppPalMotPacket           KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
 on                      KEYWORD2
-debugUsing              KEYWORD2
 update                  KEYWORD2
+debugUsing              KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)

@@ -54,14 +54,12 @@ class ParserBase {
 public:
     // Check if the packet is valid or not
     virtual bool isValid(const BarePacket& barePacket) const = 0;
-
     // Get parsed packet from bare packet
     virtual bool parse(const BarePacket& barePacket, ParsedPacketBase* const parsedPacket) const = 0;
 protected:
     ParserBase() {}
     virtual ~ParserBase() {}
 };
-
 }
 
 #endif  // MWINGS_COMMON_H

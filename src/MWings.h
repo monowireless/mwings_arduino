@@ -20,6 +20,8 @@
 #include "AppAriaParser.h"
 //// AppCueParser for App_CUE (CUE mode)
 #include "AppCueParser.h"
+//// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+#include "AppPalOpenCloseParser.h"
 //// AppPalAmbParser for App_PAL (AMB)
 #include "AppPalAmbParser.h"
 //// AppPalMotParser for App_PAL (MOT)
@@ -41,6 +43,8 @@ public:
                _onAppAriaPacket(nullptr),
                //// AppCueParser for App_CUE (CUE mode)
                _onAppCuePacket(nullptr),
+               //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+               _onAppPalOpenClosePacket(nullptr),
                //// AppPalAmbParser for App_PAL (AMB)
                _onAppPalAmbPacket(nullptr),
                //// AppPalMotParser for App_PAL (MOT)
@@ -106,6 +110,7 @@ private:
 
     inline void debugPrint(const char* const str) const {
         if (_debugSerial) {
+            _debugSerial->write('\n');
             _debugSerial->print(str);
             _debugSerial->write('\n');
         }
@@ -250,6 +255,11 @@ private:
         return find(":DBF8", timeout);
     }
 
+    inline void flushSerialRxBuffer() const {
+        if (not _serial) { return; }
+        while (_serial->available()) { _serial->read(); }
+    }
+
     HardwareSerial* _serial;
 
     int _indicatorPin;
@@ -278,6 +288,8 @@ public:
     inline void on(void (*callback)(const ParsedAppAriaPacket& packet)) { _onAppAriaPacket = callback; }
     //// AppCueParser for App_CUE (CUE mode)
     inline void on(void (*callback)(const ParsedAppCuePacket& packet)) { _onAppCuePacket = callback; }
+    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    inline void on(void (*callback)(const ParsedAppPalOpenClosePacket& packet)) { _onAppPalOpenClosePacket = callback; }
     //// AppPalAmbParser for App_PAL (AMB)
     inline void on(void (*callback)(const ParsedAppPalAmbPacket& packet)) { _onAppPalAmbPacket = callback; }
     //// AppPalMotParser for App_PAL (MOT)
@@ -292,6 +304,8 @@ private:
     void (*_onAppAriaPacket)(const ParsedAppAriaPacket& packet);
     //// AppCueParser for App_CUE (CUE mode)
     void (*_onAppCuePacket)(const ParsedAppCuePacket& packet);
+    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    void (*_onAppPalOpenClosePacket)(const ParsedAppPalOpenClosePacket& packet);
     //// AppPalAmbParser for App_PAL (AMB)
     void (*_onAppPalAmbPacket)(const ParsedAppPalAmbPacket& packet);
     //// AppPalMotParser for App_PAL (MOT)

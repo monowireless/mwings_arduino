@@ -21,9 +21,11 @@ bool palamb::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_c
     parsedAppPalAmbPacket->u8Lqi = barePacket.u8At(4);
     parsedAppPalAmbPacket->u16SupplyVoltage = barePacket.u16At(19);
 
+    parsedAppPalAmbPacket->u16Ai1Voltage = barePacket.u16At(25);
+
     parsedAppPalAmbPacket->i16Temp100x = barePacket.i16At(31);
     parsedAppPalAmbPacket->u16Humid100x = barePacket.u16At(37);
-    parsedAppPalAmbPacket->u32Luminance = barePacket.u32At(43);
+    parsedAppPalAmbPacket->u32Illuminance = barePacket.u32At(43);
 
     return true;
 }

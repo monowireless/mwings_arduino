@@ -21,14 +21,17 @@ bool palmot::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_c
     parsedAppPalMotPacket->u8Lqi = barePacket.u8At(4);
     parsedAppPalMotPacket->u16SupplyVoltage = barePacket.u16At(19);
 
-    int index;
-    uint16_t addr;
-    for (index = 0, addr = 0x1F; index < 16; index++, addr += 10) {
-        parsedAppPalMotPacket->i16SamplesX[index] = barePacket.i16At(addr + 0);
-        parsedAppPalMotPacket->i16SamplesY[index] = barePacket.i16At(addr + 2);
-        parsedAppPalMotPacket->i16SamplesZ[index] = barePacket.i16At(addr + 4);
+    parsedAppPalMotPacket->u16Ai1Voltage = barePacket.u16At(25);
+
+    const uint8_t extensionByte = barePacket.u8At(29);
+    const uint16_t frequencies[8] = {25, 50, 100, 190, 380, 750, 1100, 1300};
+    parsedAppPalMotPacket->u16SamplingFrequency = frequencies[(extensionByte >> 5)];
+    for (int index = 0; index < 16; index++) {
+        parsedAppPalMotPacket->i16SamplesX[index] = barePacket.i16At(31 + (10 * index) + 0);
+        parsedAppPalMotPacket->i16SamplesY[index] = barePacket.i16At(31 + (10 * index) + 2);
+        parsedAppPalMotPacket->i16SamplesZ[index] = barePacket.i16At(31 + (10 * index) + 4);
     }
-    parsedAppPalMotPacket->u8SampleCount = index + 1;
+    parsedAppPalMotPacket->u8SampleCount = 16;
 
     return true;
 }

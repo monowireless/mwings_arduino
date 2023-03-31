@@ -31,14 +31,12 @@ bool cue::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_comm
         parsedAppCuePacket->u8AccelEvent = 0xFF;
     }
 
-    int index;
-    uint16_t addr;
-    for (index = 0, addr = 0x33; index < 10; index++, addr += 10) {
-        parsedAppCuePacket->i16SamplesX[index] = barePacket.i16At(addr + 0);
-        parsedAppCuePacket->i16SamplesY[index] = barePacket.i16At(addr + 2);
-        parsedAppCuePacket->i16SamplesZ[index] = barePacket.i16At(addr + 4);
+    for (int index = 0; index < 10; index++) {
+        parsedAppCuePacket->i16SamplesX[index] = barePacket.i16At(51 + (10 * index) + 0);
+        parsedAppCuePacket->i16SamplesY[index] = barePacket.i16At(51 + (10 * index) + 2);
+        parsedAppCuePacket->i16SamplesZ[index] = barePacket.i16At(51 + (10 * index) + 4);
     }
-    parsedAppCuePacket->u8SampleCount = index + 1;
+    parsedAppCuePacket->u8SampleCount = 10;
 
     const uint8_t rawMagnetState = barePacket.u8At(46);
     parsedAppCuePacket->u8MagnetState = rawMagnetState & 0x0F;

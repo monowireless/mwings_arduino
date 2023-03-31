@@ -45,6 +45,8 @@ bool MWings::setup(HardwareSerial& serial,
     _onAppAriaPacket = nullptr;
     //// AppCueParser for App_CUE (CUE mode)
     _onAppCuePacket = nullptr;
+    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    _onAppPalOpenClosePacket = nullptr;
     //// AppPalAmbParser for App_PAL (AMB)
     _onAppPalAmbPacket = nullptr;
     //// AppPalMotParser for App_PAL (MOT)
@@ -157,6 +159,8 @@ bool MWings::begin(const uint8_t channel, const uint32_t appId)
         }
         debugPrint("Successfully started receiving packets.");
 
+        flushSerialRxBuffer();
+
         return true;
     }
 
@@ -224,6 +228,15 @@ void MWings::update()
                 }
             }
             //// End: AppCueParser for App_CUE (CUE mode)
+
+            //// Start: AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+            if (AppPalOpenCloseParser.isValid(barePacket) and _onAppPalOpenClosePacket) {
+                ParsedAppPalOpenClosePacket parsedAppPalOpenClosePacket;
+                if (AppPalOpenCloseParser.parse(barePacket, &parsedAppPalOpenClosePacket)) {
+                    _onAppPalOpenClosePacket(parsedAppPalOpenClosePacket);
+                }
+            }
+            //// End: AppPalAmbParser for App_PAL (AMB)
 
             //// Start: AppPalAmbParser for App_PAL (AMB)
             if (AppPalAmbParser.isValid(barePacket) and _onAppPalAmbPacket) {
