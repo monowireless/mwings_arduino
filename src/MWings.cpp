@@ -37,19 +37,19 @@ bool MWings::setup(HardwareSerial& serial,
 
     _debugSerial = nullptr;
 
-    //// AppTweliteParser for App_Twelite
+    //// AppTwelitePacketParser for App_Twelite
     _onAppTwelitePacket = nullptr;
-    //// AppIoParser for App_IO
+    //// AppIoPacketParser for App_IO
     _onAppIoPacket = nullptr;
-    //// AppAriaParser for App_ARIA (ARIA mode)
+    //// AppAriaPacketParser for App_ARIA (ARIA mode)
     _onAppAriaPacket = nullptr;
-    //// AppCueParser for App_CUE (CUE mode)
+    //// AppCuePacketParser for App_CUE (CUE mode)
     _onAppCuePacket = nullptr;
-    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    //// AppPalOpenClosePacketParser for App_PAL (OPENCLOSE)
     _onAppPalOpenClosePacket = nullptr;
-    //// AppPalAmbParser for App_PAL (AMB)
+    //// AppPalAmbPacketParser for App_PAL (AMB)
     _onAppPalAmbPacket = nullptr;
-    //// AppPalMotParser for App_PAL (MOT)
+    //// AppPalMotPacketParser for App_PAL (MOT)
     _onAppPalMotPacket = nullptr;
 
     if (not (_indicatorPin < 0)) {
@@ -193,68 +193,68 @@ void MWings::update()
         if (processAscii(character, barePacket) == MWings::State::COMPLETED) {
             turnOnIndicatorFor(10);
 
-            //// Start: AppTweliteParser for App_Twelite
-            if (AppTweliteParser.isValid(barePacket) and _onAppTwelitePacket) {
+            //// Start: AppTwelitePacketParser for App_Twelite
+            if (AppTwelitePacketParser.isValid(barePacket) and _onAppTwelitePacket) {
                 ParsedAppTwelitePacket parsedAppTwelitePacket;
-                if (AppTweliteParser.parse(barePacket, &parsedAppTwelitePacket)) {
+                if (AppTwelitePacketParser.parse(barePacket, &parsedAppTwelitePacket)) {
                     _onAppTwelitePacket(parsedAppTwelitePacket);
                 }
             }
-            //// End: AppTweliteParser for App_Twelite
+            //// End: AppTwelitePacketParser for App_Twelite
 
-            //// Start: AppIoParser for App_IO
-            if (AppIoParser.isValid(barePacket) and _onAppIoPacket) {
+            //// Start: AppIoPacketParser for App_IO
+            if (AppIoPacketParser.isValid(barePacket) and _onAppIoPacket) {
                 ParsedAppIoPacket parsedAppIoPacket;
-                if (AppIoParser.parse(barePacket, &parsedAppIoPacket)) {
+                if (AppIoPacketParser.parse(barePacket, &parsedAppIoPacket)) {
                     _onAppIoPacket(parsedAppIoPacket);
                 }
             }
-            //// End: AppIoParser for App_IO
+            //// End: AppIoPacketParser for App_IO
 
-            //// Start: AppAriaParser for App_ARIA (ARIA mode)
-            if (AppAriaParser.isValid(barePacket) and _onAppAriaPacket) {
+            //// Start: AppAriaPacketParser for App_ARIA (ARIA mode)
+            if (AppAriaPacketParser.isValid(barePacket) and _onAppAriaPacket) {
                 ParsedAppAriaPacket parsedAppAriaPacket;
-                if (AppAriaParser.parse(barePacket, &parsedAppAriaPacket)) {
+                if (AppAriaPacketParser.parse(barePacket, &parsedAppAriaPacket)) {
                     _onAppAriaPacket(parsedAppAriaPacket);
                 }
             }
-            //// End: AppAriaParser for App_ARIA (ARIA mode)
+            //// End: AppAriaPacketParser for App_ARIA (ARIA mode)
 
-            //// Start: AppCueParser for App_CUE (CUE mode)
-            if (AppCueParser.isValid(barePacket) and _onAppCuePacket) {
+            //// Start: AppCuePacketParser for App_CUE (CUE mode)
+            if (AppCuePacketParser.isValid(barePacket) and _onAppCuePacket) {
                 ParsedAppCuePacket parsedAppCuePacket;
-                if (AppCueParser.parse(barePacket, &parsedAppCuePacket)) {
+                if (AppCuePacketParser.parse(barePacket, &parsedAppCuePacket)) {
                     _onAppCuePacket(parsedAppCuePacket);
                 }
             }
-            //// End: AppCueParser for App_CUE (CUE mode)
+            //// End: AppCuePacketParser for App_CUE (CUE mode)
 
-            //// Start: AppPalOpenCloseParser for App_PAL (OPENCLOSE)
-            if (AppPalOpenCloseParser.isValid(barePacket) and _onAppPalOpenClosePacket) {
+            //// Start: AppPalOpenClosePacketParser for App_PAL (OPENCLOSE)
+            if (AppPalOpenClosePacketParser.isValid(barePacket) and _onAppPalOpenClosePacket) {
                 ParsedAppPalOpenClosePacket parsedAppPalOpenClosePacket;
-                if (AppPalOpenCloseParser.parse(barePacket, &parsedAppPalOpenClosePacket)) {
+                if (AppPalOpenClosePacketParser.parse(barePacket, &parsedAppPalOpenClosePacket)) {
                     _onAppPalOpenClosePacket(parsedAppPalOpenClosePacket);
                 }
             }
-            //// End: AppPalAmbParser for App_PAL (AMB)
+            //// End: AppPalAmbPacketParser for App_PAL (AMB)
 
-            //// Start: AppPalAmbParser for App_PAL (AMB)
-            if (AppPalAmbParser.isValid(barePacket) and _onAppPalAmbPacket) {
+            //// Start: AppPalAmbPacketParser for App_PAL (AMB)
+            if (AppPalAmbPacketParser.isValid(barePacket) and _onAppPalAmbPacket) {
                 ParsedAppPalAmbPacket parsedAppPalAmbPacket;
-                if (AppPalAmbParser.parse(barePacket, &parsedAppPalAmbPacket)) {
+                if (AppPalAmbPacketParser.parse(barePacket, &parsedAppPalAmbPacket)) {
                     _onAppPalAmbPacket(parsedAppPalAmbPacket);
                 }
             }
-            //// End: AppPalAmbParser for App_PAL (AMB)
+            //// End: AppPalAmbPacketParser for App_PAL (AMB)
 
-            //// Start: AppPalMotParser for App_PAL (MOT)
-            if (AppPalMotParser.isValid(barePacket) and _onAppPalMotPacket) {
+            //// Start: AppPalMotPacketParser for App_PAL (MOT)
+            if (AppPalMotPacketParser.isValid(barePacket) and _onAppPalMotPacket) {
                 ParsedAppPalMotPacket parsedAppPalMotPacket;
-                if (AppPalMotParser.parse(barePacket, &parsedAppPalMotPacket)) {
+                if (AppPalMotPacketParser.parse(barePacket, &parsedAppPalMotPacket)) {
                     _onAppPalMotPacket(parsedAppPalMotPacket);
                 }
             }
-            //// End: AppPalMotParser for App_PAL (MOT)
+            //// End: AppPalMotPacketParser for App_PAL (MOT)
         }
     }
 

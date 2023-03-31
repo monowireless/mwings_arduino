@@ -1,13 +1,13 @@
 /**
- * @file   AppCueParser.h
- * @brief  App_CUE (CUE mode) parser for MWings.
+ * @file   AppCuePacketParser.h
+ * @brief  App_CUE (CUE mode) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef APPCUEPARSER_H
-#define APPCUEPARSER_H
+#ifndef APPCUEPACKETPARSER_H
+#define APPCUEPACKETPARSER_H
 
 #include "MWings_Common.h"
 
@@ -27,11 +27,11 @@ struct ParsedAppCuePacket final : public mwings_common::ParsedPacketBase {
 };
 
 /**
- * @class cue::Parser
+ * @class cue::PacketParser
  * @brief  Packet parser for App_CUE (CUE mode)
  */
 namespace cue {
-class Parser final : public mwings_common::ParserBase {
+class PacketParser final : public mwings_common::PacketParserBase {
 public:
     // Check if the packet is from App_CUE (CUE mode)
     // I think I've nearly found you
@@ -51,6 +51,6 @@ public:
 };
 }
 
-extern cue::Parser AppCueParser;
+extern cue::PacketParser AppCuePacketParser;
 
-#endif  // APPCUEPARSER_H
+#endif  // APPCUEPACKETPARSER_H

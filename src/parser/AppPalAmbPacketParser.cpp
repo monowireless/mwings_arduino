@@ -1,16 +1,16 @@
 /**
- * @file   AppPalAmbParser.cpp
- * @brief  App_PAL (AMB) parser for MWings.
+ * @file   AppPalAmbPacketParser.cpp
+ * @brief  App_PAL (AMB) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#include "AppPalAmbParser.h"
+#include "AppPalAmbPacketParser.h"
 
-palamb::Parser AppPalAmbParser;
+palamb::PacketParser AppPalAmbPacketParser;
 
-bool palamb::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool palamb::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppPalAmbPacket* const parsedAppPalAmbPacket = static_cast<ParsedAppPalAmbPacket*>(parsedPacket);

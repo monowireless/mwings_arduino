@@ -1,13 +1,13 @@
 /**
- * @file   AppTweliteParser.h
- * @brief  App_Twelite parser for MWings.
+ * @file   AppTwelitePacketParser.h
+ * @brief  App_Twelite packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef APPTWELITEPARSER_H
-#define APPTWELITEPARSER_H
+#ifndef APPTWELITEPACKETPARSER_H
+#define APPTWELITEPACKETPARSER_H
 
 #include "MWings_Common.h"
 
@@ -18,17 +18,17 @@
 struct ParsedAppTwelitePacket final : public mwings_common::ParsedPacketBase {
     uint8_t u8RelayCount;
     bool bPeriodic;
-    bool bDiState[4];
     bool bDiChanged[4];
+    bool bDiState[4];
     uint16_t u16AiVoltage[4];
 };
 
 /**
- * @class apptwelite::Parser
+ * @class apptwelite::PacketParser
  * @brief  Packet parser for App_Twelite
  */
 namespace apptwelite {
-class Parser final : public mwings_common::ParserBase {
+class PacketParser final : public mwings_common::PacketParserBase {
 public:
     // Check if the packet is from App_Twelite
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
@@ -46,6 +46,6 @@ public:
 };
 }
 
-extern apptwelite::Parser AppTweliteParser;
+extern apptwelite::PacketParser AppTwelitePacketParser;
 
-#endif  // APPTWELITEPARSER_H
+#endif  // APPTWELITEPACKETPARSER_H

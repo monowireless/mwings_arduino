@@ -1,16 +1,16 @@
 /**
- * @file   AppTweliteParser.cpp
- * @brief  App_Twelite parser for MWings.
+ * @file   AppTwelitePacketParser.cpp
+ * @brief  App_Twelite packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#include "AppTweliteParser.h"
+#include "AppTwelitePacketParser.h"
 
-apptwelite::Parser AppTweliteParser;
+apptwelite::PacketParser AppTwelitePacketParser;
 
-bool apptwelite::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool apptwelite::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppTwelitePacket* const parsedAppTwelitePacket = static_cast<ParsedAppTwelitePacket*>(parsedPacket);
@@ -24,16 +24,13 @@ bool apptwelite::Parser::parse(const mwings_common::BarePacket& barePacket, mwin
     parsedAppTwelitePacket->u8RelayCount = barePacket.u8At(12);
     const uint8_t u8DIState = barePacket.u8At(16);
     parsedAppTwelitePacket->bPeriodic = ((u8DIState & 0x80) == 0x80);
-    parsedAppTwelitePacket->bDiState[0] = (u8DIState & (1 << 0));
-    parsedAppTwelitePacket->bDiState[1] = (u8DIState & (1 << 1));
-    parsedAppTwelitePacket->bDiState[2] = (u8DIState & (1 << 2));
-    parsedAppTwelitePacket->bDiState[3] = (u8DIState & (1 << 3));
+    for (int i = 0; i < 4; i++) {
+        parsedAppTwelitePacket->bDiState[i] = (u8DIState & (1 << i));
+    }
     const uint8_t u8DIChanged = barePacket.u8At(17);
-    parsedAppTwelitePacket->bDiChanged[0] = (u8DIChanged & (1 << 0));
-    parsedAppTwelitePacket->bDiChanged[1] = (u8DIChanged & (1 << 1));
-    parsedAppTwelitePacket->bDiChanged[2] = (u8DIChanged & (1 << 2));
-    parsedAppTwelitePacket->bDiChanged[3] = (u8DIChanged & (1 << 3));
-
+    for (int i = 0; i < 4; i++) {
+        parsedAppTwelitePacket->bDiChanged[i] = (u8DIChanged & (1 << i));
+    }
     uint8_t u8AiValue[4];
     for (int i = 0; i < 4; i++) {
         u8AiValue[i] = barePacket.u8At(18+i);
