@@ -1,16 +1,16 @@
 /**
- * @file   AppIoParser.cpp
- * @brief  App_IO parser for MWings.
+ * @file   AppIoPacketParser.cpp
+ * @brief  App_IO packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#include "AppIoParser.h"
+#include "AppIoPacketParser.h"
 
-appio::Parser AppIoParser;
+appio::PacketParser AppIoPacketParser;
 
-bool appio::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool appio::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppIoPacket* const parsedAppIoPacket = static_cast<ParsedAppIoPacket*>(parsedPacket);

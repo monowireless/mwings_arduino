@@ -12,20 +12,24 @@
 #include <Arduino.h>
 #include "MWings_Common.h"
 
-//// AppTweliteParser for App_Twelite
-#include "AppTweliteParser.h"
-//// AppIoParser for App_IO
-#include "AppIoParser.h"
-//// AppAriaParser for App_ARIA (ARIA mode)
-#include "AppAriaParser.h"
-//// AppCueParser for App_CUE (CUE mode)
-#include "AppCueParser.h"
-//// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
-#include "AppPalOpenCloseParser.h"
-//// AppPalAmbParser for App_PAL (AMB)
-#include "AppPalAmbParser.h"
-//// AppPalMotParser for App_PAL (MOT)
-#include "AppPalMotParser.h"
+//// AppTwelitePacketParser for App_Twelite
+#include "parser/AppTwelitePacketParser.h"
+//// AppIoPacketParser for App_IO
+#include "parser/AppIoPacketParser.h"
+//// AppAriaPacketParser for App_ARIA (ARIA mode)
+#include "parser/AppAriaPacketParser.h"
+//// AppCuePacketParser for App_CUE (CUE mode)
+#include "parser/AppCuePacketParser.h"
+//// AppPalOpenClosePacketParser for App_PAL (OPENCLOSE)
+#include "parser/AppPalOpenClosePacketParser.h"
+//// AppPalAmbPacketParser for App_PAL (AMB)
+#include "parser/AppPalAmbPacketParser.h"
+//// AppPalMotPacketParser for App_PAL (MOT)
+#include "parser/AppPalMotPacketParser.h"
+
+//// AppTweliteCommandSerializer for App_Twelite
+#include "serializer/AppTweliteCommandSerializer.h"
+
 
 class MWings {
 public:
@@ -35,19 +39,19 @@ public:
                _buffer(nullptr), _bufferSize(0), _characterCount(0), _checksum(0),
                _timeout(0), _latestTimestamp(UINT32_MAX),
                _debugSerial(nullptr),
-               //// AppTweliteParser for App_Twelite
+               //// AppTwelitePacketParser for App_Twelite
                _onAppTwelitePacket(nullptr),
-               //// AppIoParser for App_IO
+               //// AppIoPacketParser for App_IO
                _onAppIoPacket(nullptr),
-               //// AppAriaParser for App_ARIA (ARIA mode)
+               //// AppAriaPacketParser for App_ARIA (ARIA mode)
                _onAppAriaPacket(nullptr),
-               //// AppCueParser for App_CUE (CUE mode)
+               //// AppCuePacketParser for App_CUE (CUE mode)
                _onAppCuePacket(nullptr),
-               //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+               //// AppPalOpenClosePacketParser for App_PAL (OPENCLOSE)
                _onAppPalOpenClosePacket(nullptr),
-               //// AppPalAmbParser for App_PAL (AMB)
+               //// AppPalAmbPacketParser for App_PAL (AMB)
                _onAppPalAmbPacket(nullptr),
-               //// AppPalMotParser for App_PAL (MOT)
+               //// AppPalMotPacketParser for App_PAL (MOT)
                _onAppPalMotPacket(nullptr)
         {}
     ~MWings();
@@ -165,12 +169,14 @@ private:
 
     inline void writeInAscii(const uint8_t data) const {
         if (not _serial) { return; }
+        if (not _serial->availableForWrite()) { return; }
         _serial->write(characterFrom((data >> 4) & 0x0F));
         _serial->write(characterFrom((data >> 0) & 0x0F));
     }
 
     inline void writeInAscii(const uint16_t data) const {
         if (not _serial) { return; }
+        if (not _serial->availableForWrite()) { return; }
         _serial->write(characterFrom((data >> 12) & 0x0F));
         _serial->write(characterFrom((data >> 8) & 0x0F));
         _serial->write(characterFrom((data >> 4) & 0x0F));
@@ -179,6 +185,7 @@ private:
 
     inline void writeInAscii(const uint32_t data) const {
         if (not _serial) { return; }
+        if (not _serial->availableForWrite()) { return; }
         _serial->write(characterFrom((data >> 28) & 0x0F));
         _serial->write(characterFrom((data >> 24) & 0x0F));
         _serial->write(characterFrom((data >> 20) & 0x0F));
@@ -189,14 +196,57 @@ private:
         _serial->write(characterFrom((data >> 0) & 0x0F));
     }
 
+    inline void writeInAscii(const uint8_t* const data, const int size) const {
+        if (not _serial) { return; }
+        if (not _serial->availableForWrite()) { return; }
+        for (int i = 0; i < size; i++) { writeInAscii(data[i]); }
+    }
+
+    inline void debugWriteInAscii(const uint8_t data) const {
+        if (not _debugSerial) { return; }
+        if (not _debugSerial->availableForWrite()) { return; }
+        _debugSerial->write(characterFrom((data >> 4) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 0) & 0x0F));
+    }
+
+    inline void debugWriteInAscii(const uint16_t data) const {
+        if (not _debugSerial) { return; }
+        if (not _debugSerial->availableForWrite()) { return; }
+        _debugSerial->write(characterFrom((data >> 12) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 8) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 4) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 0) & 0x0F));
+    }
+
+    inline void debugWriteInAscii(const uint32_t data) const {
+        if (not _debugSerial) { return; }
+        if (not _debugSerial->availableForWrite()) { return; }
+        _debugSerial->write(characterFrom((data >> 28) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 24) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 20) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 16) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 12) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 8) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 4) & 0x0F));
+        _debugSerial->write(characterFrom((data >> 0) & 0x0F));
+    }
+
+    inline void debugWriteInAscii(const uint8_t* const data, const int size) const {
+        if (not _debugSerial) { return; }
+        if (not _debugSerial->availableForWrite()) { return; }
+        for (int i = 0; i < size; i++) { debugWriteInAscii(data[i]); }
+    }
+
     inline void beginCommand() const {
         if (not _serial) { return; }
+        if (not _serial->availableForWrite()) { return; }
         _serial->write(':');
         writeInAscii(static_cast<uint8_t>(0xDB));
     }
 
     inline void endCommand() const {
         if (not _serial) { return; }
+        if (not _serial->availableForWrite()) { return; }
         _serial->write('X');
         _serial->flush();
     }
@@ -280,35 +330,56 @@ private:
     HardwareSerial* _debugSerial;   // optional
 
 public:
-    //// AppTweliteParser for App_Twelite
+    //// AppTwelitePacketParser for App_Twelite
     inline void on(void (*callback)(const ParsedAppTwelitePacket& packet)) { _onAppTwelitePacket = callback; }
-    //// AppIoParser for App_IO
+    //// AppIoPacketParser for App_IO
     inline void on(void (*callback)(const ParsedAppIoPacket& packet)) { _onAppIoPacket = callback; }
-    //// AppAriaParser for App_ARIA (ARIA mode)
+    //// AppAriaPacketParser for App_ARIA (ARIA mode)
     inline void on(void (*callback)(const ParsedAppAriaPacket& packet)) { _onAppAriaPacket = callback; }
-    //// AppCueParser for App_CUE (CUE mode)
+    //// AppCuePacketParser for App_CUE (CUE mode)
     inline void on(void (*callback)(const ParsedAppCuePacket& packet)) { _onAppCuePacket = callback; }
-    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    //// AppPalOpenClosePacketParser for App_PAL (OPENCLOSE)
     inline void on(void (*callback)(const ParsedAppPalOpenClosePacket& packet)) { _onAppPalOpenClosePacket = callback; }
-    //// AppPalAmbParser for App_PAL (AMB)
+    //// AppPalAmbPacketParser for App_PAL (AMB)
     inline void on(void (*callback)(const ParsedAppPalAmbPacket& packet)) { _onAppPalAmbPacket = callback; }
-    //// AppPalMotParser for App_PAL (MOT)
+    //// AppPalMotPacketParser for App_PAL (MOT)
     inline void on(void (*callback)(const ParsedAppPalMotPacket& packet)) { _onAppPalMotPacket = callback; }
 
+    //// AppTweliteCommandSerializer for App_Twelite
+    inline bool send(AppTweliteCommand& command) {
+        if (not _serial) { return false; }
+        if (not _serial->availableForWrite()) { return false; }
+        constexpr int fixedPayloadSize = GetSerializedAppTweliteCommandPayloadSize();
+        uint8_t payload[fixedPayloadSize];
+        uint8_t checksum;
+        if (not AppTweliteCommandSerializer.serialize(&command, payload, fixedPayloadSize, &checksum)) { return false; }
+        _serial->write(':');
+        writeInAscii(payload, fixedPayloadSize);
+        writeInAscii(checksum);
+        _serial->write('\r'); _serial->write('\n');
+        if (_debugSerial) {
+            _debugSerial->write(':');
+            debugWriteInAscii(payload, fixedPayloadSize);
+            debugWriteInAscii(checksum);
+            _debugSerial->write('\r'); _debugSerial->write('\n');
+        }
+        return true;
+    }
+
 private:
-    //// AppTweliteParser for App_Twelite
+    //// AppTwelitePacketParser for App_Twelite
     void (*_onAppTwelitePacket)(const ParsedAppTwelitePacket& packet);
-    //// AppIoParser for App_IO
+    //// AppIoPacketParser for App_IO
     void (*_onAppIoPacket)(const ParsedAppIoPacket& packet);
-    //// AppAriaParser for App_ARIA (ARIA mode)
+    //// AppAriaPacketParser for App_ARIA (ARIA mode)
     void (*_onAppAriaPacket)(const ParsedAppAriaPacket& packet);
-    //// AppCueParser for App_CUE (CUE mode)
+    //// AppCuePacketParser for App_CUE (CUE mode)
     void (*_onAppCuePacket)(const ParsedAppCuePacket& packet);
-    //// AppPalOpenCloseParser for App_PAL (OPENCLOSE)
+    //// AppPalOpenClosePacketParser for App_PAL (OPENCLOSE)
     void (*_onAppPalOpenClosePacket)(const ParsedAppPalOpenClosePacket& packet);
-    //// AppPalAmbParser for App_PAL (AMB)
+    //// AppPalAmbPacketParser for App_PAL (AMB)
     void (*_onAppPalAmbPacket)(const ParsedAppPalAmbPacket& packet);
-    //// AppPalMotParser for App_PAL (MOT)
+    //// AppPalMotPacketParser for App_PAL (MOT)
     void (*_onAppPalMotPacket)(const ParsedAppPalMotPacket& packet);
 };
 

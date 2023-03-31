@@ -1,13 +1,13 @@
 /**
- * @file   AppIoParser.h
- * @brief  App_IO parser for MWings.
+ * @file   AppIoPacketParser.h
+ * @brief  App_IO packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef APPIOPARSER_H
-#define APPIOPARSER_H
+#ifndef APPIOPACKETPARSER_H
+#define APPIOPACKETPARSER_H
 
 #include "MWings_Common.h"
 
@@ -23,11 +23,11 @@ struct ParsedAppIoPacket final : public mwings_common::ParsedPacketBase {
 };
 
 /**
- * @class appio::Parser
+ * @class appio::PacketParser
  * @brief  Packet parser for App_IO
  */
 namespace appio {
-class Parser final : public mwings_common::ParserBase {
+class PacketParser final : public mwings_common::PacketParserBase {
 public:
     // Check if the packet is from App_IO
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
@@ -45,6 +45,6 @@ public:
 };
 }
 
-extern appio::Parser AppIoParser;
+extern appio::PacketParser AppIoPacketParser;
 
-#endif  // APPIOPARSER_H
+#endif  // APPIOPACKETPARSER_H

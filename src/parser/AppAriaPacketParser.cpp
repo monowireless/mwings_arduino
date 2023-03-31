@@ -1,16 +1,16 @@
 /**
- * @file   AppAriaParser.cpp
- * @brief  App_ARIA (ARIA mode) parser for MWings.
+ * @file   AppAriaPacketParser.cpp
+ * @brief  App_ARIA (ARIA mode) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#include "AppAriaParser.h"
+#include "AppAriaPacketParser.h"
 
-aria::Parser AppAriaParser;
+aria::PacketParser AppAriaPacketParser;
 
-bool aria::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool aria::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppAriaPacket* const parsedAppAriaPacket = static_cast<ParsedAppAriaPacket*>(parsedPacket);

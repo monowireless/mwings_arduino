@@ -1,13 +1,13 @@
 /**
- * @file   AppPalMotParser.h
- * @brief  App_PAL (MOT) parser for MWings.
+ * @file   AppPalMotPacketParser.h
+ * @brief  App_PAL (MOT) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef APPPALMOTPARSER_H
-#define APPPALMOTPARSER_H
+#ifndef APPPALMOTPACKETPARSER_H
+#define APPPALMOTPACKETPARSER_H
 
 #include "MWings_Common.h"
 
@@ -25,11 +25,11 @@ struct ParsedAppPalMotPacket final : public mwings_common::ParsedPacketBase {
 };
 
 /**
- * @class palmot::Parser
+ * @class palmot::PacketParser
  * @brief  Packet parser for App_PAL (MOT)
  */
 namespace palmot {
-class Parser final : public mwings_common::ParserBase {
+class PacketParser final : public mwings_common::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (MOT)
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
@@ -47,6 +47,6 @@ public:
 };
 }
 
-extern palmot::Parser AppPalMotParser;
+extern palmot::PacketParser AppPalMotPacketParser;
 
-#endif  // APPPALMOTPARSER_H
+#endif  // APPPALMOTPACKETPARSER_H

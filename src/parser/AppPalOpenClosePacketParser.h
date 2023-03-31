@@ -1,13 +1,13 @@
 /**
- * @file   AppPalOpenCloseParser.h
- * @brief  App_PAL (OPENCLOSE) parser for MWings.
+ * @file   AppPalOpenClosePacketParser.h
+ * @brief  App_PAL (OPENCLOSE) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef APPPALOPENCLOSEPARSER_H
-#define APPPALOPENCLOSEPARSER_H
+#ifndef APPPALOPENCLOSEPACKETPARSER_H
+#define APPPALOPENCLOSEPACKETPARSER_H
 
 #include "MWings_Common.h"
 
@@ -22,11 +22,11 @@ struct ParsedAppPalOpenClosePacket final : public mwings_common::ParsedPacketBas
 };
 
 /**
- * @class palopenclose::Parser
+ * @class palopenclose::PacketParser
  * @brief  Packet parser for App_PAL (OPENCLOSE)
  */
 namespace palopenclose {
-class Parser final : public mwings_common::ParserBase {
+class PacketParser final : public mwings_common::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (OPENCLOSE)
     inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
@@ -44,6 +44,6 @@ public:
 };
 }
 
-extern palopenclose::Parser AppPalOpenCloseParser;
+extern palopenclose::PacketParser AppPalOpenClosePacketParser;
 
-#endif  // APPPALOPENCLOSEPARSER_H
+#endif  // APPPALOPENCLOSEPACKETPARSER_H

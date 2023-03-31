@@ -1,16 +1,16 @@
 /**
- * @file   AppPalMotParser.cpp
- * @brief  App_PAL (MOT) parser for MWings.
+ * @file   AppPalMotPacketParser.cpp
+ * @brief  App_PAL (MOT) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#include "AppPalMotParser.h"
+#include "AppPalMotPacketParser.h"
 
-palmot::Parser AppPalMotParser;
+palmot::PacketParser AppPalMotPacketParser;
 
-bool palmot::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool palmot::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppPalMotPacket* const parsedAppPalMotPacket = static_cast<ParsedAppPalMotPacket*>(parsedPacket);

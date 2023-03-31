@@ -1,16 +1,16 @@
 /**
- * @file   AppCueParser.cpp
+ * @file   AppCuePacketParser.cpp
  * @brief  App_CUE (CUE mode) parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#include "AppCueParser.h"
+#include "AppCuePacketParser.h"
 
-cue::Parser AppCueParser;
+cue::PacketParser AppCuePacketParser;
 
-bool cue::Parser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool cue::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppCuePacket* const parsedAppCuePacket = static_cast<ParsedAppCuePacket*>(parsedPacket);

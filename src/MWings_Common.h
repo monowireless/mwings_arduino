@@ -47,18 +47,45 @@ protected:
 };
 
 /**
- * @class  ParserBase
- * @brief  Packet parser template
+ * @struct CommandBase
+ * @brief  Contains essential command contents
  */
-class ParserBase {
+struct CommandBase {
+    uint8_t u8DestinationLogicalId;
+protected:
+    CommandBase() : u8DestinationLogicalId(0x78)
+        {}
+    virtual ~CommandBase() {}
+};
+
+/**
+ * @class  PacketParserBase
+ * @brief  Packet parser base class
+ */
+class PacketParserBase {
 public:
     // Check if the packet is valid or not
     virtual bool isValid(const BarePacket& barePacket) const = 0;
     // Get parsed packet from bare packet
     virtual bool parse(const BarePacket& barePacket, ParsedPacketBase* const parsedPacket) const = 0;
 protected:
-    ParserBase() {}
-    virtual ~ParserBase() {}
+    PacketParserBase() {}
+    virtual ~PacketParserBase() {}
+};
+
+/**
+ * @class  CommandSerializerBase
+ * @brief  Command serializer base class
+ */
+class CommandSerializerBase {
+public:
+    // Check if the command is valid or not
+    virtual bool isValid(CommandBase* const command) const = 0;
+    // Serialize command
+    virtual bool serialize(CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const = 0;
+protected:
+    CommandSerializerBase() {}
+    virtual ~CommandSerializerBase() {}
 };
 }
 
