@@ -131,7 +131,7 @@ void loop()
             case 60: { command.u16DurationInSec = 90; break; }
             case 90: { command.u16DurationInSec = 120; break; }
             case 120: { command.u16DurationInSec = 300; break; }
-            case 300: { command.u16DurationInSec = 10; break; }
+            case 300: { command.u16DurationInSec = 5; break; }
             default: break;
             }
             Serial.print("Set duration to ");
@@ -170,7 +170,7 @@ void printCommand()
     default: { Serial.println("Unknown"); break; }
     }
     Serial.print("Brightness: ");
-    Serial.println(command.u8Brightness, DEC);
+    Serial.print(command.u8Brightness, DEC); Serial.println("/15");
     Serial.print("Blinking:   ");
     switch (command.eBlinkSpeed) {
     case AppPalNoticeBlinkSpeed::ALWAYS_ON: { Serial.println("No blinking"); break; }

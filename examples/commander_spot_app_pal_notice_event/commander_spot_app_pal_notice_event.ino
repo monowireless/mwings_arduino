@@ -24,7 +24,6 @@ void setup()
 
     // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
-    Twelite.debugWith(Serial);
     Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
 
     // Prepare initial App_PAL command

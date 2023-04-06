@@ -19,7 +19,6 @@ void setup()
 
     // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
-    Twelite.debugWith(Serial);
     Twelite.on([](const ParsedAppPalMotPacket& packet) {
         Serial.println("");
         Serial.print("Packet Number:     #");

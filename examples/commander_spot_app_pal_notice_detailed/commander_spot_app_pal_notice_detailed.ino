@@ -84,7 +84,7 @@ void loop()
             case 60: { command.u16DurationInSec = 90; break; }
             case 90: { command.u16DurationInSec = 120; break; }
             case 120: { command.u16DurationInSec = 300; break; }
-            case 300: { command.u16DurationInSec = 10; break; }
+            case 300: { command.u16DurationInSec = 5; break; }
             default: break;
             }
             Serial.print("Set duration to ");
@@ -110,17 +110,17 @@ void loop()
 
 void printCommand()
 {
-    Serial.print("Color:      ");
-    Serial.print("RGBW: 0x");
+    Serial.print("Color:        ");
+    Serial.print("RGBW=");
     Serial.print(command.sRGBWColor.red, HEX);
     Serial.print(command.sRGBWColor.green, HEX);
     Serial.print(command.sRGBWColor.blue, HEX);
     Serial.println(command.sRGBWColor.white, HEX);
-    Serial.print("Blink duty: ");
+    Serial.print("Blink duty:   ");
     Serial.print(command.u8BlinkDutyPercentage, DEC); Serial.println(" %");
     Serial.print("Blink period: ");
     Serial.print(command.fBlinkPeriodInSec, 2); Serial.println(" sec");
-    Serial.print("Duration:   ");
+    Serial.print("Duration:     ");
     Serial.print(command.u16DurationInSec, DEC); Serial.println(" sec");
     Serial.println("");
 }
