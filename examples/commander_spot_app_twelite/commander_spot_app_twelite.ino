@@ -9,30 +9,53 @@ const int LED_PIN = 18;
 
 const uint8_t TWE_CHANNEL = 18;
 const uint32_t TWE_APP_ID = 0x67720102;
-
 const uint8_t TWE_TARGET_LID = 0x78;
 
 AppTweliteCommand command;
 
+void printCommand();
 void printHelp();
 
 void setup()
 {
+    // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Commander example for TWELITE SPOT: App_Twelite");
     Serial2.begin(115200, SERIAL_8N1);
+
+    // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
     Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
+
+    // Prepare initial App_Twelite command
     command.u8DestinationLogicalId = TWE_TARGET_LID;
-    Twelite.send(command);
+    for (int i = 0; i < 4; i++) {
+        command.bDiToChange[i] = true;
+        command.bDiState[i] = false;    // Set Hi
+        command.bPwmToChange[i] = true;
+        command.u16PwmDuty[i] = 0xFFFF; // Disable
+    }
+
+    // Send initial App_Twelite command
+    if (Twelite.send(command)) {
+        Serial.println("");
+        Serial.println("Sent command below:");
+        printCommand();
+    }
+
+    // Print help message
     printHelp();
 }
 
 void loop()
 {
-    static uint8_t lidState = 0;
+    // State for input
     static uint8_t pwmState[4] = {0, 0, 0, 0};
+
+    // Update TWELITE
     Twelite.update();
+
+    // Process input
     if (Serial.available()) {
         int c = Serial.read();
         switch (c) {
@@ -200,13 +223,45 @@ void loop()
             } break;
         }
         case ' ': {
-            Twelite.send(command);
-            Serial.println("Sent command"); break;
+            if (Twelite.send(command)) {
+                Serial.println("Sent command below:");
+                printCommand();
+            } break;
         }
-        case 'h': { printHelp(); break;}
+        case 'S': {
+            Serial.println("Current command contents are:");
+            printCommand(); break;
+        }
+        case 'h': {
+            printHelp(); break;
+        }
         default: break;
         }
     }
+}
+
+void printCommand()
+{
+    Serial.print("DI to change: ");
+    for (int i = 0; i < 4; i++) {
+        Serial.print(" DI"); Serial.print(i+1, DEC); Serial.print(command.bDiToChange[i] ? ":S" : ":-");
+    }
+    Serial.println("");
+    Serial.print("DI state:     ");
+    for (int i = 0; i < 4; i++) {
+        Serial.print(" DI"); Serial.print(i+1, DEC); Serial.print(command.bDiState[i] ? ":L" : ":H");
+    }
+    Serial.println("");
+    Serial.print("PWM duty:     ");
+    for (int i = 0; i < 4; i++) {
+        Serial.print(" PWM"); Serial.print(i+1, DEC); Serial.print(":");
+        if (command.u16PwmDuty[i] == 0xFFFF) {
+            Serial.print("N/A");
+        } else {
+            Serial.print(command.u16PwmDuty[i], DEC); Serial.print("/1024");
+        }
+    }
+    Serial.println("");
 }
 
 void printHelp()
@@ -216,7 +271,9 @@ void printHelp()
     Serial.println("DI1:  '1' DI2:  '2' DI3:  '3' DI4:  '4'");
     Serial.println("SEL1: 'q' SEL2: 'w' SEL3: 'r' SEL4: 't'");
     Serial.println("PWM1: 'a' PWM2: 's' PWM3: 'd' PWM4: 'f'");
+    Serial.println("-----------------");
     Serial.println("Send: SPACE");
+    Serial.println("Show: 'S'");
     Serial.println("Help: 'h'");
     Serial.println("");
 }

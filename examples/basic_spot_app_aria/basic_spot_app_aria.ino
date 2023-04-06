@@ -10,13 +10,16 @@ const int LED_PIN = 18;
 const uint8_t TWE_CHANNEL = 18;
 const uint32_t TWE_APP_ID = 0x67720102;
 
-void printlnMagnetState(const uint8_t state, const bool changed);
+void printMagnetState(const uint8_t state, const bool changed);
 
 void setup()
 {
+    // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Basic example for TWELITE SPOT: App_ARIA (ARIA Mode)");
     Serial2.begin(115200, SERIAL_8N1);
+
+    // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
     Twelite.on([](const ParsedAppAriaPacket& packet) {
         Serial.println("");
@@ -33,17 +36,18 @@ void setup()
         Serial.print("Relative Humidity: ");
         Serial.print(packet.u16Humid100x / 100.0f, 2); Serial.println(" %");
         Serial.print("Magnet State:      ");
-        printlnMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
+        printMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
     });
     Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
 }
 
 void loop()
 {
+    // Update TWELITE
     Twelite.update();
 }
 
-void printlnMagnetState(const uint8_t state, const bool changed)
+void printMagnetState(const uint8_t state, const bool changed)
 {
     if (changed) {
         switch (state) {

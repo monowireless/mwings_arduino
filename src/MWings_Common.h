@@ -56,6 +56,8 @@ protected:
     CommandBase() : u8DestinationLogicalId(0x78)
         {}
     virtual ~CommandBase() {}
+    // Check if the command is valid or not
+    virtual bool isValid() const = 0;
 };
 
 /**
@@ -79,8 +81,6 @@ protected:
  */
 class CommandSerializerBase {
 public:
-    // Check if the command is valid or not
-    virtual bool isValid(CommandBase* const command) const = 0;
     // Serialize command
     virtual bool serialize(CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const = 0;
 protected:
