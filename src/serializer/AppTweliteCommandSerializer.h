@@ -25,6 +25,14 @@ struct AppTweliteCommand final : public mwings_common::CommandBase {
                           bPwmToChange{true, true, true, true},
                           u16PwmDuty{0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF}
         {}
+    // Check if the command is valid for App_Twelite
+    inline bool isValid() const override {
+        return ((0x00 <= u8DestinationLogicalId and u8DestinationLogicalId <= 0x78)
+                and (u16PwmDuty[0] <= 1024 or u16PwmDuty[0] == 0xFFFF)
+                and (u16PwmDuty[1] <= 1024 or u16PwmDuty[1] == 0xFFFF)
+                and (u16PwmDuty[2] <= 1024 or u16PwmDuty[2] == 0xFFFF)
+                and (u16PwmDuty[3] <= 1024 or u16PwmDuty[3] == 0xFFFF));
+    }
 };
 
 /**
@@ -41,20 +49,6 @@ constexpr int GetSerializedAppTweliteCommandPayloadSize() { return 13; }
 namespace apptwelite {
 class CommandSerializer final : public mwings_common::CommandSerializerBase {
 public:
-    // Check if the command is valid for App_Twelite
-    inline bool isValid(mwings_common::CommandBase* const command) const override {
-        // WARNING: Note that there is NO RTTI
-        AppTweliteCommand* const appTweliteCommand = static_cast<AppTweliteCommand*>(command);
-        if ((0x00 <= appTweliteCommand->u8DestinationLogicalId and appTweliteCommand->u8DestinationLogicalId <= 0x78)
-            and (appTweliteCommand->u16PwmDuty[0] <= 1024 or appTweliteCommand->u16PwmDuty[0] == 0xFFFF)
-            and (appTweliteCommand->u16PwmDuty[1] <= 1024 or appTweliteCommand->u16PwmDuty[1] == 0xFFFF)
-            and (appTweliteCommand->u16PwmDuty[2] <= 1024 or appTweliteCommand->u16PwmDuty[2] == 0xFFFF)
-            and (appTweliteCommand->u16PwmDuty[3] <= 1024 or appTweliteCommand->u16PwmDuty[3] == 0xFFFF)) {
-            return true;
-        }
-        return false;
-    }
-
     // Serialize command
     bool serialize(mwings_common::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
 };

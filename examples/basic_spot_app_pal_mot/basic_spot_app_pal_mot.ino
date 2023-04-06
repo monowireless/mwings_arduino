@@ -12,11 +12,14 @@ const uint32_t TWE_APP_ID = 0x67726305;
 
 void setup()
 {
+    // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Basic example for TWELITE SPOT: App_PAL (MOTION) or App_CUE (MOTION PAL Mode)");
     Serial2.begin(115200, SERIAL_8N1);
+
+    // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
-    Twelite.debugUsing(Serial);
+    Twelite.debugWith(Serial);
     Twelite.on([](const ParsedAppPalMotPacket& packet) {
         Serial.println("");
         Serial.print("Packet Number:     #");
@@ -51,6 +54,7 @@ void setup()
 
 void loop()
 {
+    // Update TWELITE
     Twelite.update();
 }
 

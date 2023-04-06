@@ -12,9 +12,12 @@ const uint32_t TWE_APP_ID = 0x67720102;
 
 void setup()
 {
+    // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Basic example for TWELITE SPOT: App_Twelite");
     Serial2.begin(115200, SERIAL_8N1);
+
+    // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
     Twelite.on([](const ParsedAppTwelitePacket& packet) {
         Serial.println("");
@@ -42,6 +45,7 @@ void setup()
 
 void loop()
 {
+    // Update TWELITE
     Twelite.update();
 }
 

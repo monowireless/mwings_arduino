@@ -15,9 +15,12 @@ const float Tau = 1.0f / (2.0f * 3.14f * CUTOFF_FREQ);  // LPF time constant
 
 void setup()
 {
+    // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Plotter example for TWELITE SPOT: App_PAL (MOTION) or App_CUE (MOTION PAL Mode)");
     Serial2.begin(115200, SERIAL_8N1);
+
+    // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
     Twelite.on([](const ParsedAppPalMotPacket& packet) {
         // Plot only the first device
@@ -64,6 +67,7 @@ void setup()
 
 void loop()
 {
+    // Update TWELITE
     Twelite.update();
 }
 

@@ -10,14 +10,17 @@ const int LED_PIN = 18;
 const uint8_t TWE_CHANNEL = 18;
 const uint32_t TWE_APP_ID = 0x67720102;
 
-void printlnAccelEvent(const uint8_t event);
-void printlnMagnetState(const uint8_t state, const bool changed);
+void printAccelEvent(const uint8_t event);
+void printMagnetState(const uint8_t state, const bool changed);
 
 void setup()
 {
+    // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Basic example for TWELITE SPOT: App_CUE (CUE Mode)");
     Serial2.begin(115200);
+
+    // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
     Twelite.on([](const ParsedAppCuePacket& packet) {
         Serial.println("");
@@ -30,7 +33,7 @@ void setup()
         Serial.print("Supply Voltage:    ");
         Serial.print(packet.u16SupplyVoltage, DEC); Serial.println(" mV");
         Serial.print("Accel Event:       ");
-        printlnAccelEvent(packet.u8AccelEvent);
+        printAccelEvent(packet.u8AccelEvent);
         Serial.print("Accel X Axis [0]:  ");
         Serial.print(packet.i16SamplesX[0], DEC); Serial.println(" mG");
         Serial.print("Accel Y Axis [0]:  ");
@@ -38,17 +41,18 @@ void setup()
         Serial.print("Accel Z Axis [0]:  ");
         Serial.print(packet.i16SamplesZ[0], DEC); Serial.println(" mG");
         Serial.print("Magnet State:      ");
-        printlnMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
+        printMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
     });
     Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
 }
 
 void loop()
 {
+    // Update TWELITE
     Twelite.update();
 }
 
-void printlnAccelEvent(const uint8_t event)
+void printAccelEvent(const uint8_t event)
 {
     switch (event) {
     case 0x01: { Serial.print("Dice (1)"); break; }
@@ -64,7 +68,7 @@ void printlnAccelEvent(const uint8_t event)
     Serial.println("");
 }
 
-void printlnMagnetState(const uint8_t state, const bool changed)
+void printMagnetState(const uint8_t state, const bool changed)
 {
     if (changed) {
         switch (state) {

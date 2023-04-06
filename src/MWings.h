@@ -29,7 +29,12 @@
 
 //// AppTweliteCommandSerializer for App_Twelite
 #include "serializer/AppTweliteCommandSerializer.h"
-
+//// AppPalNoticeCommandSerializer for App_PAL (NOTICE)
+#include "serializer/AppPalNoticeCommandSerializer.h"
+//// AppPalNoticeDetailedCommandSerializer for App_PAL (NOTICE), detailed
+#include "serializer/AppPalNoticeDetailedCommandSerializer.h"
+//// AppPalNoticeEventCommandSerializer for App_PAL (NOTICE), event
+#include "serializer/AppPalNoticeEventCommandSerializer.h"
 
 class MWings {
 public:
@@ -56,7 +61,7 @@ public:
         {}
     ~MWings();
 
-    inline void debugUsing(HardwareSerial& debugSerial) { _debugSerial = &debugSerial; }
+    inline void debugWith(HardwareSerial& debugSerial) { _debugSerial = &debugSerial; }
 
     bool setup(HardwareSerial& serial,
                const int indicatorPin = -1, const int resetPin = -1, const int programPin = -1,
@@ -349,10 +354,72 @@ public:
     inline bool send(AppTweliteCommand& command) {
         if (not _serial) { return false; }
         if (not _serial->availableForWrite()) { return false; }
+        turnOnIndicatorFor(10);
         constexpr int fixedPayloadSize = GetSerializedAppTweliteCommandPayloadSize();
         uint8_t payload[fixedPayloadSize];
         uint8_t checksum;
         if (not AppTweliteCommandSerializer.serialize(&command, payload, fixedPayloadSize, &checksum)) { return false; }
+        _serial->write(':');
+        writeInAscii(payload, fixedPayloadSize);
+        writeInAscii(checksum);
+        _serial->write('\r'); _serial->write('\n');
+        if (_debugSerial) {
+            _debugSerial->write(':');
+            debugWriteInAscii(payload, fixedPayloadSize);
+            debugWriteInAscii(checksum);
+            _debugSerial->write('\r'); _debugSerial->write('\n');
+        }
+        return true;
+    }
+    //// AppPalNoticeCommandSerializer for App_PalNotice
+    inline bool send(AppPalNoticeCommand& command) {
+        if (not _serial) { return false; }
+        if (not _serial->availableForWrite()) { return false; }
+        turnOnIndicatorFor(10);
+        constexpr int fixedPayloadSize = GetSerializedAppPalNoticeCommandPayloadSize();
+        uint8_t payload[fixedPayloadSize];
+        uint8_t checksum;
+        if (not AppPalNoticeCommandSerializer.serialize(&command, payload, fixedPayloadSize, &checksum)) { return false; }
+        _serial->write(':');
+        writeInAscii(payload, fixedPayloadSize);
+        writeInAscii(checksum);
+        _serial->write('\r'); _serial->write('\n');
+        if (_debugSerial) {
+            _debugSerial->write(':');
+            debugWriteInAscii(payload, fixedPayloadSize);
+            debugWriteInAscii(checksum);
+            _debugSerial->write('\r'); _debugSerial->write('\n');
+        }
+        return true;
+    }
+    //// AppPalNoticeDetailedCommandSerializer for App_PalNotice
+    inline bool send(AppPalNoticeDetailedCommand& command) {
+        if (not _serial) { return false; }
+        if (not _serial->availableForWrite()) { return false; }
+        constexpr int fixedPayloadSize = GetSerializedAppPalNoticeDetailedCommandPayloadSize();
+        uint8_t payload[fixedPayloadSize];
+        uint8_t checksum;
+        if (not AppPalNoticeDetailedCommandSerializer.serialize(&command, payload, fixedPayloadSize, &checksum)) { return false; }
+        _serial->write(':');
+        writeInAscii(payload, fixedPayloadSize);
+        writeInAscii(checksum);
+        _serial->write('\r'); _serial->write('\n');
+        if (_debugSerial) {
+            _debugSerial->write(':');
+            debugWriteInAscii(payload, fixedPayloadSize);
+            debugWriteInAscii(checksum);
+            _debugSerial->write('\r'); _debugSerial->write('\n');
+        }
+        return true;
+    }
+    //// AppPalNoticeEventCommandSerializer for App_PalNotice
+    inline bool send(AppPalNoticeEventCommand& command) {
+        if (not _serial) { return false; }
+        if (not _serial->availableForWrite()) { return false; }
+        constexpr int fixedPayloadSize = GetSerializedAppPalNoticeEventCommandPayloadSize();
+        uint8_t payload[fixedPayloadSize];
+        uint8_t checksum;
+        if (not AppPalNoticeEventCommandSerializer.serialize(&command, payload, fixedPayloadSize, &checksum)) { return false; }
         _serial->write(':');
         writeInAscii(payload, fixedPayloadSize);
         writeInAscii(checksum);

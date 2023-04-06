@@ -19,6 +19,8 @@ bool apptwelite::CommandSerializer::serialize(mwings_common::CommandBase* const 
     // WARNING: Note that there is NO RTTI
     AppTweliteCommand* const appTweliteCommand = static_cast<AppTweliteCommand*>(command);
 
+    if (not appTweliteCommand->isValid()) { return false; }
+
     payload[0] = (appTweliteCommand->u8DestinationLogicalId <= 0x78) ? appTweliteCommand->u8DestinationLogicalId : 0x78;
     payload[1] = 0x80;
     payload[2] = 0x01;

@@ -10,13 +10,16 @@ const int LED_PIN = 18;
 const uint8_t TWE_CHANNEL = 16;
 const uint32_t TWE_APP_ID = 0x67720107;
 
-const int TO_DIO[] = {12, 13, 11, 16, 18, 19, 4, 9, 14, 15, 5, 8};
+const int TO_DIO[] = {12, 13, 11, 16, 18, 19, 4, 9, 14, 15, 5, 8}; // DIO table
 
 void setup()
 {
+    // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Basic example for TWELITE SPOT: App_IO");
     Serial2.begin(115200, SERIAL_8N1);
+
+    // Initialize TWELITE
     Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
     Twelite.on([](const ParsedAppIoPacket& packet) {
         Serial.println("");
@@ -39,6 +42,7 @@ void setup()
 
 void loop()
 {
+    // Update TWELITE
     Twelite.update();
 }
 
