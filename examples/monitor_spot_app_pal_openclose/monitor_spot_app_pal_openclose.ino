@@ -20,7 +20,11 @@ void setup()
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE
-    Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
+    Twelite.begin(Serial2,
+                  TWE_CHANNEL, TWE_APP_ID,
+                  LED_PIN, RST_PIN, PRG_PIN);
+
+    // Attach an event handler to process packets from App_PAL (OPENCLOSE)
     Twelite.on([](const ParsedAppPalOpenClosePacket& packet) {
         Serial.println("");
         Serial.print("Packet Number:     #");
@@ -34,7 +38,6 @@ void setup()
         Serial.print("Magnet State:      ");
         printMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
     });
-    Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
 }
 
 void loop()

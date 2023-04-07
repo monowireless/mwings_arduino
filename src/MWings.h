@@ -70,15 +70,35 @@ public:
         {}
     ~MWings();
 
-    inline void debugWith(HardwareSerial& debugSerial) { _debugSerial = &debugSerial; }
-
-    bool setup(HardwareSerial& serial,
+    bool begin(HardwareSerial& serial,
+               const uint8_t channel = 18, const uint32_t appId = 0x67720102,
                const int indicatorPin = -1, const int resetPin = -1, const int programPin = -1,
-               const int bufferSize = 1024, const int timeout = 100);
+               const int bufferSize = 1024, const int timeout = 100,
+               HardwareSerial* debugSerial = nullptr);
 
-    bool begin(const uint8_t channel = 18, const uint32_t appId = 0x67720102);
-
-    inline void end() const {}
+    inline void end() {
+        _serial = nullptr;
+        _indicatorPin = -1, _resetPin = -1; _programPin = -1;
+        _isIndicatorOn = false; _indicatorTimestamp = UINT32_MAX; _indicatorDuration = 0;
+        if (_buffer) { delete[] _buffer; }
+        _bufferSize = 0; _characterCount = 0; _checksum = 0;
+        _timeout = 0; _latestTimestamp = UINT32_MAX;
+        _debugSerial = nullptr;
+        //// AppTwelitePacketParser for App_Twelite
+        _onAppTwelitePacket = nullptr;
+        //// AppIoPacketParser for App_IO
+        _onAppIoPacket = nullptr;
+        //// AppAriaPacketParser for App_ARIA (ARIA mode)
+        _onAppAriaPacket = nullptr;
+        //// AppCuePacketParser for App_CUE (CUE mode)
+        _onAppCuePacket = nullptr;
+        //// AppPalOpenClosePacketParser for App_PAL (OPENCLOSE)
+        _onAppPalOpenClosePacket = nullptr;
+        //// AppPalAmbPacketParser for App_PAL (AMB)
+        _onAppPalAmbPacket = nullptr;
+        //// AppPalMotPacketParser for App_PAL (MOT)
+        _onAppPalMotPacket = nullptr;
+    }
 
     void update();
 

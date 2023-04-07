@@ -18,7 +18,11 @@ void setup()
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE
-    Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
+    Twelite.begin(Serial2,
+                  TWE_CHANNEL, TWE_APP_ID,
+                  LED_PIN, RST_PIN, PRG_PIN);
+
+    // Attach an event handler to process packets from App_Twelite
     Twelite.on([](const ParsedAppTwelitePacket& packet) {
         Serial.println("");
         Serial.print("Packet Timestamp:  ");
@@ -40,7 +44,6 @@ void setup()
         Serial.print(" AI3:"); Serial.print(packet.u16AiVoltage[2]); Serial.print(" mV");
         Serial.print(" AI4:"); Serial.print(packet.u16AiVoltage[3]); Serial.println(" mV");
     });
-    Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
 }
 
 void loop()

@@ -17,9 +17,11 @@ MWings::~MWings()
     }
 }
 
-bool MWings::setup(HardwareSerial& serial,
+bool MWings::begin(HardwareSerial& serial,
+                   const uint8_t channel, const uint32_t appId,
                    const int indicatorPin, const int resetPin, const int programPin,
-                   const int bufferSize, const int timeout)
+                   const int bufferSize, const int timeout,
+                   HardwareSerial* debugSerial)
 {
     _serial = &serial;
     _indicatorPin = indicatorPin;
@@ -34,8 +36,7 @@ bool MWings::setup(HardwareSerial& serial,
     _checksum = 0;
     _timeout = timeout;
     _latestTimestamp = UINT32_MAX;
-
-    _debugSerial = nullptr;
+    _debugSerial = debugSerial;
 
     //// AppTwelitePacketParser for App_Twelite
     _onAppTwelitePacket = nullptr;
@@ -57,34 +58,27 @@ bool MWings::setup(HardwareSerial& serial,
         digitalWrite(_indicatorPin, HIGH);
     }
 
-    bool resetOrNot = false;
-
+    bool reset = false;
     turnOnIndicator();
     if (_resetPin >= 0 and _programPin >= 0) {
         const int resetAttempts = 3;
         for(int i = 0; i < resetAttempts; i++) {
             pinMode(_resetPin, OUTPUT);
             pinMode(_programPin, OUTPUT);
-
             digitalWrite(_resetPin, LOW);
             delay(1);
             digitalWrite(_programPin, HIGH);
             delay(1);
             digitalWrite(_resetPin, HIGH);
-
             if (ensureReset(100)) {
-                resetOrNot = true;
+                reset = true;
                 break;
             }
         }
     }
     turnOffIndicator();
+    if (not reset) { return false; };
 
-    return resetOrNot;
-}
-
-bool MWings::begin(const uint8_t channel, const uint32_t appId)
-{
     bool commandsAvailable = false;
 
     for (int i = 0; i < 3; i++) {
@@ -158,12 +152,9 @@ bool MWings::begin(const uint8_t channel, const uint32_t appId)
             }
         }
         debugPrint("Successfully started receiving packets.");
-
         flushSerialRxBuffer();
-
         return true;
     }
-
     debugPrint("Serial commands are not available or an unknown error occurred.");
     return false;
 }
@@ -180,7 +171,6 @@ void MWings::update()
     while (serial.available()) {
         // Read a character
         const int character = serial.read();
-
         debugWrite(character);
 
         // Abort if the read byte is invalid

@@ -24,8 +24,9 @@ void setup()
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE
-    Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
-    Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
+    Twelite.begin(Serial2,
+                  TWE_CHANNEL, TWE_APP_ID,
+                  LED_PIN, RST_PIN, PRG_PIN);
 
     // Prepare initial App_Twelite command
     command.u8DestinationLogicalId = TWE_TARGET_LID;

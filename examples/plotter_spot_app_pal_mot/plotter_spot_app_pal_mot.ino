@@ -21,7 +21,11 @@ void setup()
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE
-    Twelite.setup(Serial2, LED_PIN, RST_PIN, PRG_PIN);
+    Twelite.begin(Serial2,
+                  TWE_CHANNEL, TWE_APP_ID,
+                  LED_PIN, RST_PIN, PRG_PIN);
+
+    // Attach an event handler to process packets from App_PAL (MOT)
     Twelite.on([](const ParsedAppPalMotPacket& packet) {
         // Plot only the first device
         static uint32_t firstSourceSerialId = packet.u32SourceSerialId;
@@ -30,7 +34,6 @@ void setup()
         static int16_t prevPacketFilteredLatestSampleX = 0;
         static int16_t prevPacketFilteredLatestSampleY = 0;
         static int16_t prevPacketFilteredLatestSampleZ = 0;
-        // const float a = Tau / ((1.0f / packet.u16SamplingFrequency) + Tau); // LPF coefficient
         const float a = packet.u16SamplingFrequency * Tau / (1.0f + packet.u16SamplingFrequency * Tau); // LPF coefficient
         int16_t filteredSamplesX[16];
         int16_t filteredSamplesY[16];
@@ -62,7 +65,6 @@ void setup()
             Serial.print(packet.i16SamplesZ[i], DEC); Serial.println("");
         }
     });
-    Twelite.begin(TWE_CHANNEL, TWE_APP_ID);
 }
 
 void loop()

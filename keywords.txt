@@ -25,10 +25,11 @@ AppPalNoticeRGBWColor		KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+begin				KEYWORD2
+end				KEYWORD2
 update				KEYWORD2
 on				KEYWORD2
 send				KEYWORD2
-debugWith			KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
