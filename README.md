@@ -35,6 +35,9 @@ Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on 
 - App_PAL (OPENCLOSE) / App_CUE (OPENCLOSE PAL mode) / App_ARIA (OPENCLOSE PAL mode)
   - Get magnet states.
   - Pre-installed on TWELITE PAL series (App_PAL), TWELITE ARIA series (App_ARIA) and TWELITE CUE series (App_CUE).
+- App_Uart (Mode A, Simplified or Extended format)
+  - Get serial data received on TWELITE child devices.
+  - Pre-installed on TWELITE UART series.
 - App_IO
   - Get digital input states.
 

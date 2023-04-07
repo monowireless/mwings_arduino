@@ -50,7 +50,7 @@ void setup()
         Serial.println(packet.u32SourceSerialId, HEX);
         Serial.print("Destination Serial ID: 0x");
         if (packet.u32DestinationSerialId == 0xFFFFFFFF) {
-            Serial.println("N/A");
+            Serial.println(" N/A");
         } else {
             Serial.println(packet.u32DestinationSerialId, HEX);
         }
