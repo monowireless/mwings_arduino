@@ -1,4 +1,4 @@
-// Basic example for TWELITE SPOT: Receive data from App_Twelite
+// Monitor example for TWELITE SPOT: Receive data from App_Twelite
 
 #include <Arduino.h>
 #include "MWings.h"
@@ -14,7 +14,7 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Basic example for TWELITE SPOT: App_Twelite");
+    Serial.println("Monitor example for TWELITE SPOT: App_Twelite");
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE

@@ -6,6 +6,15 @@
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
+#if defined(ARDUINO_ARCH_ESP32)
+#elif defined(ARDUINO_ARCH_ESP8266)
+#elif defined(ARDUINO_ARCH_STM32)
+#elif defined(ARDUINO_ARCH_SAM)
+#elif defined(ARDUINO_ARCH_RP2040)
+#else
+#error “This library is built for 32-bit MCUs like ESP32, ESP8266, STM32, SAM and RP2040.”
+#endif
+
 #ifndef MWINGS_H
 #define MWINGS_H
 

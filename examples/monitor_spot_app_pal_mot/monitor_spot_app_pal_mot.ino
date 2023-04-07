@@ -1,4 +1,4 @@
-// Basic example for TWELITE SPOT: Receive data from App_PAL (MOTION) or App_CUE (MOTION PAL Mode)
+// Monitor example for TWELITE SPOT: Receive data from App_PAL (MOTION) or App_CUE (MOTION PAL Mode)
 
 #include <Arduino.h>
 #include "MWings.h"
@@ -14,7 +14,7 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Basic example for TWELITE SPOT: App_PAL (MOTION) or App_CUE (MOTION PAL Mode)");
+    Serial.println("Monitor example for TWELITE SPOT: App_PAL (MOTION) or App_CUE (MOTION PAL Mode)");
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE

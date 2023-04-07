@@ -1,4 +1,4 @@
-// Basic example for TWELITE SPOT: Receive data from App_CUE (CUE Mode)
+// Monitor example for TWELITE SPOT: Receive data from App_CUE (CUE Mode)
 
 #include <Arduino.h>
 #include "MWings.h"
@@ -17,7 +17,7 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Basic example for TWELITE SPOT: App_CUE (CUE Mode)");
+    Serial.println("Monitor example for TWELITE SPOT: App_CUE (CUE Mode)");
     Serial2.begin(115200);
 
     // Initialize TWELITE
