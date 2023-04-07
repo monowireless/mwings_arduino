@@ -13,6 +13,7 @@ const uint8_t TWE_TARGET_LID = 0x01;
 
 AppPalNoticeEventCommand command;
 
+void printCommand();
 void printHelp();
 
 void setup()

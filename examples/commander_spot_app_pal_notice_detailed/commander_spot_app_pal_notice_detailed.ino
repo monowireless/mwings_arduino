@@ -16,6 +16,7 @@ const AppPalNoticeRGBWColor TOKI_IRO(0x2, 0x1, 0x1, 0x1);
 
 AppPalNoticeDetailedCommand command;
 
+void printCommand();
 void printHelp();
 
 void setup()
@@ -111,11 +112,10 @@ void loop()
 void printCommand()
 {
     Serial.print("Color:        ");
-    Serial.print("RGBW=");
-    Serial.print(command.sRGBWColor.red, HEX);
-    Serial.print(command.sRGBWColor.green, HEX);
-    Serial.print(command.sRGBWColor.blue, HEX);
-    Serial.println(command.sRGBWColor.white, HEX);
+    Serial.print("R="); Serial.print(command.sRGBWColor.red, DEC); Serial.print("/15");
+    Serial.print("G="); Serial.print(command.sRGBWColor.green, DEC); Serial.print("/15");
+    Serial.print("B="); Serial.print(command.sRGBWColor.blue, DEC); Serial.print("/15");
+    Serial.print("W="); Serial.println(command.sRGBWColor.white, DEC); Serial.print("/15");
     Serial.print("Blink duty:   ");
     Serial.print(command.u8BlinkDutyPercentage, DEC); Serial.println(" %");
     Serial.print("Blink period: ");
