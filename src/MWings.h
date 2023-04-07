@@ -35,6 +35,10 @@
 #include "parser/AppPalAmbPacketParser.h"
 //// AppPalMotPacketParser for App_PAL (MOT)
 #include "parser/AppPalMotPacketParser.h"
+//// AppUartAsciiPacketParser for App_Uart (A mode)
+#include "parser/AppUartAsciiPacketParser.h"
+//// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+#include "parser/AppUartAsciiExtendedPacketParser.h"
 
 //// AppTweliteCommandSerializer for App_Twelite
 #include "serializer/AppTweliteCommandSerializer.h"
@@ -66,7 +70,11 @@ public:
                //// AppPalAmbPacketParser for App_PAL (AMB)
                _onAppPalAmbPacket(nullptr),
                //// AppPalMotPacketParser for App_PAL (MOT)
-               _onAppPalMotPacket(nullptr)
+               _onAppPalMotPacket(nullptr),
+               //// AppUartAsciiPacketParser for App_Uart (A mode)
+               _onAppUartAsciiPacket(nullptr),
+               //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+               _onAppUartAsciiExtendedPacket(nullptr)
         {}
     ~MWings();
 
@@ -98,6 +106,10 @@ public:
         _onAppPalAmbPacket = nullptr;
         //// AppPalMotPacketParser for App_PAL (MOT)
         _onAppPalMotPacket = nullptr;
+        //// AppUartAsciiPacketParser for App_Uart (A mode)
+        _onAppUartAsciiPacket = nullptr;
+        //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+        _onAppUartAsciiExtendedPacket = nullptr;
     }
 
     void update();
@@ -378,6 +390,10 @@ public:
     inline void on(void (*callback)(const ParsedAppPalAmbPacket& packet)) { _onAppPalAmbPacket = callback; }
     //// AppPalMotPacketParser for App_PAL (MOT)
     inline void on(void (*callback)(const ParsedAppPalMotPacket& packet)) { _onAppPalMotPacket = callback; }
+    //// AppUartAsciiPacketParser for App_Uart (A mode)
+    inline void on(void (*callback)(const ParsedAppUartAsciiPacket& packet)) { _onAppUartAsciiPacket = callback; }
+    //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+    inline void on(void (*callback)(const ParsedAppUartAsciiExtendedPacket& packet)) { _onAppUartAsciiExtendedPacket = callback; }
 
     //// AppTweliteCommandSerializer for App_Twelite
     inline bool send(AppTweliteCommand& command) {
@@ -477,6 +493,10 @@ private:
     void (*_onAppPalAmbPacket)(const ParsedAppPalAmbPacket& packet);
     //// AppPalMotPacketParser for App_PAL (MOT)
     void (*_onAppPalMotPacket)(const ParsedAppPalMotPacket& packet);
+    //// AppUartAsciiPacketParser for App_Uart (A mode)
+    void (*_onAppUartAsciiPacket)(const ParsedAppUartAsciiPacket& packet);
+    //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+    void (*_onAppUartAsciiExtendedPacket)(const ParsedAppUartAsciiExtendedPacket& packet);
 };
 
 extern MWings Twelite;

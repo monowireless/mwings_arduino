@@ -6,50 +6,52 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-ParsedAppTwelitePacket		KEYWORD1
-ParsedAppIoPacket		KEYWORD1
-ParsedAppAriaPacket		KEYWORD1
-ParsedAppCuePacket		KEYWORD1
-ParsedAppPalOpenClosePacket	KEYWORD1
-ParsedAppPalAmbPacket		KEYWORD1
-ParsedAppPalMotPacket		KEYWORD1
-AppTweliteCommand		KEYWORD1
-AppPalNoticeCommand		KEYWORD1
-AppPalNoticeDetailedCommand	KEYWORD1
-AppPalNoticeEventCommand	KEYWORD1
-AppPalNoticeColor		KEYWORD1
-AppPalNoticeBlinkSpeed		KEYWORD1
-AppPalNoticeRGBWColor		KEYWORD1
+ParsedAppTwelitePacket			KEYWORD1
+ParsedAppIoPacket			KEYWORD1
+ParsedAppAriaPacket			KEYWORD1
+ParsedAppCuePacket			KEYWORD1
+ParsedAppPalOpenClosePacket		KEYWORD1
+ParsedAppPalAmbPacket			KEYWORD1
+ParsedAppPalMotPacket			KEYWORD1
+ParsedAppUartAsciiPacket		KEYWORD1
+ParsedAppUartAsciiExtendedPacket	KEYWORD1
+AppTweliteCommand			KEYWORD1
+AppPalNoticeCommand			KEYWORD1
+AppPalNoticeDetailedCommand		KEYWORD1
+AppPalNoticeEventCommand		KEYWORD1
+AppPalNoticeColor			KEYWORD1
+AppPalNoticeBlinkSpeed			KEYWORD1
+AppPalNoticeRGBWColor			KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-begin				KEYWORD2
-end				KEYWORD2
-update				KEYWORD2
-on				KEYWORD2
-send				KEYWORD2
+begin					KEYWORD2
+end					KEYWORD2
+update					KEYWORD2
+on					KEYWORD2
+send					KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
 #######################################
 
-Twelite				KEYWORD2
+Twelite					KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 
-RED				LITERAL1
-GREEN				LITERAL1
-BLUE				LITERAL1
-YELLOW				LITERAL1
-PURPLE				LITERAL1
-LIGHT_BLUE			LITERAL1
-WHITE				LITERAL1
-WARM_WHITE			LITERAL1
-ALWAYS_ON			LITERAL1
-SLOW				LITERAL1
-MEDIUM				LITERAL1
-FAST				LITERAL1
+RED					LITERAL1
+GREEN					LITERAL1
+BLUE					LITERAL1
+YELLOW					LITERAL1
+PURPLE					LITERAL1
+LIGHT_BLUE				LITERAL1
+WHITE					LITERAL1
+WARM_WHITE				LITERAL1
+ALWAYS_ON				LITERAL1
+SLOW					LITERAL1
+MEDIUM					LITERAL1
+FAST					LITERAL1

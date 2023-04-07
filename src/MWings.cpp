@@ -52,6 +52,10 @@ bool MWings::begin(HardwareSerial& serial,
     _onAppPalAmbPacket = nullptr;
     //// AppPalMotPacketParser for App_PAL (MOT)
     _onAppPalMotPacket = nullptr;
+    //// AppUartAsciiPacketParser for App_Uart (A mode)
+    _onAppUartAsciiPacket = nullptr;
+    //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+    _onAppUartAsciiExtendedPacket = nullptr;
 
     if (not (_indicatorPin < 0)) {
         pinMode(_indicatorPin, OUTPUT);
@@ -245,6 +249,24 @@ void MWings::update()
                 }
             }
             //// End: AppPalMotPacketParser for App_PAL (MOT)
+
+            //// Start: AppUartAsciiPacketParser for App_Uart (A mode)
+            if (AppUartAsciiPacketParser.isValid(barePacket) and _onAppUartAsciiPacket) {
+                ParsedAppUartAsciiPacket parsedAppUartAsciiPacket;
+                if (AppUartAsciiPacketParser.parse(barePacket, &parsedAppUartAsciiPacket)) {
+                    _onAppUartAsciiPacket(parsedAppUartAsciiPacket);
+                }
+            }
+            //// End: AppUartAsciiPacketParser for App_Uart (A mode)
+
+            //// Start: AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+            if (AppUartAsciiExtendedPacketParser.isValid(barePacket) and _onAppUartAsciiExtendedPacket) {
+                ParsedAppUartAsciiExtendedPacket parsedAppUartAsciiExtendedPacket;
+                if (AppUartAsciiExtendedPacketParser.parse(barePacket, &parsedAppUartAsciiExtendedPacket)) {
+                    _onAppUartAsciiExtendedPacket(parsedAppUartAsciiExtendedPacket);
+                }
+            }
+            //// End: AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
         }
     }
 
@@ -260,6 +282,7 @@ MWings::State MWings::processAscii(const uint8_t character, mwings_common::BareP
     if (_timeout > 0 and state not_eq MWings::State::WAITING_FOR_HEADER) {
         if (millis() - _latestTimestamp > _timeout) {
             state = MWings::State::TIMEOUT_ERROR;
+            debugPrint("TIMEOUT ERROR");
         }
     }
 
