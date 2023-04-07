@@ -21,14 +21,29 @@ struct BarePacket {
     uint8_t* payload;
     uint16_t size;
 
-    inline uint8_t u8At(const int index) const { return payload[index]; }
-    inline int8_t i8At(const int index) const { return static_cast<int8_t>(u8At(index)); }
-    inline uint16_t u16At(const int index) const { return (payload[index] << 8) | payload[index+1]; }
-    inline int16_t i16At(const int index) const { return static_cast<int16_t>(u16At(index)); }
-    inline uint32_t u32At(const int index) const {
-        return (payload[index+0] << 24) | (payload[index+1] << 16) | (payload[index+2] << 8) | (payload[index+3] << 0);
+    inline uint8_t* u8From(const int index) const {
+        return ((index < size) ? payload + index : nullptr);
     }
-    inline int32_t i32At(const int index) const { return static_cast<int16_t>(u16At(index)); }
+    inline uint8_t u8At(const int index) const {
+        return ((index < size) ? payload[index] : 0x00);
+    }
+    inline int8_t i8At(const int index) const {
+        return static_cast<int8_t>(u8At(index));
+    }
+    inline uint16_t u16At(const int index) const {
+        return ((index < size) ? ((payload[index] << 8) | payload[index+1]) : 0x0000);
+    }
+    inline int16_t i16At(const int index) const {
+        return static_cast<int16_t>(u16At(index));
+    }
+    inline uint32_t u32At(const int index) const {
+        return ((index < size)
+                ? ((payload[index+0] << 24) | (payload[index+1] << 16) | (payload[index+2] << 8) | (payload[index+3] << 0))
+                : 0x00000000);
+    }
+    inline int32_t i32At(const int index) const {
+        return static_cast<int16_t>(u16At(index));
+    }
 };
 
 /**
