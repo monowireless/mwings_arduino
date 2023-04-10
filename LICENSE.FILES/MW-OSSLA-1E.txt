@@ -1,6 +1,6 @@
             MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT
 
-                                        VERSION 1, 20-JAN-2020 (MW-OSSLA-1J)
+                                        VERSION 1, 20-JAN-2020 (MW-OSSLA-1E)
                                        Copyright (C) 2020 Mono Wireless Inc.
 
 This is an agreement ("Agreement") between Mono Wireless Inc. ("Licensor") 
