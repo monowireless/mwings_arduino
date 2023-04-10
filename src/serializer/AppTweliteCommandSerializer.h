@@ -40,7 +40,7 @@ struct AppTweliteCommand final : public mwings_common::CommandBase {
  * @see     constexpr
  * @return  Payload size in binary count
  */
-constexpr int GetSerializedAppTweliteCommandPayloadSize() { return 13; }
+constexpr int GetAppTweliteSerializedCommandPayloadSize() { return 13; }
 
 /**
  * @class apptwelite::CommandSerializer

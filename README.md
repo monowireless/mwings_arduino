@@ -15,7 +15,7 @@ Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on 
 
 ## Features
 
-### Receive Packets from
+### Receive and Parse Packets from
 
 - App_Twelite
   - Get digital input states and analog input voltage values.
@@ -39,9 +39,14 @@ Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on 
   - Get serial data received on TWELITE child devices.
   - Pre-installed on TWELITE UART series.
 - App_IO
-  - Get digital input states.
+  - Get digital input states
 
-### Send Commands to
+### Receive Packets from
+
+- Any TWELITE
+  - Get payload from ASCII-formatted serial input (starts with ':' and ends with CRLF).
+
+### Serialize and Send Commands to
 
 - App_Twelite
   - Set digital output states and PWM duty ratios.
@@ -49,6 +54,11 @@ Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on 
 - App_PAL (NOTICE)
   - Set full-color LED states.
   - Pre-installed on TWELITE PAL series (App_PAL)
+
+### Send Commands to
+
+- Any TWELITE
+  - Set some data with ASCII-formatted serial output (starts with ':' and ends with CRLF).
 
 ## License
 

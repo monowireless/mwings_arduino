@@ -56,7 +56,7 @@ struct AppPalNoticeCommand final : public mwings_common::CommandBase {
  * @see     constexpr
  * @return  Payload size in binary count
  */
-constexpr int GetSerializedAppPalNoticeCommandPayloadSize() { return 11; }
+constexpr int GetAppPalNoticeSerializedCommandPayloadSize() { return 11; }
 
 /**
  * @class apppalnotice::CommandSerializer

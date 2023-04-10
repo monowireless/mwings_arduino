@@ -12,7 +12,7 @@ apppalnotice::CommandSerializer AppPalNoticeCommandSerializer;
 
 bool apppalnotice::CommandSerializer::serialize(mwings_common::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const
 {
-    constexpr int fixedPayloadSize = GetSerializedAppPalNoticeCommandPayloadSize();
+    constexpr int fixedPayloadSize = GetAppPalNoticeSerializedCommandPayloadSize();
     if (not (maxPayloadSize >= fixedPayloadSize)) { return false; }
     if (not Serial.availableForWrite()) { return false; }
 
