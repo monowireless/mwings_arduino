@@ -14,7 +14,7 @@ MWings is a library that communicate with TWELITE wireless modules.
 
 This library is suitable for TWELITE SPOT series.
 
-You can receive packets from and send commands to TWELITE child devices through the connected TWELITE parent device.
+You can receive packets from TWELITE child devices and send commands to TWELITE child devices through the connected TWELITE parent device.
 
 ## Requirements
 
@@ -72,7 +72,7 @@ Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on 
 ### Receive Packets from
 
 - Any TWELITE
-  - Get binary payload from ASCII-formatted serial input (starts with `:` and ends with `CRLF`).
+  - Get binary payload with ASCII-formatted serial input (starts with `:` and ends with `CRLF`).
   - Example:
     - [`monitor_spot_any.ino`](./examples/monitor_spot_any/monitor_spot_any.ino)
 
@@ -217,7 +217,7 @@ You can easily create handlers using a non-capturing lambda-function like below.
 
 For App_ARIA, data type called `ParsedAppAriaPacket` is available for handlers.
 
-### TWELTIE update
+### TWELITE update
 
 You need to update states in the `loop()`.
 
