@@ -95,7 +95,7 @@ Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on 
 
 - Any TWELITE
   - Set some binary data with ASCII-formatted serial output (starts with `:` and ends with `CRLF`).
-  - Example: `commander_spot_app_twelite_manually.ino`](./examples/commander_spot_app_twelite_manually/commander_spot_app_twelite_manually.ino)
+  - Example: [`commander_spot_app_twelite_manually.ino`](./examples/commander_spot_app_twelite_manually/commander_spot_app_twelite_manually.ino)
 
 ## Getting Started
 
