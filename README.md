@@ -6,7 +6,15 @@
 
 **Mono Wireless TWELITE Wings API for 32-bit Arduinos**
 
-[![Arduino Lint](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml/badge.svg?branch=main&event=push)](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml)
+[![Arduino Lint](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml/badge.svg?branch=main&event=push)](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml) [![MW-OSSLA](https://img.shields.io/badge/License-MW--OSSLA-e4007f)](LICENSE.md)
+
+## Contents
+
+- [About](#about)
+- [Requirements](#requirements)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [License](#license)
 
 ## About
 
