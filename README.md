@@ -182,7 +182,7 @@ In the above code, use `Serial` for monitoring and `Serial2` for communication w
 
 To initialize TWELITE, you need to pass a `HardwareSerial` instance for communication with the parent device over UART.
 
-You can enable the status LED or set the channel and application ID of the connected TWELITE.
+You can enable the status LED and set the channel and application ID of the connected TWELITE.
 
 ``` c++
     // Initialize TWELITE
