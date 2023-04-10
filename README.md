@@ -1,6 +1,12 @@
+<a href="https://mono-wireless.com/jp/index.html">
+    <img src="https://mono-wireless.com/common/images/logo/logo-land.svg" alt="mono wireless logo" title="MONO WIRELESS" align="right" height="60" />
+</a>
+
 # MWings
 
 **Mono Wireless TWELITE Wings API for 32-bit Arduinos**
+
+[![Arduino Lint](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml/badge.svg?branch=main&event=push)](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml)
 
 ## About
 
