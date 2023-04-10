@@ -10,7 +10,7 @@
 
 uartascii::ExtendedPacketParser AppUartAsciiExtendedPacketParser;
 
-bool uartascii::ExtendedPacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool uartascii::ExtendedPacketParser::parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppUartAsciiExtendedPacket* const parsedAppUartAsciiExtendedPacket = static_cast<ParsedAppUartAsciiExtendedPacket*>(parsedPacket);

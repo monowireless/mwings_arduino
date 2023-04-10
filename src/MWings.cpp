@@ -57,6 +57,8 @@ bool MWings::begin(HardwareSerial& serial,
     //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
     _onAppUartAsciiExtendedPacket = nullptr;
 
+    _onBarePacket = nullptr;
+
     if (not (_indicatorPin < 0)) {
         pinMode(_indicatorPin, OUTPUT);
         digitalWrite(_indicatorPin, HIGH);
@@ -181,7 +183,7 @@ void MWings::update()
         if (not (character >= 0)) { return; }
 
         // Bare packet storage
-        mwings_common::BarePacket barePacket;
+        BarePacket barePacket;
 
         // Process packet contents upon parsing completion
         if (processAscii(character, barePacket) == MWings::State::COMPLETED) {
@@ -267,6 +269,10 @@ void MWings::update()
                 }
             }
             //// End: AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+
+            if (_onBarePacket) {
+                _onBarePacket(barePacket);
+            }
         }
     }
 
@@ -274,7 +280,7 @@ void MWings::update()
 }
 
 
-MWings::State MWings::processAscii(const uint8_t character, mwings_common::BarePacket& barePacket)
+MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePacket)
 {
     static MWings::State state = MWings::State::WAITING_FOR_HEADER;
 

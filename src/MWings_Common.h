@@ -11,8 +11,6 @@
 
 #include <Arduino.h>
 
-namespace mwings_common {
-
 /**
  * @struct BarePacket
  * @brief  Bare packet contents
@@ -46,6 +44,7 @@ struct BarePacket {
     }
 };
 
+namespace mwings_common {
 /**
  * @struct ParsedPacketBase
  * @brief  Contains essential packet contents

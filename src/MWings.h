@@ -74,7 +74,8 @@ public:
                //// AppUartAsciiPacketParser for App_Uart (A mode)
                _onAppUartAsciiPacket(nullptr),
                //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
-               _onAppUartAsciiExtendedPacket(nullptr)
+               _onAppUartAsciiExtendedPacket(nullptr),
+               _onBarePacket()
         {}
     ~MWings();
 
@@ -110,6 +111,7 @@ public:
         _onAppUartAsciiPacket = nullptr;
         //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
         _onAppUartAsciiExtendedPacket = nullptr;
+        _onBarePacket = nullptr;
     }
 
     void update();
@@ -194,7 +196,7 @@ private:
         }
     }
 
-    State processAscii(const uint8_t character, mwings_common::BarePacket& barePacket);
+    State processAscii(const uint8_t character, BarePacket& barePacket);
 
     inline uint8_t hexFrom(const uint8_t character) const {
         const uint8_t hexTable[] = {
@@ -395,6 +397,8 @@ public:
     //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
     inline void on(void (*callback)(const ParsedAppUartAsciiExtendedPacket& packet)) { _onAppUartAsciiExtendedPacket = callback; }
 
+    inline void on(void (*callback)(const BarePacket& packet)) { _onBarePacket = callback; }
+
     //// AppTweliteCommandSerializer for App_Twelite
     inline bool send(AppTweliteCommand& command) {
         if (not _serial) { return false; }
@@ -497,6 +501,8 @@ private:
     void (*_onAppUartAsciiPacket)(const ParsedAppUartAsciiPacket& packet);
     //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
     void (*_onAppUartAsciiExtendedPacket)(const ParsedAppUartAsciiExtendedPacket& packet);
+
+    void (*_onBarePacket)(const BarePacket& packet);
 };
 
 extern MWings Twelite;

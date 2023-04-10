@@ -29,7 +29,7 @@ namespace uartascii {
 class PacketParser final : public mwings_common::PacketParserBase {
 public:
     // Check if the packet is from App_Uart (A mode)
-    inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
+    inline bool isValid(const BarePacket& barePacket) const override {
         if (((0x00 <= barePacket.u8At(0) and barePacket.u8At(0) <= 0x64) or barePacket.u8At(0) == 0x78)
             and (barePacket.u8At(1) < 0x80)
             and (4 <= barePacket.size and barePacket.size <= 643)) {
@@ -39,7 +39,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

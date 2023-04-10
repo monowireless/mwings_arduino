@@ -10,7 +10,7 @@
 
 palamb::PacketParser AppPalAmbPacketParser;
 
-bool palamb::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool palamb::PacketParser::parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppPalAmbPacket* const parsedAppPalAmbPacket = static_cast<ParsedAppPalAmbPacket*>(parsedPacket);

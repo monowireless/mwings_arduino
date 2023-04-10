@@ -31,7 +31,7 @@ namespace apptwelite {
 class PacketParser final : public mwings_common::PacketParserBase {
 public:
     // Check if the packet is from App_Twelite
-    inline bool isValid(const mwings_common::BarePacket& barePacket) const override {
+    inline bool isValid(const BarePacket& barePacket) const override {
         if ((barePacket.u8At(1) == 0x81)
             and (barePacket.u8At(3) == 0x01)
             and ((barePacket.u8At(5) & 0x80) == 0x80)
@@ -42,7 +42,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

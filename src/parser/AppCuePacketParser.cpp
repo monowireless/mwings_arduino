@@ -10,7 +10,7 @@
 
 cue::PacketParser AppCuePacketParser;
 
-bool cue::PacketParser::parse(const mwings_common::BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool cue::PacketParser::parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppCuePacket* const parsedAppCuePacket = static_cast<ParsedAppCuePacket*>(parsedPacket);
