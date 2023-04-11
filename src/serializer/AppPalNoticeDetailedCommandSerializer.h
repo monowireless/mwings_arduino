@@ -32,7 +32,7 @@ struct AppPalNoticeRGBWColor {
  * @struct AppPalNoticeDetailedCommand
  * @brief  Detailed command content for App_PAL (NOTICE)
  */
-struct AppPalNoticeDetailedCommand final : public mwings_common::CommandBase {
+struct AppPalNoticeDetailedCommand final : public mwings::CommandBase {
     AppPalNoticeRGBWColor sRGBWColor;
     uint8_t u8BlinkDutyPercentage;
     float fBlinkPeriodInSec;
@@ -64,10 +64,10 @@ constexpr int GetAppPalNoticeSerializedDetailedCommandPayloadSize() { return 15;
  * @brief  Detailed command serializer for App_PAL (NOTICE)
  */
 namespace apppalnotice {
-class DetailedCommandSerializer final : public mwings_common::CommandSerializerBase {
+class DetailedCommandSerializer final : public mwings::CommandSerializerBase {
 public:
     // Serialize command
-    bool serialize(mwings_common::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
+    bool serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
 };
 }
 

@@ -10,7 +10,7 @@
 
 apppalnotice::EventCommandSerializer AppPalNoticeEventCommandSerializer;
 
-bool apppalnotice::EventCommandSerializer::serialize(mwings_common::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const
+bool apppalnotice::EventCommandSerializer::serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const
 {
     constexpr int fixedPayloadSize = GetAppPalNoticeSerializedEventCommandPayloadSize();
     if (not (maxPayloadSize >= fixedPayloadSize)) { return false; }

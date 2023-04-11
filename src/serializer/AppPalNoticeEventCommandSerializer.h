@@ -15,7 +15,7 @@
  * @struct AppPalNoticeEventCommand
  * @brief  Event command content for App_PAL (NOTICE)
  */
-struct AppPalNoticeEventCommand final : public mwings_common::CommandBase {
+struct AppPalNoticeEventCommand final : public mwings::CommandBase {
     uint8_t u8EventId;
 
     AppPalNoticeEventCommand() : u8EventId(0)
@@ -39,10 +39,10 @@ constexpr int GetAppPalNoticeSerializedEventCommandPayloadSize() { return 7; }
  * @brief  Event command serializer for App_PAL (NOTICE)
  */
 namespace apppalnotice {
-class EventCommandSerializer final : public mwings_common::CommandSerializerBase {
+class EventCommandSerializer final : public mwings::CommandSerializerBase {
 public:
     // Serialize command
-    bool serialize(mwings_common::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
+    bool serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
 };
 }
 

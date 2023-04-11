@@ -15,7 +15,7 @@
  * @struct ParsedAppPalOpenClosePacket
  * @brief  Packet content for App_PAL
  */
-struct ParsedAppPalOpenClosePacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppPalOpenClosePacket final : public mwings::ParsedPacketBase {
     uint16_t u16Ai1Voltage;
     uint8_t u8MagnetState;
     bool bMagnetStateChanged;
@@ -26,7 +26,7 @@ struct ParsedAppPalOpenClosePacket final : public mwings_common::ParsedPacketBas
  * @brief  Packet parser for App_PAL (OPENCLOSE)
  */
 namespace palopenclose {
-class PacketParser final : public mwings_common::PacketParserBase {
+class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (OPENCLOSE)
     inline bool isValid(const BarePacket& barePacket) const override {
@@ -40,7 +40,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

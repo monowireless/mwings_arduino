@@ -15,7 +15,7 @@
  * @struct ParsedAppAriaPacket
  * @brief  Packet content for App_ARIA
  */
-struct ParsedAppAriaPacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppAriaPacket final : public mwings::ParsedPacketBase {
     int16_t i16Temp100x;
     uint16_t u16Humid100x;
     uint8_t u8MagnetState;
@@ -27,7 +27,7 @@ struct ParsedAppAriaPacket final : public mwings_common::ParsedPacketBase {
  * @brief  Packet parser for App_ARIA (ARIA mode)
  */
 namespace aria {
-class PacketParser final : public mwings_common::PacketParserBase {
+class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_ARIA (ARIA mode)
     inline bool isValid(const BarePacket& barePacket) const override {
@@ -41,7 +41,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

@@ -33,7 +33,7 @@ enum class AppPalNoticeBlinkSpeed : uint8_t {
  * @struct AppPalNoticeCommand
  * @brief  Command content for App_PAL (NOTICE)
  */
-struct AppPalNoticeCommand final : public mwings_common::CommandBase {
+struct AppPalNoticeCommand final : public mwings::CommandBase {
     AppPalNoticeColor eColor;
     AppPalNoticeBlinkSpeed eBlinkSpeed;
     uint8_t u8Brightness;
@@ -63,10 +63,10 @@ constexpr int GetAppPalNoticeSerializedCommandPayloadSize() { return 11; }
  * @brief  Command serializer for App_PAL (NOTICE)
  */
 namespace apppalnotice {
-class CommandSerializer final : public mwings_common::CommandSerializerBase {
+class CommandSerializer final : public mwings::CommandSerializerBase {
 public:
     // Serialize command
-    bool serialize(mwings_common::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
+    bool serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
 };
 }
 

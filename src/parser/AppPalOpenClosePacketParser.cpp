@@ -10,7 +10,7 @@
 
 palopenclose::PacketParser AppPalOpenClosePacketParser;
 
-bool palopenclose::PacketParser::parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool palopenclose::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppPalOpenClosePacket* const parsedAppPalOpenClosePacket = static_cast<ParsedAppPalOpenClosePacket*>(parsedPacket);

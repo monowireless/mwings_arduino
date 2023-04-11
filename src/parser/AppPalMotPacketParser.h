@@ -15,7 +15,7 @@
  * @struct ParsedAppPalMotPacket
  * @brief  Packet content for App_PAL
  */
-struct ParsedAppPalMotPacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppPalMotPacket final : public mwings::ParsedPacketBase {
     uint16_t u16Ai1Voltage;
     int16_t i16SamplesX[16];
     int16_t i16SamplesY[16];
@@ -29,7 +29,7 @@ struct ParsedAppPalMotPacket final : public mwings_common::ParsedPacketBase {
  * @brief  Packet parser for App_PAL (MOT)
  */
 namespace palmot {
-class PacketParser final : public mwings_common::PacketParserBase {
+class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (MOT)
     inline bool isValid(const BarePacket& barePacket) const override {
@@ -43,7 +43,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

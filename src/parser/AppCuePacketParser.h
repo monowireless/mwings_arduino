@@ -15,7 +15,7 @@
  * @struct ParsedAppCuePacket
  * @brief  Packet content for App_CUE
  */
-struct ParsedAppCuePacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppCuePacket final : public mwings::ParsedPacketBase {
     int16_t i16SamplesX[10];
     int16_t i16SamplesY[10];
     int16_t i16SamplesZ[10];
@@ -31,7 +31,7 @@ struct ParsedAppCuePacket final : public mwings_common::ParsedPacketBase {
  * @brief  Packet parser for App_CUE (CUE mode)
  */
 namespace cue {
-class PacketParser final : public mwings_common::PacketParserBase {
+class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_CUE (CUE mode)
     // I think I've nearly found you
@@ -47,7 +47,7 @@ public:
 
     // Parse from bare packet
     // I can see clues all around me
-    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

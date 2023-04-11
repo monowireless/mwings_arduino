@@ -20,6 +20,7 @@
 
 #include <Arduino.h>
 #include "MWings_Common.h"
+#include "MWings_Utils.h"
 
 //// AppTwelitePacketParser for App_Twelite
 #include "parser/AppTwelitePacketParser.h"
@@ -49,6 +50,7 @@
 //// AppPalNoticeEventCommandSerializer for App_PAL (NOTICE), event
 #include "serializer/AppPalNoticeEventCommandSerializer.h"
 
+namespace mwings {
 class MWings {
 public:
     MWings() : _serial(nullptr),
@@ -128,45 +130,34 @@ private:
     };
 
     enum class Command : uint8_t {
-        ACK = 0xF0,
-        MODULE_ADDRESS = 0xF1,
-        SET_PARAMETER = 0xF2,
-        GET_PARAMETER = 0xF3,
-        CONTROL = 0xF8,
-        CLEAR_RESET = 0xFD,
-        SAVE_RESET = 0xFE,
-        RESET = 0xFF
+        ACK = 0xD0,
+        MODULE_ADDRESS = 0xD1,
+        SET_PARAMETER = 0xD2,
+        GET_PARAMETER = 0xD3,
+        CONTROL = 0xD8,
+        DISABLE_SILENT_MODE = 0xD9,
+        CLEAR = 0xDD,
+        SAVE = 0xDE,
+        RESET = 0xDF
     };
 
     enum class Parameter : uint8_t {
-        APP_ID = 0x00,
-        CH_MASK = 0x01,
-        TX_RETRY = 0x02,
-        LOGICAL_ID = 0x03,
-        ROLE = 0x04,
-        ROUTING_LAYER = 0x05,
-        UART_MODE = 0x06,
-        UART_BAUDRATE = 0x07,
-        UART_PARITY = 0x08,
-        ENCRYPTION = 0x09,
-        KEY = 0x0A,
-        TRIGGER = 0x0C,
-        ERROR = 0xFF
+        APP_ID = 0x01,
+        CH_MASK = 0x02,
+        TX_RETRY = 0x03,
+        ROUTING_LAYER = 0x04,
+        AP_ADDRESS = 0x05,
+        UART_BAUDRATE = 0x06,
+        ENCRYPTION = 0x07,
+        OPTION_BITS = 0x08
     };
 
-    inline void debugWrite(const uint8_t data) const {
-        if (_debugSerial) {
-            _debugSerial->write(data);
-        }
-    }
-
-    inline void debugPrint(const char* const str) const {
-        if (_debugSerial) {
-            _debugSerial->write('\n');
-            _debugSerial->print(str);
-            _debugSerial->write('\n');
-        }
-    }
+    enum class SavingStatus : uint8_t {
+        SUCCEEDED = 0x01,
+        FAILED = 0x00,
+        SUCCEEDED_NO_MODIFICATIONS = 0x81,
+        FAILED_NO_MODIFICATIONS = 0x80
+    };
 
     inline void turnOnIndicator() {
         if (not (_indicatorPin < 0)) {
@@ -198,164 +189,63 @@ private:
 
     State processAscii(const uint8_t character, BarePacket& barePacket);
 
-    inline uint8_t hexFrom(const uint8_t character) const {
-        const uint8_t hexTable[] = {
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-            0, 0, 0, 0, 0, 0, 0,
-            0xA, 0xB, 0xC, 0xD, 0xE, 0xF
-        };
-        return hexTable[character - '0'];
-    }
-
-    inline uint8_t characterFrom(const uint8_t hex) const {
-        return (hex < 0xA) ? ('0' + hex) : ('A' + hex - 0xA);
-    }
-
-    inline int byteCountFrom(const int characterCount) const {
-        return characterCount / 2;
-    }
-
-    inline void writeInAscii(const uint8_t data) const {
-        if (not _serial) { return; }
-        if (not _serial->availableForWrite()) { return; }
-        _serial->write(characterFrom((data >> 4) & 0x0F));
-        _serial->write(characterFrom((data >> 0) & 0x0F));
-    }
-
-    inline void writeInAscii(const uint16_t data) const {
-        if (not _serial) { return; }
-        if (not _serial->availableForWrite()) { return; }
-        _serial->write(characterFrom((data >> 12) & 0x0F));
-        _serial->write(characterFrom((data >> 8) & 0x0F));
-        _serial->write(characterFrom((data >> 4) & 0x0F));
-        _serial->write(characterFrom((data >> 0) & 0x0F));
-    }
-
-    inline void writeInAscii(const uint32_t data) const {
-        if (not _serial) { return; }
-        if (not _serial->availableForWrite()) { return; }
-        _serial->write(characterFrom((data >> 28) & 0x0F));
-        _serial->write(characterFrom((data >> 24) & 0x0F));
-        _serial->write(characterFrom((data >> 20) & 0x0F));
-        _serial->write(characterFrom((data >> 16) & 0x0F));
-        _serial->write(characterFrom((data >> 12) & 0x0F));
-        _serial->write(characterFrom((data >> 8) & 0x0F));
-        _serial->write(characterFrom((data >> 4) & 0x0F));
-        _serial->write(characterFrom((data >> 0) & 0x0F));
-    }
-
-    inline void writeInAscii(const uint8_t* const data, const int size) const {
-        if (not _serial) { return; }
-        if (not _serial->availableForWrite()) { return; }
-        for (int i = 0; i < size; i++) { writeInAscii(data[i]); }
-    }
-
-    inline void debugWriteInAscii(const uint8_t data) const {
-        if (not _debugSerial) { return; }
-        if (not _debugSerial->availableForWrite()) { return; }
-        _debugSerial->write(characterFrom((data >> 4) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 0) & 0x0F));
-    }
-
-    inline void debugWriteInAscii(const uint16_t data) const {
-        if (not _debugSerial) { return; }
-        if (not _debugSerial->availableForWrite()) { return; }
-        _debugSerial->write(characterFrom((data >> 12) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 8) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 4) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 0) & 0x0F));
-    }
-
-    inline void debugWriteInAscii(const uint32_t data) const {
-        if (not _debugSerial) { return; }
-        if (not _debugSerial->availableForWrite()) { return; }
-        _debugSerial->write(characterFrom((data >> 28) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 24) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 20) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 16) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 12) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 8) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 4) & 0x0F));
-        _debugSerial->write(characterFrom((data >> 0) & 0x0F));
-    }
-
-    inline void debugWriteInAscii(const uint8_t* const data, const int size) const {
-        if (not _debugSerial) { return; }
-        if (not _debugSerial->availableForWrite()) { return; }
-        for (int i = 0; i < size; i++) { debugWriteInAscii(data[i]); }
+    inline void debugPrint(const char* const str) const {
+        if (not Utils::IsWritable(_debugSerial)) { return; }
+        _debugSerial->write(static_cast<uint8_t>('\n'));
+        _debugSerial->print("[Debug] ");
+        _debugSerial->print(str);
+        _debugSerial->write(static_cast<uint8_t>('\n'));
     }
 
     inline void beginCommand() const {
-        if (not _serial) { return; }
-        if (not _serial->availableForWrite()) { return; }
-        _serial->write(':');
-        writeInAscii(static_cast<uint8_t>(0xDB));
+        if (not Utils::IsWritable(_serial)) { return; }
+        Utils::WriteBinary(_serial, static_cast<uint8_t>(':'));
+        Utils::WriteInAscii(_serial, static_cast<uint8_t>(0xDB));
     }
 
     inline void endCommand() const {
-        if (not _serial) { return; }
-        if (not _serial->availableForWrite()) { return; }
-        _serial->write('X');
-        _serial->flush();
+        if (not Utils::IsWritable(_serial)) { return; }
+        Utils::WriteBinary(_serial, static_cast<uint8_t>('X'));
+        Utils::FlushTxBuffer(_serial);
     }
 
-    inline bool find(const uint8_t* const data, const int size, const uint16_t timeout) const {
-        if (not _serial) { return false; }
-        if (not (size > 0)) { return false; }
-        uint32_t timestamp = millis();
-        while (true) {
-            if (millis() - timestamp > timeout) { return false; }
-            if (_serial->available()) {
-                //debugWrite(_serial->peek());
-                if (_serial->read() == data[0]) {
-                    break;
-                }
+    inline bool checkForAck(const uint32_t timeout) const {
+        if (not Utils::IsInitialized(_serial)) { return false; }
+        return Utils::FindAscii(_serial, ":DBD001", timeout);
+    }
+
+    inline bool ensureParameterSet(const uint32_t timeout) const {
+        if (not Utils::IsInitialized(_serial)) { return false; }
+        return Utils::FindAscii(_serial, ":DBD3", timeout);
+    }
+
+    inline bool ensureParametersSaved(const uint32_t timeout, bool* const modified = nullptr) const {
+        if (not Utils::IsInitialized(_serial)) { return false; }
+        if (not Utils::FindAscii(_serial, ":DBDE", timeout)) { return false; }
+        uint8_t status = _serial->read();
+        if (not (modified == nullptr)) {
+            if (status == static_cast<uint8_t>(SavingStatus::SUCCEEDED_NO_MODIFICATIONS)
+                or status == static_cast<uint8_t>(SavingStatus::FAILED_NO_MODIFICATIONS)) {
+                *(modified) = false;
+            } else {
+                *(modified) = true;
             }
         }
-        for (int i = 1; i < size; i++) {
-            if (data[i] == '\0') { break; }
-            while (true) {
-                if (millis() - timestamp > timeout) { return false; }
-                if (_serial->available()) {
-                    //debugWrite(_serial->peek());
-                    if (_serial->read() == data[i]) {
-                        break;
-                    } else {
-                        return find(data, size, timeout - millis() + timestamp); // Recursive
-                    }
-                }
-            }
+        if (status == static_cast<uint8_t>(SavingStatus::FAILED)
+            or status == static_cast<uint8_t>(SavingStatus::FAILED_NO_MODIFICATIONS)) {
+            return false;
         }
         return true;
     }
 
-    inline bool find(const char* const data, const uint16_t timeout) const {
-        return find(reinterpret_cast<const uint8_t*>(data), 1024, timeout);
+    inline bool ensureDeviceReset(const uint32_t timeout) const {
+        if (not Utils::IsInitialized(_serial)) { return false; }
+        return Utils::FindAscii(_serial, "!INF MW APP_WINGS(Parent)", timeout);
     }
 
-    inline bool isThereAck(const uint32_t timeout) const {
-        if (not _serial) { return false; }
-        return find(":DBF0", timeout);
-    }
-
-    inline bool ensureSetParameter(const uint32_t timeout) const {
-        if (not _serial) { return false; }
-        return find(":DBF3", timeout) and (not (_serial->read() == static_cast<uint8_t>(MWings::Parameter::ERROR)));
-    }
-
-    inline bool ensureReset(const uint32_t timeout) const {
-        if (not _serial) { return false; }
-        return find("!INF MW APP_WINGS(Parent)", timeout);
-    }
-
-    inline bool ensureControlled(const uint32_t timeout) const {
-        if (not _serial) { return false; }
-        return find(":DBF8", timeout);
-    }
-
-    inline void flushSerialRxBuffer() const {
-        if (not _serial) { return; }
-        while (_serial->available()) { _serial->read(); }
+    inline bool ensureSilentModeDisabled(const uint32_t timeout) const {
+        if (not Utils::IsInitialized(_serial)) { return false; }
+        return Utils::FindAscii(_serial, ":DBD91101", timeout);
     }
 
     HardwareSerial* _serial;
@@ -399,30 +289,65 @@ public:
 
     inline void on(void (*callback)(const BarePacket& packet)) { _onBarePacket = callback; }
 
-    inline bool send(const uint8_t* const payload, const int size, const uint8_t checksum) {
-        if (not _serial) { return false; }
-        if (not _serial->availableForWrite()) { return false; }
+    inline bool send(const uint8_t* const payload, const int payloadSize, const uint8_t checksum) {
+        if (not Utils::IsWritable(_serial)) { return false; }
         turnOnIndicatorFor(10);
-        _serial->write(':');
-        writeInAscii(payload, size);
-        writeInAscii(checksum);
-        _serial->write('\r'); _serial->write('\n');
-        if (_debugSerial) {
-            _debugSerial->write(':');
-            debugWriteInAscii(payload, size);
-            debugWriteInAscii(checksum);
-            _debugSerial->write('\r'); _debugSerial->write('\n');
+        Utils::WriteBinary(_serial, static_cast<uint8_t>(':'));
+        Utils::WriteInAscii(_serial, payload, payloadSize);
+        Utils::WriteInAscii(_serial, checksum);
+        Utils::WriteBinary(_serial, static_cast<uint8_t>('\r'));
+        Utils::WriteBinary(_serial, static_cast<uint8_t>('\n'));
+        if (Utils::IsWritable(_debugSerial)) {
+            Utils::WriteBinary(_debugSerial, static_cast<uint8_t>(':'));
+            Utils::WriteInAscii(_debugSerial, payload, payloadSize);
+            Utils::WriteInAscii(_debugSerial, checksum);
+            Utils::WriteBinary(_debugSerial, static_cast<uint8_t>('\r'));
+            Utils::WriteBinary(_debugSerial, static_cast<uint8_t>('\n'));
         }
         return true;
     }
 
-    inline bool send(const uint8_t* const payload, const int size) {
+    inline bool send(const uint8_t* const payload, const int payloadSize) {
         uint8_t checksum = 0;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < payloadSize; i++) {
             checksum += payload[i];
         }
         checksum = ~(checksum) + 1;
-        return send(payload, size, checksum);
+        return send(payload, payloadSize, checksum);
+    }
+
+    inline bool send(const uint8_t logicalId, const uint8_t commandId,
+                     const uint8_t* const payload, const int payloadSize, const uint8_t checksum) {
+        if (not Utils::IsWritable(_serial)) { return false; }
+        Utils::WriteBinary(_serial, static_cast<uint8_t>(':'));
+        Utils::WriteInAscii(_serial, logicalId);
+        Utils::WriteInAscii(_serial, commandId);
+        Utils::WriteInAscii(_serial, payload, payloadSize);
+        Utils::WriteInAscii(_serial, checksum);
+        Utils::WriteBinary(_serial, static_cast<uint8_t>('\r'));
+        Utils::WriteBinary(_serial, static_cast<uint8_t>('\n'));
+        if (Utils::IsWritable(_debugSerial)) {
+            Utils::WriteBinary(_debugSerial, static_cast<uint8_t>(':'));
+            Utils::WriteInAscii(_debugSerial, logicalId);
+            Utils::WriteInAscii(_debugSerial, commandId);
+            Utils::WriteInAscii(_debugSerial, payload, payloadSize);
+            Utils::WriteInAscii(_debugSerial, checksum);
+            Utils::WriteBinary(_debugSerial, static_cast<uint8_t>('\r'));
+            Utils::WriteBinary(_debugSerial, static_cast<uint8_t>('\n'));
+        }
+        return true;
+    }
+
+    inline bool send(const uint8_t logicalId, const uint8_t commandId,
+                     const uint8_t* const payload, const int payloadSize) {
+        uint8_t checksum = 0;
+        checksum += logicalId;
+        checksum += commandId;
+        for (int i = 0; i < payloadSize; i++) {
+            checksum += payload[i];
+        }
+        checksum = ~(checksum) + 1;
+        return send(logicalId, commandId, payload, payloadSize, checksum);
     }
 
     //// AppTweliteCommandSerializer for App_Twelite
@@ -488,7 +413,8 @@ private:
 
     void (*_onBarePacket)(const BarePacket& packet);
 };
+}
 
-extern MWings Twelite;
+extern mwings::MWings Twelite;
 
 #endif  // MWINGS_H

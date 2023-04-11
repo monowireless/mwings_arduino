@@ -20,7 +20,7 @@
 
 MWings is a library that communicate with TWELITE wireless modules.
 
-This library is suitable for TWELITE SPOT series.
+This library is suitable for [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) series.
 
 You can receive packets from TWELITE child devices and send commands to TWELITE child devices through the connected TWELITE parent device.
 
@@ -29,6 +29,8 @@ You can receive packets from TWELITE child devices and send commands to TWELITE 
 Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on ESP32 series.
 
 **8-bit Arduino boards (like UNO R3) are NOT supported.**
+
+It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent device** connected with the board.
 
 ## Features
 
@@ -103,11 +105,13 @@ Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on 
 
 - Any TWELITE
   - Set some binary data with ASCII-formatted serial output (starts with `:` and ends with `CRLF`).
-  - Example: [`commander_spot_app_twelite_manually.ino`](./examples/commander_spot_app_twelite_manually/commander_spot_app_twelite_manually.ino)
+  - Examples:
+    - [`commander_spot_app_twelite_manually.ino`](./examples/commander_spot_app_twelite_manually/commander_spot_app_twelite_manually.ino)
+    - [`commander_spot_app_twelite_fully_manually.ino`](./examples/commander_spot_app_twelite_fully_manually/commander_spot_app_twelite_fully_manually.ino)
 
 ## Getting Started
 
-Here's an example using TWELITE SPOT with [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html).
+Here's an example using [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) with [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html).
 
 ``` c++
 // monitor_spot_app_aria.ino (Excerpt)

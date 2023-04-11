@@ -15,7 +15,7 @@
  * @struct AppTweliteCommand
  * @brief  Command content for App_Twelite
  */
-struct AppTweliteCommand final : public mwings_common::CommandBase {
+struct AppTweliteCommand final : public mwings::CommandBase {
     bool bDiToChange[4];
     bool bDiState[4];
     bool bPwmToChange[4];
@@ -47,10 +47,10 @@ constexpr int GetAppTweliteSerializedCommandPayloadSize() { return 13; }
  * @brief  Command serializer for App_Twelite
  */
 namespace apptwelite {
-class CommandSerializer final : public mwings_common::CommandSerializerBase {
+class CommandSerializer final : public mwings::CommandSerializerBase {
 public:
     // Serialize command
-    bool serialize(mwings_common::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
+    bool serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
 };
 }
 
