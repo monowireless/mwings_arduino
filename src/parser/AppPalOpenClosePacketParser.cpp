@@ -8,9 +8,9 @@
 
 #include "AppPalOpenClosePacketParser.h"
 
-palopenclose::PacketParser AppPalOpenClosePacketParser;
+apppalopenclose::PacketParser AppPalOpenClosePacketParser;
 
-bool palopenclose::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
+bool apppalopenclose::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppPalOpenClosePacket* const parsedAppPalOpenClosePacket = static_cast<ParsedAppPalOpenClosePacket*>(parsedPacket);

@@ -8,9 +8,9 @@
 
 #include "AppCuePacketParser.h"
 
-cue::PacketParser AppCuePacketParser;
+appcue::PacketParser AppCuePacketParser;
 
-bool cue::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
+bool appcue::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppCuePacket* const parsedAppCuePacket = static_cast<ParsedAppCuePacket*>(parsedPacket);

@@ -22,10 +22,10 @@ struct ParsedAppUartAsciiPacket final : public mwings::ParsedPacketBase {
 };
 
 /**
- * @class uartascii::PacketParser
+ * @class appuartascii::PacketParser
  * @brief  Packet parser for App_Uart (A mode)
  */
-namespace uartascii {
+namespace appuartascii {
 class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_Uart (A mode)
@@ -43,6 +43,6 @@ public:
 };
 }
 
-extern uartascii::PacketParser AppUartAsciiPacketParser;
+extern appuartascii::PacketParser AppUartAsciiPacketParser;
 
 #endif  // APPUARTASCIIPACKETPARSER_H

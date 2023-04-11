@@ -25,10 +25,10 @@ struct ParsedAppPalMotPacket final : public mwings::ParsedPacketBase {
 };
 
 /**
- * @class palmot::PacketParser
+ * @class apppalmot::PacketParser
  * @brief  Packet parser for App_PAL (MOT)
  */
-namespace palmot {
+namespace apppalmot {
 class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (MOT)
@@ -47,6 +47,6 @@ public:
 };
 }
 
-extern palmot::PacketParser AppPalMotPacketParser;
+extern apppalmot::PacketParser AppPalMotPacketParser;
 
 #endif  // APPPALMOTPACKETPARSER_H

@@ -22,10 +22,10 @@ struct ParsedAppPalOpenClosePacket final : public mwings::ParsedPacketBase {
 };
 
 /**
- * @class palopenclose::PacketParser
+ * @class apppalopenclose::PacketParser
  * @brief  Packet parser for App_PAL (OPENCLOSE)
  */
-namespace palopenclose {
+namespace apppalopenclose {
 class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (OPENCLOSE)
@@ -44,6 +44,6 @@ public:
 };
 }
 
-extern palopenclose::PacketParser AppPalOpenClosePacketParser;
+extern apppalopenclose::PacketParser AppPalOpenClosePacketParser;
 
 #endif  // APPPALOPENCLOSEPACKETPARSER_H

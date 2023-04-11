@@ -23,10 +23,10 @@ struct ParsedAppAriaPacket final : public mwings::ParsedPacketBase {
 };
 
 /**
- * @class aria::PacketParser
+ * @class apparia::PacketParser
  * @brief  Packet parser for App_ARIA (ARIA mode)
  */
-namespace aria {
+namespace apparia {
 class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_ARIA (ARIA mode)
@@ -45,6 +45,6 @@ public:
 };
 }
 
-extern aria::PacketParser AppAriaPacketParser;
+extern apparia::PacketParser AppAriaPacketParser;
 
 #endif  // APPARIAPACKETPARSER_H

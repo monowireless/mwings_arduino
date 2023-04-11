@@ -27,10 +27,10 @@ struct ParsedAppCuePacket final : public mwings::ParsedPacketBase {
 };
 
 /**
- * @class cue::PacketParser
+ * @class appcue::PacketParser
  * @brief  Packet parser for App_CUE (CUE mode)
  */
-namespace cue {
+namespace appcue {
 class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_CUE (CUE mode)
@@ -51,6 +51,6 @@ public:
 };
 }
 
-extern cue::PacketParser AppCuePacketParser;
+extern appcue::PacketParser AppCuePacketParser;
 
 #endif  // APPCUEPACKETPARSER_H

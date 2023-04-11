@@ -8,9 +8,9 @@
 
 #include "AppUartAsciiExtendedPacketParser.h"
 
-uartascii::ExtendedPacketParser AppUartAsciiExtendedPacketParser;
+appuartascii::ExtendedPacketParser AppUartAsciiExtendedPacketParser;
 
-bool uartascii::ExtendedPacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
+bool appuartascii::ExtendedPacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppUartAsciiExtendedPacket* const parsedAppUartAsciiExtendedPacket = static_cast<ParsedAppUartAsciiExtendedPacket*>(parsedPacket);

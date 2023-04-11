@@ -23,10 +23,10 @@ struct ParsedAppPalAmbPacket final : public mwings::ParsedPacketBase {
 };
 
 /**
- * @class palamb::PacketParser
+ * @class apppalamb::PacketParser
  * @brief  Packet parser for App_PAL (AMB)
  */
-namespace palamb {
+namespace apppalamb {
 class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (AMB)
@@ -45,6 +45,6 @@ public:
 };
 }
 
-extern palamb::PacketParser AppPalAmbPacketParser;
+extern apppalamb::PacketParser AppPalAmbPacketParser;
 
 #endif  // APPPALAMBPACKETPARSER_H

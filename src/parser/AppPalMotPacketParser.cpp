@@ -8,9 +8,9 @@
 
 #include "AppPalMotPacketParser.h"
 
-palmot::PacketParser AppPalMotPacketParser;
+apppalmot::PacketParser AppPalMotPacketParser;
 
-bool palmot::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
+bool apppalmot::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppPalMotPacket* const parsedAppPalMotPacket = static_cast<ParsedAppPalMotPacket*>(parsedPacket);

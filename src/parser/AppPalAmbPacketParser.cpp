@@ -8,9 +8,9 @@
 
 #include "AppPalAmbPacketParser.h"
 
-palamb::PacketParser AppPalAmbPacketParser;
+apppalamb::PacketParser AppPalAmbPacketParser;
 
-bool palamb::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
+bool apppalamb::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppPalAmbPacket* const parsedAppPalAmbPacket = static_cast<ParsedAppPalAmbPacket*>(parsedPacket);
