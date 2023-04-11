@@ -1,4 +1,4 @@
-// Commander example for TWELITE SPOT: Send manually-created 0x80 command to App_Twelite
+// Commander example for TWELITE SPOT: Send fully-manually-created 0x80 command to App_Twelite
 
 #include <Arduino.h>
 #include "MWings.h"
@@ -9,10 +9,9 @@ const int LED_PIN = 18;
 
 const uint8_t TWE_CHANNEL = 18;
 const uint32_t TWE_APP_ID = 0x67720102;
-const uint8_t TWE_TARGET_LID = 0x78;
 
-constexpr int CommandDataSize = 11;
-uint8_t CommandData[CommandDataSize] = {0x01, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+constexpr int CommandSize = 13;
+uint8_t Command[CommandSize] = {0x78, 0x80, 0x01, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 void printCommand();
 void printByte(const uint8_t data);
@@ -22,7 +21,7 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Commander example for TWELITE SPOT: App_Twelite, manually");
+    Serial.println("Commander example for TWELITE SPOT: App_Twelite, fully manually");
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE
@@ -31,7 +30,7 @@ void setup()
                   LED_PIN, RST_PIN, PRG_PIN);
 
     // Send initial App_Twelite command
-    if (Twelite.send(TWE_TARGET_LID, 0x80, CommandData, CommandDataSize)) {
+    if (Twelite.send(Command, CommandSize)) {
         Serial.println("");
         Serial.println("Sent command below:");
         printCommand();
@@ -54,76 +53,76 @@ void loop()
         int c = Serial.read();
         switch (c) {
         case '1': {
-            CommandData[1] ^= (1 << 0);
-            Serial.print("Set DI1 to "); Serial.println((CommandData[1] & (1 << 0)) ? "Lo" : "Hi"); break;
+            Command[3] ^= (1 << 0);
+            Serial.print("Set DI1 to "); Serial.println((Command[3] & (1 << 0)) ? "Lo" : "Hi"); break;
         }
         case '2': {
-            CommandData[1] ^= (1 << 1);
-            Serial.print("Set DI2 to "); Serial.println((CommandData[1] & (1 << 1)) ? "Lo" : "Hi"); break;
+            Command[3] ^= (1 << 1);
+            Serial.print("Set DI2 to "); Serial.println((Command[3] & (1 << 1)) ? "Lo" : "Hi"); break;
         }
         case '3': {
-            CommandData[1] ^= (1 << 2);
-            Serial.print("Set DI3 to "); Serial.println((CommandData[1] & (1 << 2)) ? "Lo" : "Hi"); break;
+            Command[3] ^= (1 << 2);
+            Serial.print("Set DI3 to "); Serial.println((Command[3] & (1 << 2)) ? "Lo" : "Hi"); break;
         }
         case '4': {
-            CommandData[1] ^= (1 << 3);
-            Serial.print("Set DI4 to "); Serial.println((CommandData[1] & (1 << 3)) ? "Lo" : "Hi"); break;
+            Command[3] ^= (1 << 3);
+            Serial.print("Set DI4 to "); Serial.println((Command[3] & (1 << 3)) ? "Lo" : "Hi"); break;
         }
         case 'q': {
-            CommandData[2] ^= (1 << 0);
-            Serial.print((CommandData[1] & (1 << 0)) ? "Enabled" : "Disabled"); Serial.println(" DI1"); break;
+            Command[4] ^= (1 << 0);
+            Serial.print((Command[3] & (1 << 0)) ? "Enabled" : "Disabled"); Serial.println(" DI1"); break;
         }
         case 'w': {
-            CommandData[2] ^= (1 << 1);
-            Serial.print((CommandData[1] & (1 << 1)) ? "Enabled" : "Disabled"); Serial.println(" DI2"); break;
+            Command[4] ^= (1 << 1);
+            Serial.print((Command[3] & (1 << 1)) ? "Enabled" : "Disabled"); Serial.println(" DI2"); break;
         }
         case 'r': {
-            CommandData[2] ^= (1 << 2);
-            Serial.print((CommandData[1] & (1 << 2)) ? "Enabled" : "Disabled"); Serial.println(" DI3"); break;
+            Command[4] ^= (1 << 2);
+            Serial.print((Command[3] & (1 << 2)) ? "Enabled" : "Disabled"); Serial.println(" DI3"); break;
         }
         case 't': {
-            CommandData[2] ^= (1 << 3);
-            Serial.print((CommandData[1] & (1 << 3)) ? "Enabled" : "Disabled"); Serial.println(" DI4"); break;
+            Command[4] ^= (1 << 3);
+            Serial.print((Command[3] & (1 << 3)) ? "Enabled" : "Disabled"); Serial.println(" DI4"); break;
         }
         case 'a': {
             switch (pwmState[0]) {
             case 0: {
-                CommandData[3] = 0; CommandData[4] = 0;
+                Command[5] = 0; Command[6] = 0;
                 pwmState[0]++;
                 Serial.println("Set PWM1 to 0%"); break;
             }
             case 1: {
                 const uint16_t duty = 1024 * 0.2;
-                CommandData[3] = (duty >> 8) & 0xFF; CommandData[4] = (duty >> 0) & 0xFF;
+                Command[5] = (duty >> 8) & 0xFF; Command[6] = (duty >> 0) & 0xFF;
                 pwmState[0]++;
                 Serial.println("Set PWM1 to 20%"); break;
             }
             case 2: {
                 const uint16_t duty = 1024 * 0.4;
-                CommandData[3] = (duty >> 8) & 0xFF; CommandData[4] = (duty >> 0) & 0xFF;
+                Command[5] = (duty >> 8) & 0xFF; Command[6] = (duty >> 0) & 0xFF;
                 pwmState[0]++;
                 Serial.println("Set PWM1 to 40%"); break;
             }
             case 3: {
                 const uint16_t duty = 1024 * 0.6;
-                CommandData[3] = (duty >> 8) & 0xFF; CommandData[4] = (duty >> 0) & 0xFF;
+                Command[5] = (duty >> 8) & 0xFF; Command[6] = (duty >> 0) & 0xFF;
                 pwmState[0]++;
                 Serial.println("Set PWM1 to 60%"); break;
             }
             case 4: {
                 const uint16_t duty = 1024 * 0.8;
-                CommandData[3] = (duty >> 8) & 0xFF; CommandData[4] = (duty >> 0) & 0xFF;
+                Command[5] = (duty >> 8) & 0xFF; Command[6] = (duty >> 0) & 0xFF;
                 pwmState[0]++;
                 Serial.println("Set PWM1 to 80%"); break;
             }
             case 5: {
                 const uint16_t duty = 1024;
-                CommandData[3] = (duty >> 8) & 0xFF; CommandData[4] = (duty >> 0) & 0xFF;
+                Command[5] = (duty >> 8) & 0xFF; Command[6] = (duty >> 0) & 0xFF;
                 pwmState[0]++;
                 Serial.println("Set PWM1 to 100%"); break;
             }
             case 6: {
-                CommandData[3] = 0xFF; CommandData[4] = 0xFF;
+                Command[5] = 0xFF; Command[6] = 0xFF;
                 pwmState[0] = 0;
                 Serial.println("Set PWM1 to N/A"); break;
             }
@@ -133,42 +132,42 @@ void loop()
         case 's': {
             switch (pwmState[1]) {
             case 0: {
-                CommandData[5] = 0; CommandData[6] = 0;
+                Command[7] = 0; Command[8] = 0;
                 pwmState[1]++;
                 Serial.println("Set PWM2 to 0%"); break;
             }
             case 1: {
                 const uint16_t duty = 1024 * 0.2;
-                CommandData[5] = (duty >> 8) & 0xFF; CommandData[6] = (duty >> 0) & 0xFF;
+                Command[7] = (duty >> 8) & 0xFF; Command[8] = (duty >> 0) & 0xFF;
                 pwmState[1]++;
                 Serial.println("Set PWM2 to 20%"); break;
             }
             case 2: {
                 const uint16_t duty = 1024 * 0.4;
-                CommandData[5] = (duty >> 8) & 0xFF; CommandData[6] = (duty >> 0) & 0xFF;
+                Command[7] = (duty >> 8) & 0xFF; Command[8] = (duty >> 0) & 0xFF;
                 pwmState[1]++;
                 Serial.println("Set PWM2 to 40%"); break;
             }
             case 3: {
                 const uint16_t duty = 1024 * 0.6;
-                CommandData[5] = (duty >> 8) & 0xFF; CommandData[6] = (duty >> 0) & 0xFF;
+                Command[7] = (duty >> 8) & 0xFF; Command[8] = (duty >> 0) & 0xFF;
                 pwmState[1]++;
                 Serial.println("Set PWM2 to 60%"); break;
             }
             case 4: {
                 const uint16_t duty = 1024 * 0.8;
-                CommandData[5] = (duty >> 8) & 0xFF; CommandData[6] = (duty >> 0) & 0xFF;
+                Command[7] = (duty >> 8) & 0xFF; Command[8] = (duty >> 0) & 0xFF;
                 pwmState[1]++;
                 Serial.println("Set PWM2 to 80%"); break;
             }
             case 5: {
                 const uint16_t duty = 1024;
-                CommandData[5] = (duty >> 8) & 0xFF; CommandData[6] = (duty >> 0) & 0xFF;
+                Command[7] = (duty >> 8) & 0xFF; Command[8] = (duty >> 0) & 0xFF;
                 pwmState[1]++;
                 Serial.println("Set PWM2 to 100%"); break;
             }
             case 6: {
-                CommandData[5] = 0xFF; CommandData[6] = 0xFF;
+                Command[7] = 0xFF; Command[8] = 0xFF;
                 pwmState[1] = 0;
                 Serial.println("Set PWM2 to N/A"); break;
             }
@@ -178,42 +177,42 @@ void loop()
         case 'd': {
             switch (pwmState[2]) {
             case 0: {
-                CommandData[7] = 0; CommandData[8] = 0;
+                Command[9] = 0; Command[10] = 0;
                 pwmState[2]++;
                 Serial.println("Set PWM3 to 0%"); break;
             }
             case 1: {
                 const uint16_t duty = 1024 * 0.2;
-                CommandData[7] = (duty >> 8) & 0xFF; CommandData[8] = (duty >> 0) & 0xFF;
+                Command[9] = (duty >> 8) & 0xFF; Command[10] = (duty >> 0) & 0xFF;
                 pwmState[2]++;
                 Serial.println("Set PWM3 to 20%"); break;
             }
             case 2: {
                 const uint16_t duty = 1024 * 0.4;
-                CommandData[7] = (duty >> 8) & 0xFF; CommandData[8] = (duty >> 0) & 0xFF;
+                Command[9] = (duty >> 8) & 0xFF; Command[10] = (duty >> 0) & 0xFF;
                 pwmState[2]++;
                 Serial.println("Set PWM3 to 40%"); break;
             }
             case 3: {
                 const uint16_t duty = 1024 * 0.6;
-                CommandData[7] = (duty >> 8) & 0xFF; CommandData[8] = (duty >> 0) & 0xFF;
+                Command[9] = (duty >> 8) & 0xFF; Command[10] = (duty >> 0) & 0xFF;
                 pwmState[2]++;
                 Serial.println("Set PWM3 to 60%"); break;
             }
             case 4: {
                 const uint16_t duty = 1024 * 0.8;
-                CommandData[7] = (duty >> 8) & 0xFF; CommandData[8] = (duty >> 0) & 0xFF;
+                Command[9] = (duty >> 8) & 0xFF; Command[10] = (duty >> 0) & 0xFF;
                 pwmState[2]++;
                 Serial.println("Set PWM3 to 80%"); break;
             }
             case 5: {
                 const uint16_t duty = 1024;
-                CommandData[7] = (duty >> 8) & 0xFF; CommandData[8] = (duty >> 0) & 0xFF;
+                Command[9] = (duty >> 8) & 0xFF; Command[10] = (duty >> 0) & 0xFF;
                 pwmState[2]++;
                 Serial.println("Set PWM3 to 100%"); break;
             }
             case 6: {
-                CommandData[7] = 0xFF; CommandData[8] = 0xFF;
+                Command[9] = 0xFF; Command[10] = 0xFF;
                 pwmState[2] = 0;
                 Serial.println("Set PWM3 to N/A"); break;
             }
@@ -223,42 +222,42 @@ void loop()
         case 'f': {
             switch (pwmState[3]) {
             case 0: {
-                CommandData[9] = 0; CommandData[10] = 0;
+                Command[11] = 0; Command[12] = 0;
                 pwmState[3]++;
                 Serial.println("Set PWM4 to 0%"); break;
             }
             case 1: {
                 const uint16_t duty = 1024 * 0.2;
-                CommandData[9] = (duty >> 8) & 0xFF; CommandData[10] = (duty >> 0) & 0xFF;
+                Command[11] = (duty >> 8) & 0xFF; Command[12] = (duty >> 0) & 0xFF;
                 pwmState[3]++;
                 Serial.println("Set PWM4 to 20%"); break;
             }
             case 2: {
                 const uint16_t duty = 1024 * 0.4;
-                CommandData[9] = (duty >> 8) & 0xFF; CommandData[10] = (duty >> 0) & 0xFF;
+                Command[11] = (duty >> 8) & 0xFF; Command[12] = (duty >> 0) & 0xFF;
                 pwmState[3]++;
                 Serial.println("Set PWM4 to 40%"); break;
             }
             case 3: {
                 const uint16_t duty = 1024 * 0.6;
-                CommandData[9] = (duty >> 8) & 0xFF; CommandData[10] = (duty >> 0) & 0xFF;
+                Command[11] = (duty >> 8) & 0xFF; Command[12] = (duty >> 0) & 0xFF;
                 pwmState[3]++;
                 Serial.println("Set PWM4 to 60%"); break;
             }
             case 4: {
                 const uint16_t duty = 1024 * 0.8;
-                CommandData[9] = (duty >> 8) & 0xFF; CommandData[10] = (duty >> 0) & 0xFF;
+                Command[11] = (duty >> 8) & 0xFF; Command[12] = (duty >> 0) & 0xFF;
                 pwmState[3]++;
                 Serial.println("Set PWM4 to 80%"); break;
             }
             case 5: {
                 const uint16_t duty = 1024;
-                CommandData[9] = (duty >> 8) & 0xFF; CommandData[10] = (duty >> 0) & 0xFF;
+                Command[11] = (duty >> 8) & 0xFF; Command[12] = (duty >> 0) & 0xFF;
                 pwmState[3]++;
                 Serial.println("Set PWM4 to 100%"); break;
             }
             case 6: {
-                CommandData[9] = 0xFF; CommandData[10] = 0xFF;
+                Command[11] = 0xFF; Command[12] = 0xFF;
                 pwmState[3] = 0;
                 Serial.println("Set PWM4 to N/A"); break;
             }
@@ -266,7 +265,7 @@ void loop()
             } break;
         }
         case ' ': {
-            if (Twelite.send(TWE_TARGET_LID, 0x80, CommandData, CommandDataSize)) {
+            if (Twelite.send(Command, CommandSize)) {
                 Serial.println("Sent command below:");
                 printCommand();
             } break;
@@ -286,10 +285,8 @@ void loop()
 void printCommand()
 {
     Serial.print(":");
-    printByte(TWE_TARGET_LID);
-    printByte(0x80);
-    for (int i = 0; i < CommandDataSize; i++) {
-        printByte(CommandData[i]);
+    for (int i = 0; i < CommandSize; i++) {
+        printByte(Command[i]);
     }
     Serial.println("[sum][CR][LF]");
 }

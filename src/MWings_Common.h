@@ -44,7 +44,7 @@ struct BarePacket {
     }
 };
 
-namespace mwings_common {
+namespace mwings {
 /**
  * @struct ParsedPacketBase
  * @brief  Contains essential packet contents

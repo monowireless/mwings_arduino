@@ -10,7 +10,7 @@
 
 appio::PacketParser AppIoPacketParser;
 
-bool appio::PacketParser::parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool appio::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppIoPacket* const parsedAppIoPacket = static_cast<ParsedAppIoPacket*>(parsedPacket);

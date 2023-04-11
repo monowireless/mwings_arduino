@@ -15,7 +15,7 @@
  * @struct ParsedAppIoPacket
  * @brief  Packet content for App_IO
  */
-struct ParsedAppIoPacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppIoPacket final : public mwings::ParsedPacketBase {
     uint8_t u8RelayCount;
     bool bDiState[12];
     bool bDiValid[12];
@@ -27,7 +27,7 @@ struct ParsedAppIoPacket final : public mwings_common::ParsedPacketBase {
  * @brief  Packet parser for App_IO
  */
 namespace appio {
-class PacketParser final : public mwings_common::PacketParserBase {
+class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_IO
     inline bool isValid(const BarePacket& barePacket) const override {
@@ -41,7 +41,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

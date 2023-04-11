@@ -15,7 +15,7 @@
  * @struct ParsedAppPalAmbPacket
  * @brief  Packet content for App_PAL
  */
-struct ParsedAppPalAmbPacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppPalAmbPacket final : public mwings::ParsedPacketBase {
     uint16_t u16Ai1Voltage;
     int16_t i16Temp100x;
     uint16_t u16Humid100x;
@@ -27,7 +27,7 @@ struct ParsedAppPalAmbPacket final : public mwings_common::ParsedPacketBase {
  * @brief  Packet parser for App_PAL (AMB)
  */
 namespace palamb {
-class PacketParser final : public mwings_common::PacketParserBase {
+class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_PAL (AMB)
     inline bool isValid(const BarePacket& barePacket) const override {
@@ -41,7 +41,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

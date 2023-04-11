@@ -15,7 +15,7 @@
  * @struct ParsedAppTwelitePacket
  * @brief  Packet content for App_Twelite
  */
-struct ParsedAppTwelitePacket final : public mwings_common::ParsedPacketBase {
+struct ParsedAppTwelitePacket final : public mwings::ParsedPacketBase {
     uint8_t u8RelayCount;
     bool bPeriodic;
     bool bDiChanged[4];
@@ -28,7 +28,7 @@ struct ParsedAppTwelitePacket final : public mwings_common::ParsedPacketBase {
  * @brief  Packet parser for App_Twelite
  */
 namespace apptwelite {
-class PacketParser final : public mwings_common::PacketParserBase {
+class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_Twelite
     inline bool isValid(const BarePacket& barePacket) const override {
@@ -42,7 +42,7 @@ public:
     }
 
     // Parse from bare packet
-    bool parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const override;
+    bool parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const override;
 };
 }
 

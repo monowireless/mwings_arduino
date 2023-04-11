@@ -10,7 +10,7 @@
 
 aria::PacketParser AppAriaPacketParser;
 
-bool aria::PacketParser::parse(const BarePacket& barePacket, mwings_common::ParsedPacketBase* const parsedPacket) const
+bool aria::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPacketBase* const parsedPacket) const
 {
     // WARNING: Note that there is NO RTTI
     ParsedAppAriaPacket* const parsedAppAriaPacket = static_cast<ParsedAppAriaPacket*>(parsedPacket);

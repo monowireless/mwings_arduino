@@ -7,6 +7,8 @@
  */
 
 #include "MWings.h"
+#include "MWings_Utils.h"
+using namespace mwings;
 
 MWings Twelite;
 
@@ -76,7 +78,7 @@ bool MWings::begin(HardwareSerial& serial,
             digitalWrite(_programPin, HIGH);
             delay(1);
             digitalWrite(_resetPin, HIGH);
-            if (ensureReset(100)) {
+            if (ensureDeviceReset(timeout)) {
                 reset = true;
                 break;
             }
@@ -90,9 +92,9 @@ bool MWings::begin(HardwareSerial& serial,
     for (int i = 0; i < 3; i++) {
         // Check if serial commands are available or not
         beginCommand();
-        writeInAscii(static_cast<uint8_t>(MWings::Command::ACK));
+        Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::ACK));
         endCommand();
-        if (isThereAck(100)) {
+        if (checkForAck(timeout)) {
             commandsAvailable = true;
             break;
         }
@@ -104,63 +106,94 @@ bool MWings::begin(HardwareSerial& serial,
         // Set application id
         for (int i = 0; i < commandAttempts; i++) {
             beginCommand();
-            writeInAscii(static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
-            writeInAscii(static_cast<uint8_t>(MWings::Parameter::APP_ID));
-            writeInAscii(appId);
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(0x01));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Parameter::APP_ID));
+            Utils::WriteInAscii(_serial, appId);
             endCommand();
-            if (ensureSetParameter(100)) {
+            if (ensureParameterSet(timeout)) {
                 break;
             } else if (not ((i+1) < commandAttempts)) {
+                debugPrint("Failed to set application id.");
                 return false;   // No remaining attempts
             }
         }
-        debugPrint("Successfully set Application ID.");
+
+        debugPrint("Successfully set application id.");
 
         // Set channel
         const uint32_t channelMask = 0x00000000 | (1 << channel);
         for (int i = 0; i < commandAttempts; i++) {
             beginCommand();
-            writeInAscii(static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
-            writeInAscii(static_cast<uint8_t>(MWings::Parameter::CH_MASK));
-            writeInAscii(channelMask);
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(0x01));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Parameter::CH_MASK));
+            Utils::WriteInAscii(_serial, channelMask);
             endCommand();
-            if (ensureSetParameter(100)) {
+            if (ensureParameterSet(timeout)) {
                 break;
             } else if (not ((i+1) < commandAttempts)) {
+                debugPrint("Failed to set the channel.");
                 return false;   // No remaining attempts
             }
         }
-        debugPrint("Successfully set Channel.");
 
-        // Save and reset
+        debugPrint("Successfully set the channel.");
+
+        // Save
+        bool modified;
         for (int i = 0; i < commandAttempts; i++) {
             beginCommand();
-            writeInAscii(static_cast<uint8_t>(MWings::Command::SAVE_RESET));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::SAVE));
             endCommand();
-            if (ensureReset(100)) {
+            if (ensureParametersSaved(timeout, &modified)) {
                 break;
             } else if (not ((i+1) < commandAttempts)) {
+                debugPrint("Failed to save parameters.");
                 return false;   // No remaining attempts
             }
         }
-        debugPrint("Successfully saved parameters.");
+
+        if (modified) {
+            debugPrint("Successfully saved parameters.");
+
+            // Reset
+            for (int i = 0; i < commandAttempts; i++) {
+                beginCommand();
+                Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::RESET));
+                endCommand();
+                if (ensureDeviceReset(timeout)) {
+                    break;
+                } else if (not ((i+1) < commandAttempts)) {
+                    debugPrint("Failed to reset the device.");
+                    return false;   // No remaining attempts
+                }
+            }
+
+            debugPrint("Successfully reset the device.");
+        } else {
+            debugPrint("Parameters were not modified. Skipping the reset procedure.");
+        }
 
         // Disable silent mode
         for (int i = 0; i < commandAttempts; i++) {
             beginCommand();
-            writeInAscii(static_cast<uint8_t>(MWings::Command::CONTROL));
-            writeInAscii(static_cast<uint8_t>(0x10));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::DISABLE_SILENT_MODE));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(0x10));
             endCommand();
-            if (ensureControlled(100)) {
+            if (ensureSilentModeDisabled(timeout)) {
                 break;
             } else if (not ((i+1) < commandAttempts)) {
+                debugPrint("Failed to disable the silent mode.");
                 return false;   // No remaining attempts
             }
         }
+
         debugPrint("Successfully started receiving packets.");
-        flushSerialRxBuffer();
+        Utils::FlushRxBuffer(_serial);
         return true;
     }
+
     debugPrint("Serial commands are not available or an unknown error occurred.");
     return false;
 }
@@ -168,19 +201,16 @@ bool MWings::begin(HardwareSerial& serial,
 void MWings::update()
 {
     // Abort if the serial is not initialized
-    if (not _serial) { return; }
-
-    // Reference to the serial
-    HardwareSerial& serial = *_serial;
+    if (not Utils::IsInitialized(_serial)) { return; }
 
     // Process all byte in the buffer
-    while (serial.available()) {
+    while (Utils::IsReadable(_serial)) {
         // Read a character
-        const int character = serial.read();
-        debugWrite(character);
+        const int character = _serial->read();
 
         // Abort if the read byte is invalid
         if (not (character >= 0)) { return; }
+        Utils::WriteBinary(_debugSerial, static_cast<uint8_t>(character));
 
         // Bare packet storage
         BarePacket barePacket;
@@ -279,18 +309,9 @@ void MWings::update()
     updateIndicator();
 }
 
-
 MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePacket)
 {
     static MWings::State state = MWings::State::WAITING_FOR_HEADER;
-
-    // Reset on timeout
-    if (_timeout > 0 and state not_eq MWings::State::WAITING_FOR_HEADER) {
-        if (millis() - _latestTimestamp > _timeout) {
-            state = MWings::State::TIMEOUT_ERROR;
-            debugPrint("TIMEOUT ERROR");
-        }
-    }
 
     // Reset if the state is error or completed
     if (state == MWings::State::COMPLETED
@@ -300,11 +321,19 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
         state = MWings::State::WAITING_FOR_HEADER;
     }
 
+    // Reset on timeout
+    if (_timeout > 0 and state not_eq MWings::State::WAITING_FOR_HEADER) {
+        if (millis() - _latestTimestamp > _timeout) {
+            state = MWings::State::TIMEOUT_ERROR;
+            debugPrint("TIMEOUT ERROR");
+        }
+    }
+
     // Run state machine
     switch (state) {
     case MWings::State::WAITING_FOR_HEADER: {
         // If the character is colon, start to read
-        if (character == ':') {
+        if (character == static_cast<uint8_t>(':')) {
             state = MWings::State::RETRIEVING_PAYLOAD;
             _latestTimestamp = millis();
             _characterCount = 0;
@@ -318,17 +347,17 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
             // Valid hex character
 
             // Abort if the buffer is overflowing
-            if (byteCountFrom(_characterCount) >= _bufferSize) {
+            if (Utils::ByteCountFrom(_characterCount) >= _bufferSize) {
                 state = MWings::State::UNKNOWN_ERROR;
                 debugPrint("OVERFLOW ERROR");
                 break;
             }
 
             // Convert character to hex
-            const uint8_t hexValue = hexFrom(character);
+            const uint8_t hexValue = Utils::HexFrom(character);
 
             // Get a pointer for the new byte
-            uint8_t* const newByte = &_buffer[byteCountFrom(_characterCount)];
+            uint8_t* const newByte = &_buffer[Utils::ByteCountFrom(_characterCount)];
 
             // Add byte
             if (_characterCount++ & 1) {
@@ -339,9 +368,7 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
                 // Even: set 7-4 bit of the new byte
                 *newByte = hexValue << 4;
             }
-        } else if (character == '\r') {
-            // CR
-
+        } else if (character == static_cast<uint8_t>('\r')) {
             // Abort if received data are not valid
             if (not (_characterCount >= 4 and (_characterCount & 1) == 0)) {
                 state = MWings::State::UNKNOWN_ERROR;
@@ -368,10 +395,10 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
         break;
     }
     case MWings::State::WAITING_FOR_FOOTER: {
-        if (character == '\n') {
+        if (character == static_cast<uint8_t>('\n')) {
             // Completed
             state = MWings::State::COMPLETED;
-            //debugPrint("COMPLETED!");
+            // debugPrint("COMPLETED!");
         } else {
             // CR only
             state = MWings::State::UNKNOWN_ERROR;
@@ -387,7 +414,7 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
 
     // Make bare packet available when parsing was completed
     if (state == MWings::State::COMPLETED) {
-        barePacket.size = byteCountFrom(_characterCount);
+        barePacket.size = Utils::ByteCountFrom(_characterCount);
         barePacket.payload = _buffer;
     }
 
