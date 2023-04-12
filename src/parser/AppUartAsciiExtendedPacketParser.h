@@ -31,11 +31,12 @@ class ExtendedPacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_Uart (Mode A)
     inline bool isValid(const BarePacket& barePacket) const override {
-        if (barePacket.u8At(0) == 0x00
+        if (((0x00 <= barePacket.u8At(0) and barePacket.u8At(0) <= 0x64)
+             or barePacket.u8At(0) == 0x78)
             and barePacket.u8At(1) == 0xA0
             and barePacket.u8At(2) < 0x80
             and (barePacket.u8At(3) & 0x80) == 0x80
-            and barePacket.u16At(12) == barePacket.size - 15) {
+            and barePacket.u16At(12) == barePacket.u16PayloadSize - 14) {
             return true;
         }
         return false;

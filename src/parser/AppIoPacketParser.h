@@ -34,7 +34,7 @@ public:
         if ((barePacket.u8At(1) == 0x81)
             and (barePacket.u8At(3) == 0x02)
             and ((barePacket.u8At(5) & 0x80) == 0x80)
-            and (barePacket.size == 21)) {
+            and (barePacket.u16PayloadSize == 20)) {
             return true;
         }
         return false;

@@ -1,4 +1,4 @@
-// Arduino plotter example for TWELITE SPOT: Receive data from App_ARIA (ARIA mode)
+// Arduino plotter example for TWELITE SPOT: Receive data from App_ARIA (ARIMode A)
 
 #include <Arduino.h>
 #include "MWings.h"
@@ -14,7 +14,7 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Plotter example for TWELITE SPOT: App_ARIA (ARIA mode)");
+    Serial.println("Plotter example for TWELITE SPOT: App_ARIA (ARIMode A)");
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE

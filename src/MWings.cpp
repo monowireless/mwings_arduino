@@ -414,8 +414,8 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
 
     // Make bare packet available when parsing was completed
     if (state == MWings::State::COMPLETED) {
-        barePacket.size = Utils::ByteCountFrom(_characterCount);
-        barePacket.payload = _buffer;
+        barePacket.u16PayloadSize = Utils::ByteCountFrom(_characterCount) - 1; // -1 for checksum
+        barePacket.u8Payload = _buffer;
     }
 
     return state;

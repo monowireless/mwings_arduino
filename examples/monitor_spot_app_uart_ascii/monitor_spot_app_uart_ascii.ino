@@ -1,4 +1,4 @@
-// Monitor example for TWELITE SPOT: Receive data from App_Uart (A mode)
+// Monitor example for TWELITE SPOT: Receive data from App_Uart (Mode A)
 
 #include <Arduino.h>
 #include "MWings.h"
@@ -16,22 +16,22 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Monitor example for TWELITE SPOT: App_Uart (A mode)");
+    Serial.println("Monitor example for TWELITE SPOT: App_Uart (Mode A)");
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE
     Twelite.begin(Serial2,
                   TWE_CHANNEL, TWE_APP_ID,
                   LED_PIN, RST_PIN, PRG_PIN,
-                  1300, 50);                   // Buffer size, timeout
+                  1300, 50);                   // Buffer size for each packet, timeout
 
     // Attach an event handler to process simplified packets from App_Uart
     Twelite.on([](const ParsedAppUartAsciiPacket& packet) {
         Serial.println("");
         Serial.print("Source Logical ID: 0x");
         Serial.println(packet.u8SourceLogicalId, HEX);
-        Serial.print("Response ID:       0x");
-        Serial.println(packet.u8ResponseId, HEX);
+        Serial.print("Command ID:        0x");
+        Serial.println(packet.u8CommandId, HEX);
         Serial.print("Data size:         ");
         Serial.print(packet.u16DataSize, DEC); Serial.println(" bytes");
         Serial.print("Data content:      ");
@@ -56,8 +56,8 @@ void setup()
         }
         Serial.print("LQI:                   ");
         Serial.println(packet.u8Lqi, DEC);
-        Serial.print("Response ID:           0x");
-        Serial.println(packet.u8ResponseId, HEX);
+        Serial.print("Command ID:            0x");
+        Serial.println(packet.u8CommandId, HEX);
         Serial.print("Data size:             ");
         Serial.print(packet.u16DataSize, DEC); Serial.println(" bytes");
         Serial.print("Data content:          ");

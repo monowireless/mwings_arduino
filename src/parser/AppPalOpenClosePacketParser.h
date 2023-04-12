@@ -33,7 +33,8 @@ public:
         if (((barePacket.u8At(0) & 0x80) == 0x80)
             and ((barePacket.u8At(7) & 0x80) == 0x80)
             and (barePacket.u8At(12) == 0x80)
-            and (barePacket.u8At(13) == 0x81)) {
+            and (barePacket.u8At(13) == 0x81)
+            and (barePacket.u16PayloadSize == 33)) {
             return true;
         }
         return false;

@@ -30,8 +30,7 @@ void setup()
     // Initialize TWELITE
     Twelite.begin(Serial2,
                   TWE_CHANNEL, TWE_APP_ID,
-                  LED_PIN, RST_PIN, PRG_PIN,
-                  1024, 100, &Serial);
+                  LED_PIN, RST_PIN, PRG_PIN);
 
     // Prepare initial App_PAL command
     command.u8DestinationLogicalId = TWE_TARGET_LID;

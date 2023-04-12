@@ -23,7 +23,7 @@ bool appuartascii::PacketParser::parse(const BarePacket& barePacket, mwings::Par
 
     parsedAppUartAsciiPacket->u8CommandId = barePacket.u8At(1);
     parsedAppUartAsciiPacket->u8Data = barePacket.u8From(2);
-    parsedAppUartAsciiPacket->u16DataSize = barePacket.size - 3;
+    parsedAppUartAsciiPacket->u16DataSize = barePacket.u16PayloadSize - 2;
 
     return true;
 }

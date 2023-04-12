@@ -30,9 +30,10 @@ class PacketParser final : public mwings::PacketParserBase {
 public:
     // Check if the packet is from App_Uart (Mode A)
     inline bool isValid(const BarePacket& barePacket) const override {
-        if (barePacket.u8At(0) == 0x00
+        if (((0x00 <= barePacket.u8At(0) and barePacket.u8At(0) <= 0x64)
+             or barePacket.u8At(0) == 0x78)
             and barePacket.u8At(1) < 0x80
-            and (4 <= barePacket.size and barePacket.size <= 643)) {
+            and (3 <= barePacket.u16PayloadSize and barePacket.u16PayloadSize <= 642)) {
             return true;
         }
         return false;
