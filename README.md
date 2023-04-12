@@ -38,40 +38,40 @@ It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent
 
 - **App_Twelite**
   - Get digital and analog input states.
-  - Pre-installed on TWELITE (SMD) and TWELITE DIP series.
+  - Pre-installed on [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) and [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) series.
   - Example:
     - [`monitor_spot_app_twelite.ino`](./examples/monitor_spot_app_twelite/monitor_spot_app_twelite.ino)
 - **App_ARIA (TWELITE ARIA mode)**
   - Get air temperature, relative humidity and magnet state.
-  - Pre-installed on TWELITE ARIA series.
+  - Pre-installed on [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) series.
   - Examples:
     - [`monitor_spot_app_aria.ino`](./examples/monitor_spot_app_aria/monitor_spot_app_aria.ino)
     - [`plotter_spot_app_aria.ino`](./examples/plotter_spot_app_aria/plotter_spot_app_aria.ino)
 - **App_CUE (TWELITE CUE mode)**
   - Get acceleration and magnet state.
-  - Pre-installed on TWELITE CUE series.
+  - Pre-installed on [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) series.
   - Example:
     - [`monitor_spot_app_cue.ino`](./examples/monitor_spot_app_cue/monitor_spot_app_cue.ino)
 - **App_PAL (AMBIENT)**
   - Get air temperature, relative humidity and illuminance.
-  - Pre-installed on TWELITE PAL series (App_PAL)
+  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL)
   - Examples:
     - [`monitor_spot_app_pal_amb.ino`](./examples/monitor_spot_app_pal_amb/monitor_spot_app_pal_amb.ino)
     - [`plotter_spot_app_pal_amb.ino`](./examples/plotter_spot_app_pal_amb/plotter_spot_app_pal_amb.ino)
 - **App_PAL (MOTION)** / **App_CUE (MOTION PAL mode)**
   - Get acceleration.
-  - Pre-installed on TWELITE PAL series (App_PAL) and TWELITE CUE series (App_CUE).
+  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL) and [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) series (App_CUE).
   - Examples:
     - [`monitor_spot_app_pal_mot.ino`](./examples/monitor_spot_app_pal_mot/monitor_spot_app_pal_mot.ino)
     - [`plotter_spot_app_pal_mot.ino`](./examples/plotter_spot_app_pal_mot/plotter_spot_app_pal_mot.ino)
 - **App_PAL (OPENCLOSE)** / **App_CUE (OPENCLOSE PAL mode)** / **App_ARIA (OPENCLOSE PAL mode)**
   - Get magnet state.
-  - Pre-installed on TWELITE PAL series (App_PAL), TWELITE ARIA series (App_ARIA) and TWELITE CUE series (App_CUE).
+  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL), [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) series (App_ARIA) and [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) series (App_CUE).
   - Example:
     - [`monitor_spot_app_pal_openclose.ino`](./examples/monitor_spot_app_pal_openclose/monitor_spot_app_pal_openclose.ino)
 - **App_Uart (Mode A, Simplified or Extended ASCII format)**
   - Get serial data received on TWELITE child devices.
-  - Pre-installed on TWELITE UART series.
+  - Pre-installed on [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) series.
   - Example:
     - [`monitor_spot_app_uart_ascii.ino`](./examples/monitor_spot_app_uart_ascii/monitor_spot_app_uart_ascii.ino)
 - **App_IO**
@@ -90,12 +90,17 @@ It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent
 
 - **App_Twelite**
   - Set digital output states and PWM duty ratios.
-  - Pre-installed on TWELITE (SMD) and TWELITE DIP series.
+  - Pre-installed on [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) and [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) series.
   - Example:
     - [`commander_spot_app_twelite.ino`](./examples/commander_spot_app_twelite/commander_spot_app_twelite.ino)
+- **App_Uart**
+  - Set serial data to send on TWELITE child devices.
+  - Pre-installed on [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) series.
+  - Example:
+    - [`commander_spot_app_uart_ascii.ino`](./examples/commander_spot_app_uart_ascii/commander_spot_app_uart_ascii.ino)
 - **App_PAL (NOTICE)**
   - Set full-color LED states.
-  - Pre-installed on TWELITE PAL series (App_PAL)
+  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL)
   - Examples:
     - [`commander_spot_app_pal_notice.ino`](./examples/commander_spot_app_pal_notice/commander_spot_app_pal_notice.ino)
     - [`commander_spot_app_pal_notice_detailed.ino`](./examples/commander_spot_app_pal_notice_detailed/commander_spot_app_pal_notice_detailed.ino)
