@@ -96,7 +96,7 @@ protected:
 class CommandSerializerBase {
 public:
     // Serialize command
-    virtual bool serialize(CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const = 0;
+    virtual bool serialize(const CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const = 0;
 protected:
     CommandSerializerBase() {}
     virtual ~CommandSerializerBase() {}

@@ -1,6 +1,6 @@
 /**
  * @file   AppUartAsciiPacketParser.cpp
- * @brief  App_Uart (A mode) packet parser for MWings.
+ * @brief  App_Uart (Mode A) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
@@ -21,7 +21,7 @@ bool appuartascii::PacketParser::parse(const BarePacket& barePacket, mwings::Par
     parsedAppUartAsciiPacket->u8Lqi = 0x00;
     parsedAppUartAsciiPacket->u16SupplyVoltage = 0x0000;
 
-    parsedAppUartAsciiPacket->u8ResponseId = barePacket.u8At(1);
+    parsedAppUartAsciiPacket->u8CommandId = barePacket.u8At(1);
     parsedAppUartAsciiPacket->u8Data = barePacket.u8From(2);
     parsedAppUartAsciiPacket->u16DataSize = barePacket.size - 3;
 

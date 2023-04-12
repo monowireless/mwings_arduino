@@ -10,18 +10,20 @@
 
 apppalnotice::EventCommandSerializer AppPalNoticeEventCommandSerializer;
 
-bool apppalnotice::EventCommandSerializer::serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const
+bool apppalnotice::EventCommandSerializer::serialize(const mwings::CommandBase* const command,
+                                                     uint8_t* const payload, const int maxPayloadSize,
+                                                     uint8_t* const checksum) const
 {
     constexpr int fixedPayloadSize = GetAppPalNoticeSerializedEventCommandPayloadSize();
     if (not (maxPayloadSize >= fixedPayloadSize)) { return false; }
-    if (not Serial.availableForWrite()) { return false; }
 
     // WARNING: Note that there is NO RTTI
-    AppPalNoticeEventCommand* const appPalNoticeEventCommand = static_cast<AppPalNoticeEventCommand*>(command);
+    const AppPalNoticeEventCommand* const appPalNoticeEventCommand = static_cast<const AppPalNoticeEventCommand*>(command);
 
     if (not appPalNoticeEventCommand->isValid()) { return false; }
 
-    payload[0] = (appPalNoticeEventCommand->u8DestinationLogicalId <= 0x64) ? appPalNoticeEventCommand->u8DestinationLogicalId : 0x64;
+    payload[0] = (appPalNoticeEventCommand->u8DestinationLogicalId <= 0x64)
+        ? appPalNoticeEventCommand->u8DestinationLogicalId : 0x64;
     payload[1] = 0x90;
     payload[2] = 1;
 

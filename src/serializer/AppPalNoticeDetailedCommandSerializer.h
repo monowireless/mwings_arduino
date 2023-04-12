@@ -19,7 +19,9 @@ struct AppPalNoticeRGBWColor {
 
     AppPalNoticeRGBWColor() : red(0), green(0), blue(0), white(15) {}
     AppPalNoticeRGBWColor(uint8_t r, uint8_t g, uint8_t b, uint8_t w) : red(r), green(g), blue(b), white(w) {}
-    inline bool isValid() const { return (red <= 0xF and green <= 0xF and blue <= 0xF and white <= 0xF); }
+    inline bool isValid() const {
+        return (red <= 0xF and green <= 0xF and blue <= 0xF and white <= 0xF);
+    }
     inline uint16_t u16() const {
         return (((white & 0xF) << 12)
                 | ((blue & 0xF) << 8)
@@ -67,7 +69,9 @@ namespace apppalnotice {
 class DetailedCommandSerializer final : public mwings::CommandSerializerBase {
 public:
     // Serialize command
-    bool serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
+    bool serialize(const mwings::CommandBase* const command,
+                   uint8_t* const payload, const int maxPayloadSize,
+                   uint8_t* const checksum) const override;
 };
 }
 

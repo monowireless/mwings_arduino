@@ -66,7 +66,9 @@ namespace apppalnotice {
 class CommandSerializer final : public mwings::CommandSerializerBase {
 public:
     // Serialize command
-    bool serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const override;
+    bool serialize(const mwings::CommandBase* const command,
+                   uint8_t* const payload, const int maxPayloadSize,
+                   uint8_t* const checksum) const override;
 };
 }
 

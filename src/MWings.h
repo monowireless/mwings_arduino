@@ -36,13 +36,15 @@
 #include "parser/AppPalAmbPacketParser.h"
 //// AppPalMotPacketParser for App_PAL (MOT)
 #include "parser/AppPalMotPacketParser.h"
-//// AppUartAsciiPacketParser for App_Uart (A mode)
+//// AppUartAsciiPacketParser for App_Uart (Mode A)
 #include "parser/AppUartAsciiPacketParser.h"
-//// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+//// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
 #include "parser/AppUartAsciiExtendedPacketParser.h"
 
 //// AppTweliteCommandSerializer for App_Twelite
 #include "serializer/AppTweliteCommandSerializer.h"
+//// AppUartAsciiCommandSerializer for App_Uart (Mode A)
+#include "serializer/AppUartAsciiCommandSerializer.h"
 //// AppPalNoticeCommandSerializer for App_PAL (NOTICE)
 #include "serializer/AppPalNoticeCommandSerializer.h"
 //// AppPalNoticeDetailedCommandSerializer for App_PAL (NOTICE), detailed
@@ -73,9 +75,9 @@ public:
                _onAppPalAmbPacket(nullptr),
                //// AppPalMotPacketParser for App_PAL (MOT)
                _onAppPalMotPacket(nullptr),
-               //// AppUartAsciiPacketParser for App_Uart (A mode)
+               //// AppUartAsciiPacketParser for App_Uart (Mode A)
                _onAppUartAsciiPacket(nullptr),
-               //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+               //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
                _onAppUartAsciiExtendedPacket(nullptr),
                _onBarePacket()
         {}
@@ -109,9 +111,9 @@ public:
         _onAppPalAmbPacket = nullptr;
         //// AppPalMotPacketParser for App_PAL (MOT)
         _onAppPalMotPacket = nullptr;
-        //// AppUartAsciiPacketParser for App_Uart (A mode)
+        //// AppUartAsciiPacketParser for App_Uart (Mode A)
         _onAppUartAsciiPacket = nullptr;
-        //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+        //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
         _onAppUartAsciiExtendedPacket = nullptr;
         _onBarePacket = nullptr;
     }
@@ -282,9 +284,9 @@ public:
     inline void on(void (*callback)(const ParsedAppPalAmbPacket& packet)) { _onAppPalAmbPacket = callback; }
     //// AppPalMotPacketParser for App_PAL (MOT)
     inline void on(void (*callback)(const ParsedAppPalMotPacket& packet)) { _onAppPalMotPacket = callback; }
-    //// AppUartAsciiPacketParser for App_Uart (A mode)
+    //// AppUartAsciiPacketParser for App_Uart (Mode A)
     inline void on(void (*callback)(const ParsedAppUartAsciiPacket& packet)) { _onAppUartAsciiPacket = callback; }
-    //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+    //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
     inline void on(void (*callback)(const ParsedAppUartAsciiExtendedPacket& packet)) { _onAppUartAsciiExtendedPacket = callback; }
 
     inline void on(void (*callback)(const BarePacket& packet)) { _onBarePacket = callback; }
@@ -360,6 +362,23 @@ public:
         }
         return false;
     }
+    //// AppUartAsciiCommandSerializer for App_Uart (Mode A)
+    inline bool send(AppUartAsciiCommand& command, uint32_t timeout = 0) {
+        const int flexibleSize = command.u16DataSize + 2;
+        uint8_t payload[flexibleSize];
+        uint8_t checksum;
+        if (AppUartAsciiCommandSerializer.serialize(&command, payload, flexibleSize, &checksum)) {
+            if (not send(payload, flexibleSize, checksum)) { return false; }
+            if (timeout > 0) {
+                bool found = Utils::FindAscii(_serial, ":DBA1", timeout);
+                Utils::FlushRxBuffer(_serial);
+                return found;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
     //// AppPalNoticeCommandSerializer for App_PalNotice
     inline bool send(AppPalNoticeCommand& command) {
         constexpr int fixedSize = GetAppPalNoticeSerializedCommandPayloadSize();
@@ -406,9 +425,9 @@ private:
     void (*_onAppPalAmbPacket)(const ParsedAppPalAmbPacket& packet);
     //// AppPalMotPacketParser for App_PAL (MOT)
     void (*_onAppPalMotPacket)(const ParsedAppPalMotPacket& packet);
-    //// AppUartAsciiPacketParser for App_Uart (A mode)
+    //// AppUartAsciiPacketParser for App_Uart (Mode A)
     void (*_onAppUartAsciiPacket)(const ParsedAppUartAsciiPacket& packet);
-    //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+    //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
     void (*_onAppUartAsciiExtendedPacket)(const ParsedAppUartAsciiExtendedPacket& packet);
 
     void (*_onBarePacket)(const BarePacket& packet);

@@ -1,6 +1,6 @@
 /**
  * @file   AppUartAsciiPacketParser.h
- * @brief  App_Uart (A mode) packet parser for MWings.
+ * @brief  App_Uart (Mode A) packet parser for MWings.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
@@ -13,25 +13,25 @@
 
 /**
  * @struct ParsedAppUartAsciiPacket
- * @brief  Packet content for App_Uart (A mode)
+ * @brief  Packet content for App_Uart (Mode A)
  */
 struct ParsedAppUartAsciiPacket final : public mwings::ParsedPacketBase {
-    uint8_t u8ResponseId;
+    uint8_t u8CommandId;
     uint8_t* u8Data;
     uint16_t u16DataSize;
 };
 
 /**
  * @class appuartascii::PacketParser
- * @brief  Packet parser for App_Uart (A mode)
+ * @brief  Packet parser for App_Uart (Mode A)
  */
 namespace appuartascii {
 class PacketParser final : public mwings::PacketParserBase {
 public:
-    // Check if the packet is from App_Uart (A mode)
+    // Check if the packet is from App_Uart (Mode A)
     inline bool isValid(const BarePacket& barePacket) const override {
-        if (((0x00 <= barePacket.u8At(0) and barePacket.u8At(0) <= 0x64) or barePacket.u8At(0) == 0x78)
-            and (barePacket.u8At(1) < 0x80)
+        if (barePacket.u8At(0) == 0x00
+            and barePacket.u8At(1) < 0x80
             and (4 <= barePacket.size and barePacket.size <= 643)) {
             return true;
         }

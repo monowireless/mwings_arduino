@@ -54,9 +54,9 @@ bool MWings::begin(HardwareSerial& serial,
     _onAppPalAmbPacket = nullptr;
     //// AppPalMotPacketParser for App_PAL (MOT)
     _onAppPalMotPacket = nullptr;
-    //// AppUartAsciiPacketParser for App_Uart (A mode)
+    //// AppUartAsciiPacketParser for App_Uart (Mode A)
     _onAppUartAsciiPacket = nullptr;
-    //// AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+    //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
     _onAppUartAsciiExtendedPacket = nullptr;
 
     _onBarePacket = nullptr;
@@ -282,23 +282,23 @@ void MWings::update()
             }
             //// End: AppPalMotPacketParser for App_PAL (MOT)
 
-            //// Start: AppUartAsciiPacketParser for App_Uart (A mode)
+            //// Start: AppUartAsciiPacketParser for App_Uart (Mode A)
             if (AppUartAsciiPacketParser.isValid(barePacket) and _onAppUartAsciiPacket) {
                 ParsedAppUartAsciiPacket parsedAppUartAsciiPacket;
                 if (AppUartAsciiPacketParser.parse(barePacket, &parsedAppUartAsciiPacket)) {
                     _onAppUartAsciiPacket(parsedAppUartAsciiPacket);
                 }
             }
-            //// End: AppUartAsciiPacketParser for App_Uart (A mode)
+            //// End: AppUartAsciiPacketParser for App_Uart (Mode A)
 
-            //// Start: AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+            //// Start: AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
             if (AppUartAsciiExtendedPacketParser.isValid(barePacket) and _onAppUartAsciiExtendedPacket) {
                 ParsedAppUartAsciiExtendedPacket parsedAppUartAsciiExtendedPacket;
                 if (AppUartAsciiExtendedPacketParser.parse(barePacket, &parsedAppUartAsciiExtendedPacket)) {
                     _onAppUartAsciiExtendedPacket(parsedAppUartAsciiExtendedPacket);
                 }
             }
-            //// End: AppUartAsciiExtendedPacketParser for App_Uart (A mode, extended)
+            //// End: AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
 
             if (_onBarePacket) {
                 _onBarePacket(barePacket);

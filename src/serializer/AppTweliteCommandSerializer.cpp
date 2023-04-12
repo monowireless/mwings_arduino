@@ -10,18 +10,20 @@
 
 apptwelite::CommandSerializer AppTweliteCommandSerializer;
 
-bool apptwelite::CommandSerializer::serialize(mwings::CommandBase* const command, uint8_t* const payload, const int maxPayloadSize, uint8_t* const checksum) const
+bool apptwelite::CommandSerializer::serialize(const mwings::CommandBase* const command,
+                                              uint8_t* const payload, const int maxPayloadSize,
+                                              uint8_t* const checksum) const
 {
     constexpr int fixedPayloadSize = GetAppTweliteSerializedCommandPayloadSize();
     if (not (maxPayloadSize >= fixedPayloadSize)) { return false; }
-    if (not Serial.availableForWrite()) { return false; }
 
     // WARNING: Note that there is NO RTTI
-    AppTweliteCommand* const appTweliteCommand = static_cast<AppTweliteCommand*>(command);
+    const AppTweliteCommand* const appTweliteCommand = static_cast<const AppTweliteCommand*>(command);
 
     if (not appTweliteCommand->isValid()) { return false; }
 
-    payload[0] = (appTweliteCommand->u8DestinationLogicalId <= 0x78) ? appTweliteCommand->u8DestinationLogicalId : 0x78;
+    payload[0] = (appTweliteCommand->u8DestinationLogicalId <= 0x78)
+        ? appTweliteCommand->u8DestinationLogicalId : 0x78;
     payload[1] = 0x80;
     payload[2] = 0x01;
     payload[3] = 0; payload[4] = 0;
@@ -32,9 +34,13 @@ bool apptwelite::CommandSerializer::serialize(mwings::CommandBase* const command
             payload[5+2*i+0] = 0xFF;
             payload[5+2*i+1] = 0xFF;
         } else {
-            if (appTweliteCommand->u16PwmDuty[i] > 1024) { appTweliteCommand->u16PwmDuty[i] = 1024; }
-            payload[5+2*i+0] = static_cast<uint8_t>(appTweliteCommand->u16PwmDuty[i] >> 8);
-            payload[5+2*i+1] = static_cast<uint8_t>(appTweliteCommand->u16PwmDuty[i] & 0xFF);
+            if (appTweliteCommand->u16PwmDuty[i] > 1024) {
+                payload[5+2*i+0] = static_cast<uint8_t>(1024 >> 8);
+                payload[5+2*i+1] = static_cast<uint8_t>(1024 & 0xFF);
+            } else {
+                payload[5+2*i+0] = static_cast<uint8_t>(appTweliteCommand->u16PwmDuty[i] >> 8);
+                payload[5+2*i+1] = static_cast<uint8_t>(appTweliteCommand->u16PwmDuty[i] & 0xFF);
+            }
         }
     }
 
