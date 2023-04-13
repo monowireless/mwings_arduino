@@ -19,8 +19,8 @@ void setup()
 
     // Initialize TWELITE
     Twelite.begin(Serial2,
-                  TWE_CHANNEL, TWE_APP_ID,
-                  LED_PIN, RST_PIN, PRG_PIN);
+                  LED_PIN, RST_PIN, PRG_PIN,
+                  TWE_CHANNEL, TWE_APP_ID);
 
     // Attach an event handler to process packets from App_Twelite
     Twelite.on([](const ParsedAppTwelitePacket& packet) {

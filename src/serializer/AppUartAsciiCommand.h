@@ -1,13 +1,16 @@
 /**
- * @file   AppUartAsciiCommandSerializer.h
- * @brief  App_Uart (Mode A) command serializer for MWings.
+ * @file   AppUartAsciiCommand.h
+ * @brief  App_Uart (Mode A) command for MWings.
+ *
+ * There's no need to serialize AppUartAsciiCommand.
+ * Use MWings::send(const uint8_t, const uint8_t, const uint8_t* const, const int) directly.
  *
  * Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
  * Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
  */
 
-#ifndef APPUARTASCIICOMMANDSERIALIZER_H
-#define APPUARTASCIICOMMANDSERIALIZER_H
+#ifndef APPUARTASCIICOMMAND_H
+#define APPUARTASCIICOMMAND_H
 
 #include "MWings_Common.h"
 
@@ -32,20 +35,9 @@ struct AppUartAsciiCommand final : public mwings::CommandBase {
     }
 };
 
-/**
- * @class appuartascii::CommandSerializer
- * @brief   command serializer for App_Uart (Mode A)
- */
 namespace appuartascii {
-class CommandSerializer final : public mwings::CommandSerializerBase {
-public:
-    // Serialize command
-    bool serialize(const mwings::CommandBase* const command,
-                   uint8_t* const payload, const int payloadSize,
-                   uint8_t* const checksum) const override;
-};
+// There's no need to serialize AppUartAsciiCommand.
+// Use MWings::send(const uint8_t, const uint8_t, const uint8_t* const, const int) directly.
 }
 
-extern appuartascii::CommandSerializer AppUartAsciiCommandSerializer;
-
-#endif  // APPUARTASCIICOMMANDSERIALIZER_H
+#endif  // APPUARTASCIICOMMAND_H

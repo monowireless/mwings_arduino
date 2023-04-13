@@ -1,4 +1,4 @@
-// Commander example for TWELITE SPOT: Send command to App_Uart (Mode A)
+// Commander example for TWELITE SPOT: Send longest command to App_Uart (Mode A)
 
 #include <Arduino.h>
 #include "MWings.h"
@@ -14,7 +14,7 @@ const uint8_t TWE_TX_POWER = 3;
 
 const uint8_t TWE_TARGET_LID = 0x78;
 
-constexpr int DataSize = 2;
+constexpr int DataSize = 640;
 uint8_t DataToSend[DataSize];
 
 AppUartAsciiCommand command;
@@ -27,7 +27,7 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Commander example for TWELITE SPOT: App_Uart (Mode A)");
+    Serial.println("Commander example for TWELITE SPOT: App_Uart (Mode A), longest");
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE
@@ -36,9 +36,10 @@ void setup()
                   TWE_CHANNEL, TWE_APP_ID,
                   TWE_RETRY_COUNT, TWE_TX_POWER);
 
-    // Prepare initial App_Uart command
-    DataToSend[0] = 0xBE;
-    DataToSend[1] = 0xEF;
+    // Prepare App_Uart command
+    for (int i = 0; i < DataSize; i++) {
+        DataToSend[i] = i % UINT8_MAX;
+    }
     command.u8DestinationLogicalId = TWE_TARGET_LID;
     command.u8CommandId = 0x01;
     command.u16DataSize = DataSize;
@@ -58,7 +59,7 @@ void loop()
         int c = Serial.read();
         switch (c) {
         case ' ': {
-            if (Twelite.send(command, 100)) {       // Timeout: 100ms
+            if (Twelite.send(command, 1000)) {       // Timeout: 1000ms
                 Serial.println("Sent data below:");
                 printData();
             } break;

@@ -9,6 +9,9 @@ const int LED_PIN = 18;
 
 const uint8_t TWE_CHANNEL = 18;
 const uint32_t TWE_APP_ID = 0x67720102;
+const uint8_t TWE_RETRY_COUNT = 2;
+const uint8_t TWE_TX_POWER = 3;
+
 const uint8_t TWE_TARGET_LID = 0x78;
 
 AppTweliteCommand command;
@@ -25,8 +28,9 @@ void setup()
 
     // Initialize TWELITE
     Twelite.begin(Serial2,
+                  LED_PIN, RST_PIN, PRG_PIN,
                   TWE_CHANNEL, TWE_APP_ID,
-                  LED_PIN, RST_PIN, PRG_PIN);
+                  TWE_RETRY_COUNT, TWE_TX_POWER);
 
     // Prepare initial App_Twelite command
     command.u8DestinationLogicalId = TWE_TARGET_LID;

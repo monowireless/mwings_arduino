@@ -54,7 +54,7 @@ It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent
     - [`monitor_spot_app_cue.ino`](./examples/monitor_spot_app_cue/monitor_spot_app_cue.ino)
 - **App_PAL (AMBIENT)**
   - Get air temperature, relative humidity and illuminance.
-  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL)
+  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL).
   - Examples:
     - [`monitor_spot_app_pal_amb.ino`](./examples/monitor_spot_app_pal_amb/monitor_spot_app_pal_amb.ino)
     - [`plotter_spot_app_pal_amb.ino`](./examples/plotter_spot_app_pal_amb/plotter_spot_app_pal_amb.ino)
@@ -100,7 +100,7 @@ It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent
     - [`commander_spot_app_uart_ascii.ino`](./examples/commander_spot_app_uart_ascii/commander_spot_app_uart_ascii.ino)
 - **App_PAL (NOTICE)**
   - Set full-color LED states.
-  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL)
+  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL).
   - Examples:
     - [`commander_spot_app_pal_notice.ino`](./examples/commander_spot_app_pal_notice/commander_spot_app_pal_notice.ino)
     - [`commander_spot_app_pal_notice_detailed.ino`](./examples/commander_spot_app_pal_notice_detailed/commander_spot_app_pal_notice_detailed.ino)

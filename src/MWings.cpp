@@ -20,9 +20,10 @@ MWings::~MWings()
 }
 
 bool MWings::begin(HardwareSerial& serial,
-                   const uint8_t channel, const uint32_t appId,
                    const int indicatorPin, const int resetPin, const int programPin,
-                   const int bufferSize, const int timeout,
+                   const uint8_t channel, const uint32_t appId,
+                   const uint8_t retryCount, const uint8_t txPower,
+                   const int rxBufferSize, const int timeout,
                    HardwareSerial* debugSerial)
 {
     _serial = &serial;
@@ -32,8 +33,8 @@ bool MWings::begin(HardwareSerial& serial,
     _isIndicatorOn = false;
     _indicatorTimestamp = UINT32_MAX;
     _indicatorDuration = 0;
-    _buffer = new uint8_t[bufferSize];
-    _bufferSize = bufferSize;
+    _buffer = new uint8_t[rxBufferSize];
+    _rxBufferSize = rxBufferSize;
     _characterCount = 0;
     _checksum = 0;
     _timeout = timeout;
@@ -122,6 +123,10 @@ bool MWings::begin(HardwareSerial& serial,
         debugPrint("Successfully set application id.");
 
         // Set channel
+        if (not (11 <= channel and channel <= 26)) {
+            debugPrint("Channel is invalid.");
+            return false;
+        }
         const uint32_t channelMask = 0x00000000 | (1 << channel);
         for (int i = 0; i < commandAttempts; i++) {
             beginCommand();
@@ -139,6 +144,30 @@ bool MWings::begin(HardwareSerial& serial,
         }
 
         debugPrint("Successfully set the channel.");
+
+        // Set retry count and tx power
+        if (not ((0 <= retryCount and retryCount <= 9)
+                 and (0 <= txPower and txPower <= 3))) {
+            debugPrint("Retry count or tx power is invalid.");
+            return false;
+        }
+        const uint8_t retryAndTx = (retryCount << 4) | txPower;
+        for (int i = 0; i < commandAttempts; i++) {
+            beginCommand();
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(0x01));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Parameter::RETRY_TX));
+            Utils::WriteInAscii(_serial, static_cast<uint16_t>(retryAndTx));
+            endCommand();
+            if (ensureParameterSet(timeout)) {
+                break;
+            } else if (not ((i+1) < commandAttempts)) {
+                debugPrint("Failed to set the retry count and tx power.");
+                return false;   // No remaining attempts
+            }
+        }
+
+        debugPrint("Successfully set the retry count and tx power.");
 
         // Save
         bool modified;
@@ -347,7 +376,7 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
             // Valid hex character
 
             // Abort if the buffer is overflowing
-            if (Utils::ByteCountFrom(_characterCount) >= _bufferSize) {
+            if (Utils::ByteCountFrom(_characterCount) >= _rxBufferSize) {
                 state = MWings::State::UNKNOWN_ERROR;
                 debugPrint("OVERFLOW ERROR");
                 break;

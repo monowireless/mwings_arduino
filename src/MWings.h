@@ -43,8 +43,8 @@
 
 //// AppTweliteCommandSerializer for App_Twelite
 #include "serializer/AppTweliteCommandSerializer.h"
-//// AppUartAsciiCommandSerializer for App_Uart (Mode A)
-#include "serializer/AppUartAsciiCommandSerializer.h"
+//// AppUartAsciiCommand for App_Uart (Mode A)
+#include "serializer/AppUartAsciiCommand.h"
 //// AppPalNoticeCommandSerializer for App_PAL (NOTICE)
 #include "serializer/AppPalNoticeCommandSerializer.h"
 //// AppPalNoticeDetailedCommandSerializer for App_PAL (NOTICE), detailed
@@ -58,7 +58,7 @@ public:
     MWings() : _serial(nullptr),
                _indicatorPin(-1), _resetPin(-1), _programPin(-1),
                _isIndicatorOn(false), _indicatorTimestamp(UINT32_MAX), _indicatorDuration(0),
-               _buffer(nullptr), _bufferSize(0), _characterCount(0), _checksum(0),
+               _buffer(nullptr), _rxBufferSize(0), _characterCount(0), _checksum(0),
                _timeout(0), _latestTimestamp(UINT32_MAX),
                _debugSerial(nullptr),
                //// AppTwelitePacketParser for App_Twelite
@@ -84,9 +84,10 @@ public:
     ~MWings();
 
     bool begin(HardwareSerial& serial,
-               const uint8_t channel = 18, const uint32_t appId = 0x67720102,
                const int indicatorPin = -1, const int resetPin = -1, const int programPin = -1,
-               const int bufferSize = 1024, const int timeout = 100,
+               const uint8_t channel = 18, const uint32_t appId = 0x67720102,
+               const uint8_t retryCount = 2, const uint8_t txPower = 3,
+               const int rxBufferSize = 1024, const int timeout = 100,
                HardwareSerial* debugSerial = nullptr);
 
     inline void end() {
@@ -94,7 +95,7 @@ public:
         _indicatorPin = -1, _resetPin = -1; _programPin = -1;
         _isIndicatorOn = false; _indicatorTimestamp = UINT32_MAX; _indicatorDuration = 0;
         if (_buffer) { delete[] _buffer; }
-        _bufferSize = 0; _characterCount = 0; _checksum = 0;
+        _rxBufferSize = 0; _characterCount = 0; _checksum = 0;
         _timeout = 0; _latestTimestamp = UINT32_MAX;
         _debugSerial = nullptr;
         //// AppTwelitePacketParser for App_Twelite
@@ -146,7 +147,7 @@ private:
     enum class Parameter : uint8_t {
         APP_ID = 0x01,
         CH_MASK = 0x02,
-        TX_RETRY = 0x03,
+        RETRY_TX = 0x03,
         ROUTING_LAYER = 0x04,
         AP_ADDRESS = 0x05,
         UART_BAUDRATE = 0x06,
@@ -261,7 +262,7 @@ private:
     uint16_t _indicatorDuration;
 
     uint8_t* _buffer;
-    int _bufferSize;
+    int _rxBufferSize;
     int _characterCount;
     uint16_t _checksum;
     uint16_t _timeout;
@@ -362,20 +363,17 @@ public:
         }
         return false;
     }
-    //// AppUartAsciiCommandSerializer for App_Uart (Mode A)
+    //// AppUartAsciiCommand for App_Uart (Mode A)
     inline bool send(AppUartAsciiCommand& command, uint32_t timeout = 0) {
-        const int flexibleSize = command.u16DataSize + 2;
-        uint8_t payload[flexibleSize];
-        uint8_t checksum;
-        if (AppUartAsciiCommandSerializer.serialize(&command, payload, flexibleSize, &checksum)) {
-            if (not send(payload, flexibleSize, checksum)) { return false; }
-            if (timeout > 0) {
-                bool found = Utils::FindAscii(_serial, ":DBA1", timeout);
-                Utils::FlushRxBuffer(_serial);
-                return found;
-            } else {
-                return true;
-            }
+        // There's no need to serialize AppUartAsciiCommand
+        if (not send(command.u8DestinationLogicalId, command.u8CommandId,
+                     command.u8Data, command.u16DataSize)) { return false; }
+        if (timeout > 0) {
+            bool foundOrNot = Utils::FindAscii(_serial, ":DBA1", timeout);
+            Utils::FlushRxBuffer(_serial);
+            return foundOrNot;
+        } else {
+            return true;
         }
         return false;
     }

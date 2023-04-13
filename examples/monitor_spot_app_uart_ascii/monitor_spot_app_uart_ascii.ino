@@ -21,9 +21,9 @@ void setup()
 
     // Initialize TWELITE
     Twelite.begin(Serial2,
-                  TWE_CHANNEL, TWE_APP_ID,
                   LED_PIN, RST_PIN, PRG_PIN,
-                  1300, 50);                   // Buffer size for each packet, timeout
+                  TWE_CHANNEL, TWE_APP_ID,
+                  2, 3, 1300, 100);
 
     // Attach an event handler to process simplified packets from App_Uart
     Twelite.on([](const ParsedAppUartAsciiPacket& packet) {
