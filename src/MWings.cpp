@@ -357,7 +357,7 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
             const uint8_t hexValue = Utils::HexFrom(character);
 
             // Get a pointer for the new byte
-            uint8_t* const newByte = &_buffer[Utils::ByteCountFrom(_characterCount)];
+            uint8_t* const newByte = &(_buffer[Utils::ByteCountFrom(_characterCount) + 1 - 1]);
 
             // Add byte
             if (_characterCount++ & 1) {
@@ -416,6 +416,7 @@ MWings::State MWings::processAscii(const uint8_t character, BarePacket& barePack
     if (state == MWings::State::COMPLETED) {
         barePacket.u16PayloadSize = Utils::ByteCountFrom(_characterCount) - 1; // -1 for checksum
         barePacket.u8Payload = _buffer;
+        barePacket.u8Checksum = _buffer[Utils::ByteCountFrom(_characterCount) - 1]; // -1 for index
     }
 
     return state;

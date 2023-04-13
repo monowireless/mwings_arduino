@@ -18,6 +18,7 @@
 struct BarePacket {
     uint8_t* u8Payload;
     uint16_t u16PayloadSize;
+    uint8_t u8Checksum;
 
     inline uint8_t* u8From(const int index) const {
         return ((index < u16PayloadSize) ? u8Payload + index : nullptr);

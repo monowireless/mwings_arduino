@@ -29,16 +29,17 @@ void setup()
         // Print timestamp
         static uint32_t lastTimestamp = 0;
         uint32_t currentTimestamp = millis();
-        Serial.print("[");
+        Serial.print("[Timestamp] ");
         Serial.print(currentTimestamp, DEC); Serial.print(" ms, +");
-        Serial.print(currentTimestamp - lastTimestamp, DEC); Serial.println(" ms]");
+        Serial.print(currentTimestamp - lastTimestamp, DEC); Serial.println(" ms");
         lastTimestamp = currentTimestamp;
-        // Print packet payload
+        // Print packet
         Serial.print(":");
-        for (int i = 0; i < packet.size; i++) {
-            printByte(packet.payload[i]);
+        for (int i = 0; i < packet.u16PayloadSize; i++) {
+            printByte(packet.u8Payload[i]);
         }
-        Serial.println("");
+        printByte(packet.u8Checksum);
+        Serial.println("[CR][LF]");
     });
 }
 

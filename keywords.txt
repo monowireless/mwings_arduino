@@ -76,8 +76,9 @@ u8CommandId				KEYWORD2
 u8Data					KEYWORD2
 u16DataSize				KEYWORD2
 
-payload					KEYWORD2
-size					KEYWORD2
+u8Payload				KEYWORD2
+u16PayloadSize				KEYWORD2
+u8Checksum				KEYWORD2
 
 u8DestinationLogicalId			KEYWORD2
 bDiToChange				KEYWORD2
