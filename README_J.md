@@ -8,117 +8,113 @@
 
 [![Arduino Lint](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml/badge.svg?branch=main&event=push)](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml) [![MW-OSSLA](https://img.shields.io/badge/License-MW--OSSLA-e4007f)](LICENSE.md)
 
-[日本語版はこちら](README_J.md)
+## 目次
 
-## Contents
+- [概要](#概要)
+- [要件](#要件)
+- [機能](#機能)
+- [動作説明](#動作説明)
+- [ライセンス](#ライセンス)
 
-- [About](#about)
-- [Requirements](#requirements)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [License](#license)
+## 概要
 
-## About
+MWings は、TWELITE 無線モジュールと通信するためのライブラリです。[TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) シリーズに最適です。
 
-MWings is a library that communicate with TWELITE wireless modules.
+このライブラリでは、接続した TWELITE 親機を通じて、TWELITE 子機からのパケット受信や TWELITE 子機へのコマンド送信を行うことができます。
 
-This library is suitable for [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) series.
+## 要件
 
-You can receive packets from TWELITE child devices and send commands to TWELITE child devices through the connected TWELITE parent device.
+32ビット Arduino ボード（esp32, esp8266, stm32, sam, rp2040）向けに実装しています。ESP32 シリーズでテストしています。
 
-## Requirements
+**8ビット Arduino ボード（UNO R3など）はサポートしていません**。
 
-Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on ESP32 series.
+ボードに接続する **TWELITE 親機には、App_Wings (>= v1.3.0)** の使用を強く推奨します。
 
-**8-bit Arduino boards (like UNO R3) are NOT supported.**
+## 機能
 
-It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent device** connected with the board.
-
-## Features
-
-### Receive and Parse Packets from
+### パケットの受信と解釈
 
 - App_Twelite
-  - Get digital and analog input states.
-  - Pre-installed on [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) and [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) series.
-  - Example:
+  - デジタル入力の状態とアナログ入力の電圧値を取得します。
+  - [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) と [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) にプリインストールされています。
+  - 使用例:
     - [`monitor_spot_app_twelite.ino`](./examples/monitor_spot_app_twelite/monitor_spot_app_twelite.ino)
 - App_ARIA (TWELITE ARIA mode)
-  - Get air temperature, relative humidity and magnet state.
-  - Pre-installed on [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) series.
-  - Examples:
+  - 気温、湿度と磁石の状態を取得します。
+  - [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) にプリインストールされています。
+  - 使用例：
     - [`monitor_spot_app_aria.ino`](./examples/monitor_spot_app_aria/monitor_spot_app_aria.ino)
     - [`plotter_spot_app_aria.ino`](./examples/plotter_spot_app_aria/plotter_spot_app_aria.ino)
 - App_CUE (TWELITE CUE mode)
-  - Get acceleration and magnet state.
-  - Pre-installed on [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) series.
-  - Example:
+  - 加速度と磁石の状態を取得します。
+  - [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) にプリインストールされています。
+  - 使用例：
     - [`monitor_spot_app_cue.ino`](./examples/monitor_spot_app_cue/monitor_spot_app_cue.ino)
 - App_PAL (AMBIENT)
-  - Get air temperature, relative humidity and illuminance.
-  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL).
-  - Examples:
+  - 気温、湿度と照度を取得します。
+  - [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) シリーズにプリインストールされています (App_PAL) 。
+  - 使用例：
     - [`monitor_spot_app_pal_amb.ino`](./examples/monitor_spot_app_pal_amb/monitor_spot_app_pal_amb.ino)
     - [`plotter_spot_app_pal_amb.ino`](./examples/plotter_spot_app_pal_amb/plotter_spot_app_pal_amb.ino)
 - App_PAL (MOTION) / App_CUE (MOTION PAL mode)
-  - Get acceleration.
-  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL) and [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) series (App_CUE).
-  - Examples:
+  - 加速度を取得します。
+  - [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) シリーズ (App_PAL) および [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) シリーズ (App_CUE) にプリインストールされています。
+  - 使用例：
     - [`monitor_spot_app_pal_mot.ino`](./examples/monitor_spot_app_pal_mot/monitor_spot_app_pal_mot.ino)
     - [`plotter_spot_app_pal_mot.ino`](./examples/plotter_spot_app_pal_mot/plotter_spot_app_pal_mot.ino)
 - App_PAL (OPENCLOSE) / App_CUE (OPENCLOSE PAL mode) / App_ARIA (OPENCLOSE PAL mode)
-  - Get magnet state.
-  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL), [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) series (App_ARIA) and [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) series (App_CUE).
-  - Example:
+  - 磁石の状態を取得します。
+  - [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) シリーズ (App_PAL) 、 [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) シリーズ (App_ARIA) および [TWELITE CUE](https://mono-wireless.com/jp/products/twelite-cue/index.html) シリーズ (App_CUE) にプリインストールされています。
+  - 使用例：
     - [`monitor_spot_app_pal_openclose.ino`](./examples/monitor_spot_app_pal_openclose/monitor_spot_app_pal_openclose.ino)
-- App_Uart (Mode A, Simplified or Extended ASCII format)
-  - Get serial data received on TWELITE child devices.
-  - Pre-installed on [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) series.
-  - Example:
+- App_Uart (Mode A, アスキー書式の簡易形式または拡張形式)
+  - TWELTIE 子機で受信したシリアルデータを取得します。
+  - [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) にプリインストールされています。
+  - 使用例：
     - [`monitor_spot_app_uart_ascii.ino`](./examples/monitor_spot_app_uart_ascii/monitor_spot_app_uart_ascii.ino)
 - App_IO
-  - Get digital input states.
-  - Example:
+  - デジタル入力の状態を取得します。
+  - 使用例：
     - [`monitor_spot_app_io.ino`](./examples/monitor_spot_app_io/monitor_spot_app_io.ino)
 
-### Receive Packets from
+### パケットの受信
 
-- Any TWELITE
-  - Get binary payload with ASCII-formatted serial input (starts with `:` and ends with `CRLF`).
-  - Example:
+- すべての TWELITE
+  - アスキー形式のシリアル入力から、ペイロードのバイナリデータを取得します（`:`で始まり、`CRLF`で終わるもの）。
+  - 使用例：
     - [`monitor_spot_any.ino`](./examples/monitor_spot_any/monitor_spot_any.ino)
 
-### Serialize and Send Commands to
+### パケットの生成と送信
 
 - App_Twelite
-  - Set digital output states and PWM duty ratios.
-  - Pre-installed on [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) and [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) series.
-  - Example:
+  - デジタル出力の状態と PWM のデューティ比を設定します。
+  - [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) and [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) にプリインストールされています。
+  - 使用例：
     - [`commander_spot_app_twelite.ino`](./examples/commander_spot_app_twelite/commander_spot_app_twelite.ino)
-- App_Uart (Mode A, Simplified ASCII format)
-  - Set serial data to send on TWELITE child devices.
-  - Pre-installed on [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) series.
-  - Example:
+- App_Uart (Mode A, アスキー書式の簡易形式)
+  - TWELITE 子機から送信するシリアルデータを設定します。
+  - [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) にプリインストールされています。
+  - 使用例：
     - [`commander_spot_app_uart_ascii.ino`](./examples/commander_spot_app_uart_ascii/commander_spot_app_uart_ascii.ino)
 - App_PAL (NOTICE)
-  - Set full-color LED states.
-  - Pre-installed on [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) series (App_PAL).
-  - Examples:
+  - フルカラー LED の点灯状態を設定します。
+  - [TWELITE PAL](https://mono-wireless.com/jp/products/twelite-pal/index.html) シリーズにプリインストールされています (App_PAL) 。
+  - 使用例：
     - [`commander_spot_app_pal_notice.ino`](./examples/commander_spot_app_pal_notice/commander_spot_app_pal_notice.ino)
     - [`commander_spot_app_pal_notice_detailed.ino`](./examples/commander_spot_app_pal_notice_detailed/commander_spot_app_pal_notice_detailed.ino)
     - [`commander_spot_app_pal_notice_event.ino`](./examples/commander_spot_app_pal_notice_event/commander_spot_app_pal_notice_event.ino)
 
-### Send Commands to
+### パケットの送信
 
-- Any TWELITE
-  - Set some binary data with ASCII-formatted serial output (starts with `:` and ends with `CRLF`).
-  - Examples:
+- すべての TWELITE
+  - ペイロードのバイナリデータから、アスキー形式のシリアル出力を行います（`:`で始まり、`CRLF`で終わるもの）。
+  - 使用例：
     - [`commander_spot_app_twelite_manually.ino`](./examples/commander_spot_app_twelite_manually/commander_spot_app_twelite_manually.ino)
     - [`commander_spot_app_twelite_fully_manually.ino`](./examples/commander_spot_app_twelite_fully_manually/commander_spot_app_twelite_fully_manually.ino)
 
-## Getting Started
+## 動作説明
 
-Here's an example using [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) with [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html).
+以下は [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) と [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) を使用した場合のサンプルスケッチです。
 
 ``` c++
 // monitor_spot_app_aria.ino (Excerpt)
@@ -176,9 +172,9 @@ void loop()
 ...
 ```
 
-### Serial ports setup
+### シリアルポートの設定
 
-You need to initialize a [HardwareSerial](https://www.arduino.cc/reference/en/language/functions/communication/serial/) instance to use before.
+はじめに、[HardwareSerial](https://www.arduino.cc/reference/en/language/functions/communication/serial/) のインスタンスを初期化する必要があります。
 
 ``` c++
     // Initialize serial ports
@@ -187,13 +183,13 @@ You need to initialize a [HardwareSerial](https://www.arduino.cc/reference/en/la
     Serial2.begin(115200, SERIAL_8N1);
 ```
 
-In the above code, use `Serial` for monitoring and `Serial2` for communication with TWELITE.
+上記のコードでは、`Serial` をモニタリング用に、`Serial2` を TWELITE との通信用に設定しています。
 
-### TWELITE setup
+### TWELITE の設定
 
-To initialize TWELITE, you need to pass a `HardwareSerial` instance for communication with the parent device over UART.
+TWELITE 親機を初期化するには、TWELITE との通信に使用する `HardwareSerial` のインスタンスを渡す必要があります。
 
-You can enable the status LED and set the channel and application ID of the connected TWELITE.
+このとき、ステータス LED や TWELITE で使用する アプリケーションID および 周波数チャネルの設定も可能です。
 
 ``` c++
     // Initialize TWELITE
@@ -202,18 +198,17 @@ You can enable the status LED and set the channel and application ID of the conn
                   TWE_CHANNEL, TWE_APP_ID);
 ```
 
-But also the below code is valid (Run with the default channel and application id).
+なお、下記のコードも有効です（アプリケーションIDと周波数チャネルはデフォルト値）。
 
 ``` c++
     // Initialize TWELITE
     Twelite.begin(Serial2);
 ```
 
-### TWELITE event handler
+### TWELITE のイベントハンドラの設定
 
-To receive data, you need to create an event handler.
-
-You can easily create handlers using a non-capturing lambda-function like below.
+データを受信するには、イベントハンドラを作成する必要があります。
+下記のようにして、キャプチャを行わないラムダ関数を使うことで、簡単にこれを作成できます。
 
 ``` c++
     // Attach an event handler to process packets from App_ARIA
@@ -236,20 +231,20 @@ You can easily create handlers using a non-capturing lambda-function like below.
     });
 ```
 
-For App_ARIA, data type called `ParsedAppAriaPacket` is available for handlers.
+例えば、App_ARIA に対しては、`ParsedAppAriaPacket` 型のデータが利用できます。
 
-### TWELITE update
+### TWELITE のデータの更新
 
-You need to update states in the `loop()`.
+`loop()` 内では、必ずデータの更新リクエストを行わなくてはなりません。
 
 ``` c++
     // Update TWELITE
     Twelite.update();
 ```
 
-Do NOT block this function for a long time with `delay()` or something.
+この関数を `delay()` などによって長時間ブロックすることは避けるようにしてください。
 
-## License
+## ライセンス
 
 ``` plain
 Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
