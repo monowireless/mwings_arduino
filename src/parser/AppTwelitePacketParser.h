@@ -16,6 +16,7 @@
  * @brief  Packet content for App_Twelite
  */
 struct ParsedAppTwelitePacket final : public mwings::ParsedPacketBase {
+    uint8_t u8DestinationLogicalId;
     uint8_t u8RelayCount;
     bool bPeriodic;
     bool bDiChanged[4];

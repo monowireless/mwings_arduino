@@ -16,11 +16,12 @@ bool apptwelite::PacketParser::parse(const BarePacket& barePacket, mwings::Parse
     ParsedAppTwelitePacket* const parsedAppTwelitePacket = static_cast<ParsedAppTwelitePacket*>(parsedPacket);
 
     parsedAppTwelitePacket->u32SourceSerialId = barePacket.u32At(5);
-    parsedAppTwelitePacket->u8SourceLogicalId = barePacket.u8At(9);
+    parsedAppTwelitePacket->u8SourceLogicalId = barePacket.u8At(0);
     parsedAppTwelitePacket->u16SequenceNumber = barePacket.u16At(10); // Technically, it's timestamp
     parsedAppTwelitePacket->u8Lqi = barePacket.u8At(4);
     parsedAppTwelitePacket->u16SupplyVoltage = barePacket.u16At(13);
 
+    parsedAppTwelitePacket->u8DestinationLogicalId = barePacket.u8At(9);
     parsedAppTwelitePacket->u8RelayCount = barePacket.u8At(12);
     const uint8_t u8DIState = barePacket.u8At(16);
     parsedAppTwelitePacket->bPeriodic = ((u8DIState & 0x80) == 0x80);
