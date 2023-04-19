@@ -38,7 +38,7 @@ bool apptwelite::PacketParser::parse(const BarePacket& barePacket, mwings::Parse
     }
     const uint8_t u8AiFurtherValue = barePacket.u8At(22);
     for (int i = 0; i < 4; i++) {
-        parsedAppTwelitePacket->u16AiVoltage[i] = u8AiValue[i] * 4 + ((u8AiFurtherValue >> (i*2)) & 0x03);
+        parsedAppTwelitePacket->u16AiVoltage[i] = (u8AiValue[i] * 4 + ((u8AiFurtherValue >> (i*2)) & 0x03)) * 4;
     }
 
     return true;
