@@ -248,6 +248,10 @@ void MWings::update()
         if (processAscii(character, barePacket) == MWings::State::COMPLETED) {
             turnOnIndicatorFor(10);
 
+            if (_onBarePacket) {
+                _onBarePacket(barePacket);
+            }
+
             //// Start: AppTwelitePacketParser for App_Twelite
             if (AppTwelitePacketParser.isValid(barePacket) and _onAppTwelitePacket) {
                 ParsedAppTwelitePacket parsedAppTwelitePacket;
@@ -328,10 +332,6 @@ void MWings::update()
                 }
             }
             //// End: AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
-
-            if (_onBarePacket) {
-                _onBarePacket(barePacket);
-            }
         }
     }
 
