@@ -28,7 +28,8 @@ You can receive packets from TWELITE child devices and send commands to TWELITE 
 
 ## Requirements
 
-Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on ESP32 series.
+Built for ESP32.
+<!-- Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on ESP32 series. -->
 
 **8-bit Arduino boards (like UNO R3) are NOT supported.**
 

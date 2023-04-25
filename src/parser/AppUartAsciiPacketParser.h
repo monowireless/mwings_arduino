@@ -33,7 +33,8 @@ public:
         if (((0x00 <= barePacket.u8At(0) and barePacket.u8At(0) <= 0x64)
              or barePacket.u8At(0) == 0x78)
             and barePacket.u8At(1) < 0x80
-            and (3 <= barePacket.u16PayloadSize and barePacket.u16PayloadSize <= 642)) {
+            and (3 <= barePacket.u16PayloadSize and barePacket.u16PayloadSize <= 82)) {
+            // and (3 <= barePacket.u16PayloadSize and barePacket.u16PayloadSize <= 642)) {
             return true;
         }
         return false;

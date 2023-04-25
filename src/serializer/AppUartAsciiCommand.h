@@ -31,7 +31,8 @@ struct AppUartAsciiCommand final : public mwings::CommandBase {
                  or u8DestinationLogicalId == 0x78)
                 and u8CommandId < 0x80
                 and (not (u8Data == nullptr))
-                and (1 <= u16DataSize and u16DataSize <= 640));
+                and (1 <= u16DataSize and u16DataSize <= 80));
+                // and (1 <= u16DataSize and u16DataSize <= 640));
     }
 };
 
