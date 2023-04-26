@@ -12,3 +12,4 @@ jobs:
           compliance: strict
           project-type: all
           recursive: true
+          library-manager: update
