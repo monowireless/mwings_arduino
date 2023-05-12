@@ -8,14 +8,16 @@
 
 [![Arduino Lint](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml/badge.svg?branch=main&event=push)](https://github.com/monowireless/mwings_arduino/actions/workflows/arduino-lint.yml) [![MW-OSSLA](https://img.shields.io/badge/License-MW--OSSLA-e4007f)](LICENSE.md)
 
-[日本語版はこちら](README_J.md)
+日本語版は[こちら](README_J.md)
 
 ## Contents
 
 - [About](#about)
+- [Installation](#installation)
 - [Requirements](#requirements)
 - [Features](#features)
 - [Getting Started](#getting-started)
+- [API reference](#api-reference)
 - [License](#license)
 
 ## About
@@ -25,6 +27,12 @@ MWings is a library that communicate with TWELITE wireless modules.
 This library is suitable for [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) series.
 
 You can receive packets from TWELITE child devices and send commands to TWELITE child devices through the connected TWELITE parent device.
+
+## Installation
+
+Open the Library Manager from the Arduino IDE, then search for `MWings` and install it.
+
+See details for [Installing MWings Library](https://twelite.net/manuals/twelite-spot/setup-for-development/arduino-ide-1x/add-mwings-library.html).
 
 ## Requirements
 
@@ -119,136 +127,12 @@ It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent
 
 ## Getting Started
 
-Here's an example using [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) with [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html).
+- See [Receive data from the TWELITE child device](https://twelite.net/start-guides/twelite-spot/receive-from-cue.html).
 
-``` c++
-// monitor_spot_app_aria.ino (Excerpt)
+## API reference
 
-#include <Arduino.h>
-#include "MWings.h"
-
-const int RST_PIN = 5;
-const int PRG_PIN = 4;
-const int LED_PIN = 18;
-
-const uint8_t TWE_CHANNEL = 18;
-const uint32_t TWE_APP_ID = 0x67720102;
-
-void printMagnetState(const uint8_t state, const bool changed);
-
-void setup()
-{
-    // Initialize serial ports
-    Serial.begin(115200);
-    Serial.println("Monitor example for TWELITE SPOT: App_ARIA (ARIA Mode)");
-    Serial2.begin(115200, SERIAL_8N1);
-
-    // Initialize TWELITE
-    Twelite.begin(Serial2,
-                  LED_PIN, RST_PIN, PRG_PIN,
-                  TWE_CHANNEL, TWE_APP_ID);
-
-    // Attach an event handler to process packets from App_ARIA
-    Twelite.on([](const ParsedAppAriaPacket& packet) {
-        Serial.println("");
-        Serial.print("Packet Number:     #");
-        Serial.println(packet.u16SequenceNumber, DEC);
-        Serial.print("Source Logical ID: 0x");
-        Serial.println(packet.u8SourceLogicalId, HEX);
-        Serial.print("LQI:               ");
-        Serial.println(packet.u8Lqi, DEC);
-        Serial.print("Supply Voltage:    ");
-        Serial.print(packet.u16SupplyVoltage, DEC); Serial.println(" mV");
-        Serial.print("Air Temperature:   ");
-        Serial.print(packet.i16Temp100x / 100.0f, 2); Serial.println(" C");
-        Serial.print("Relative Humidity: ");
-        Serial.print(packet.u16Humid100x / 100.0f, 2); Serial.println(" %");
-        Serial.print("Magnet State:      ");
-        printMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
-    });
-}
-
-void loop()
-{
-    // Update TWELITE
-    Twelite.update();
-}
-
-...
-```
-
-### Serial ports setup
-
-You need to initialize a [HardwareSerial](https://www.arduino.cc/reference/en/language/functions/communication/serial/) instance to use before.
-
-``` c++
-    // Initialize serial ports
-    Serial.begin(115200);
-    Serial.println("Monitor example for TWELITE SPOT: App_ARIA (ARIA Mode)");
-    Serial2.begin(115200, SERIAL_8N1);
-```
-
-In the above code, use `Serial` for monitoring and `Serial2` for communication with TWELITE.
-
-### TWELITE setup
-
-To initialize TWELITE, you need to pass a `HardwareSerial` instance for communication with the parent device over UART.
-
-You can enable the status LED and set the channel and application ID of the connected TWELITE.
-
-``` c++
-    // Initialize TWELITE
-    Twelite.begin(Serial2,
-                  LED_PIN, RST_PIN, PRG_PIN,
-                  TWE_CHANNEL, TWE_APP_ID);
-```
-
-But also the below code is valid (Run with the default channel and application id).
-
-``` c++
-    // Initialize TWELITE
-    Twelite.begin(Serial2);
-```
-
-### TWELITE event handler
-
-To receive data, you need to create an event handler.
-
-You can easily create handlers using a non-capturing lambda-function like below.
-
-``` c++
-    // Attach an event handler to process packets from App_ARIA
-    Twelite.on([](const ParsedAppAriaPacket& packet) {
-        Serial.println("");
-        Serial.print("Packet Number:     #");
-        Serial.println(packet.u16SequenceNumber, DEC);
-        Serial.print("Source Logical ID: 0x");
-        Serial.println(packet.u8SourceLogicalId, HEX);
-        Serial.print("LQI:               ");
-        Serial.println(packet.u8Lqi, DEC);
-        Serial.print("Supply Voltage:    ");
-        Serial.print(packet.u16SupplyVoltage, DEC); Serial.println(" mV");
-        Serial.print("Air Temperature:   ");
-        Serial.print(packet.i16Temp100x / 100.0f, 2); Serial.println(" C");
-        Serial.print("Relative Humidity: ");
-        Serial.print(packet.u16Humid100x / 100.0f, 2); Serial.println(" %");
-        Serial.print("Magnet State:      ");
-        printMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
-    });
-```
-
-For App_ARIA, data type called `ParsedAppAriaPacket` is available for handlers.
-
-### TWELITE update
-
-You need to update states in the `loop()`.
-
-``` c++
-    // Update TWELITE
-    Twelite.update();
-```
-
-Do NOT block this function for a long time with `delay()` or something.
+- [List of data types and procedures](https://twelite.net/api-references/mwings/arduino-32bit/latest/data-and-procedures.html)
+- [Class mwings::MWings](https://twelite.net/api-references/mwings/arduino-32bit/latest/classes/mwings.html)
 
 ## License
 

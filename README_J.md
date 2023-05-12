@@ -11,9 +11,11 @@
 ## 目次
 
 - [概要](#概要)
+- [インストール](#インストール)
 - [要件](#要件)
 - [機能](#機能)
-- [動作説明](#動作説明)
+- [使い方](#使い方)
+- [API リファレンス](#api-リファレンス)
 - [ライセンス](#ライセンス)
 
 ## 概要
@@ -21,6 +23,12 @@
 MWings は、TWELITE 無線モジュールと通信するためのライブラリです。[TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) シリーズに最適です。
 
 このライブラリでは、接続した TWELITE 親機を通じて、TWELITE 子機からのパケット受信や TWELITE 子機へのコマンド送信を行うことができます。
+
+## インストール
+
+Arduino IDE のライブラリマネージャを開き、`MWings` と検索してからインストールボタンを押してください。
+
+詳しい方法は [MWings ライブラリの導入](https://twelite.net/manuals/twelite-spot/setup-for-development/arduino-ide-1x/add-mwings-library.html) をご覧ください。
 
 ## 要件
 
@@ -89,7 +97,7 @@ MWings は、TWELITE 無線モジュールと通信するためのライブラ�
 
 - App_Twelite
   - デジタル出力の状態と PWM のデューティ比を設定します。
-  - [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) and [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) にプリインストールされています。
+  - [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) および [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) にプリインストールされています。
   - 使用例：
     - [`commander_spot_app_twelite.ino`](./examples/commander_spot_app_twelite/commander_spot_app_twelite.ino)
 - App_Uart (Mode A, アスキー書式の簡易形式)
@@ -113,137 +121,14 @@ MWings は、TWELITE 無線モジュールと通信するためのライブラ�
     - [`commander_spot_app_twelite_manually.ino`](./examples/commander_spot_app_twelite_manually/commander_spot_app_twelite_manually.ino)
     - [`commander_spot_app_twelite_fully_manually.ino`](./examples/commander_spot_app_twelite_fully_manually/commander_spot_app_twelite_fully_manually.ino)
 
-## 動作説明
+## 使い方
 
-以下は [TWELITE SPOT](https://mono-wireless.com/jp/products/twelite-spot/index.html) と [TWELITE ARIA](https://mono-wireless.com/jp/products/twelite-aria/index.html) を使用した場合のサンプルスケッチです。
+- [TWELITE 子機からのデータ受信](https://twelite.net/start-guides/twelite-spot/receive-from-cue.html) をご覧ください。
 
-``` c++
-// monitor_spot_app_aria.ino (Excerpt)
+## API リファレンス
 
-#include <Arduino.h>
-#include "MWings.h"
-
-const int RST_PIN = 5;
-const int PRG_PIN = 4;
-const int LED_PIN = 18;
-
-const uint8_t TWE_CHANNEL = 18;
-const uint32_t TWE_APP_ID = 0x67720102;
-
-void printMagnetState(const uint8_t state, const bool changed);
-
-void setup()
-{
-    // Initialize serial ports
-    Serial.begin(115200);
-    Serial.println("Monitor example for TWELITE SPOT: App_ARIA (ARIA Mode)");
-    Serial2.begin(115200, SERIAL_8N1);
-
-    // Initialize TWELITE
-    Twelite.begin(Serial2,
-                  LED_PIN, RST_PIN, PRG_PIN,
-                  TWE_CHANNEL, TWE_APP_ID);
-
-    // Attach an event handler to process packets from App_ARIA
-    Twelite.on([](const ParsedAppAriaPacket& packet) {
-        Serial.println("");
-        Serial.print("Packet Number:     #");
-        Serial.println(packet.u16SequenceNumber, DEC);
-        Serial.print("Source Logical ID: 0x");
-        Serial.println(packet.u8SourceLogicalId, HEX);
-        Serial.print("LQI:               ");
-        Serial.println(packet.u8Lqi, DEC);
-        Serial.print("Supply Voltage:    ");
-        Serial.print(packet.u16SupplyVoltage, DEC); Serial.println(" mV");
-        Serial.print("Air Temperature:   ");
-        Serial.print(packet.i16Temp100x / 100.0f, 2); Serial.println(" C");
-        Serial.print("Relative Humidity: ");
-        Serial.print(packet.u16Humid100x / 100.0f, 2); Serial.println(" %");
-        Serial.print("Magnet State:      ");
-        printMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
-    });
-}
-
-void loop()
-{
-    // Update TWELITE
-    Twelite.update();
-}
-
-...
-```
-
-### シリアルポートの設定
-
-はじめに、[HardwareSerial](https://www.arduino.cc/reference/en/language/functions/communication/serial/) のインスタンスを初期化する必要があります。
-
-``` c++
-    // Initialize serial ports
-    Serial.begin(115200);
-    Serial.println("Monitor example for TWELITE SPOT: App_ARIA (ARIA Mode)");
-    Serial2.begin(115200, SERIAL_8N1);
-```
-
-上記のコードでは、`Serial` をモニタリング用に、`Serial2` を TWELITE との通信用に設定しています。
-
-### TWELITE の設定
-
-TWELITE 親機を初期化するには、TWELITE との通信に使用する `HardwareSerial` のインスタンスを渡す必要があります。
-
-このとき、ステータス LED や TWELITE で使用する アプリケーションID および 周波数チャネルの設定も可能です。
-
-``` c++
-    // Initialize TWELITE
-    Twelite.begin(Serial2,
-                  LED_PIN, RST_PIN, PRG_PIN,
-                  TWE_CHANNEL, TWE_APP_ID);
-```
-
-なお、下記のコードも有効です（アプリケーションIDと周波数チャネルはデフォルト値）。
-
-``` c++
-    // Initialize TWELITE
-    Twelite.begin(Serial2);
-```
-
-### TWELITE のイベントハンドラの設定
-
-データを受信するには、イベントハンドラを作成する必要があります。
-下記のようにして、キャプチャを行わないラムダ関数を使うことで、簡単にこれを作成できます。
-
-``` c++
-    // Attach an event handler to process packets from App_ARIA
-    Twelite.on([](const ParsedAppAriaPacket& packet) {
-        Serial.println("");
-        Serial.print("Packet Number:     #");
-        Serial.println(packet.u16SequenceNumber, DEC);
-        Serial.print("Source Logical ID: 0x");
-        Serial.println(packet.u8SourceLogicalId, HEX);
-        Serial.print("LQI:               ");
-        Serial.println(packet.u8Lqi, DEC);
-        Serial.print("Supply Voltage:    ");
-        Serial.print(packet.u16SupplyVoltage, DEC); Serial.println(" mV");
-        Serial.print("Air Temperature:   ");
-        Serial.print(packet.i16Temp100x / 100.0f, 2); Serial.println(" C");
-        Serial.print("Relative Humidity: ");
-        Serial.print(packet.u16Humid100x / 100.0f, 2); Serial.println(" %");
-        Serial.print("Magnet State:      ");
-        printMagnetState(packet.u8MagnetState, packet.bMagnetStateChanged);
-    });
-```
-
-例えば、App_ARIA に対しては、`ParsedAppAriaPacket` 型のデータが利用できます。
-
-### TWELITE のデータの更新
-
-`loop()` 内では、必ずデータの更新リクエストを行わなくてはなりません。
-
-``` c++
-    // Update TWELITE
-    Twelite.update();
-```
-
-この関数を `delay()` などによって長時間ブロックすることは避けるようにしてください。
+- [データ型と手続きの一覧](https://twelite.net/api-references/mwings/arduino-32bit/latest/data-and-procedures.html)
+- [mwings::MWings クラス](https://twelite.net/api-references/mwings/arduino-32bit/latest/classes/mwings.html)
 
 ## ライセンス
 
