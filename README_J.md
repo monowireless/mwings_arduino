@@ -33,7 +33,7 @@ Arduino IDE のライブラリマネージャを開き、`MWings` と検索し�
 ## 要件
 
 <!-- 32ビット Arduino ボード（esp32, esp8266, stm32, sam, rp2040）向けに実装しています。ESP32 シリーズでテストしています。 -->
-32ビット Arduino ボード（ESP32）向けに実装しています。
+TWELITE SPOT などの ESP32 モジュール および Arduino UNO R4 シリーズ向けに実装しています。
 
 **8ビット Arduino ボード（UNO R3など）はサポートしていません**。
 
