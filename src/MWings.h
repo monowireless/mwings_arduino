@@ -166,14 +166,22 @@ private:
 
     inline void turnOnIndicator() {
         if (not (_indicatorPin < 0)) {
+#if defined(ARDUINO_ARCH_RENESAS)
+            digitalWrite(_indicatorPin, HIGH);
+#else
             digitalWrite(_indicatorPin, LOW);
+#endif
             _isIndicatorOn = true;
         }
     }
 
     inline void turnOffIndicator() {
         if (not (_indicatorPin < 0)) {
+#if defined(ARDUINO_ARCH_RENESAS)
+            digitalWrite(_indicatorPin, LOW);
+#else
             digitalWrite(_indicatorPin, HIGH);
+#endif
             _isIndicatorOn = false;
         }
     }
