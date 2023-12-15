@@ -86,7 +86,10 @@ bool MWings::begin(HardwareSerial& serial,
         }
     }
     turnOffIndicator();
-    if (not reset) { return false; };
+    if (not reset) {
+        debugPrint("Failed to reset TWELITE");
+        return false;
+    };
 
     bool commandsAvailable = false;
 
