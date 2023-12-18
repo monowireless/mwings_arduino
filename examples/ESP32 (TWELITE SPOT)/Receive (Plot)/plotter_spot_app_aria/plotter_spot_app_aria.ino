@@ -14,7 +14,7 @@ void setup()
 {
     // Initialize serial ports
     Serial.begin(115200);
-    Serial.println("Plotter example for TWELITE SPOT: App_ARIA (ARIMode A)");
+    Serial.println("Plotter example for TWELITE SPOT: App_ARIA (ARIA Mode)");
     Serial2.begin(115200, SERIAL_8N1);
 
     // Initialize TWELITE

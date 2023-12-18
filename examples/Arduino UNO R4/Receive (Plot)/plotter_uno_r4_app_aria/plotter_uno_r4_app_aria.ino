@@ -15,7 +15,7 @@ void setup()
     // Initialize serial ports
     while (!Serial && millis() < 5000); // Wait for internal USB-UART
     Serial.begin(115200);
-    Serial.println("Plotter example for TWELITE with Arduino UNO R4: App_ARIA (ARIMode A)");
+    Serial.println("Plotter example for TWELITE with Arduino UNO R4: App_ARIA (ARIA Mode)");
     Serial1.begin(115200);
 
     // Initialize TWELITE
