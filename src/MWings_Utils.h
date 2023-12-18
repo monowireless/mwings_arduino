@@ -32,7 +32,7 @@ public:
     }
 
     static inline bool IsInitialized(HardwareSerial* serial) {
-        return (serial and serial->availableForWrite());
+        return (serial ? true : false);
     }
 
     static inline bool IsReadable(HardwareSerial* serial) {
@@ -40,7 +40,11 @@ public:
     }
 
     static inline bool IsWritable(HardwareSerial* serial) {
+#if defined(ARDUINO_ARCH_RENESAS)
+        return (serial ? true : false);
+#else
         return (serial and serial->availableForWrite());
+#endif
     }
 
     static inline void WriteBinary(HardwareSerial* serial, const uint8_t data) {

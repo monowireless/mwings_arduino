@@ -7,13 +7,14 @@
  */
 
 #if defined(ARDUINO_ARCH_ESP32)
+#elif defined(ARDUINO_ARCH_RENESAS)
 // #elif defined(ARDUINO_ARCH_ESP8266)
 // #elif defined(ARDUINO_ARCH_STM32)
 // #elif defined(ARDUINO_ARCH_SAM)
 // #elif defined(ARDUINO_ARCH_RP2040)
 #else
-// #error "This library is built for 32-bit MCUs like ESP32, ESP8266, STM32, SAM and RP2040."
-#error "This library is built for ESP32."
+// #error "This library is built for 32-bit MCUs like ESP32, ESP8266, RENESAS (RA4M1), STM32, SAM and RP2040."
+#error "This library is built for ESP32 and RENESAS (RA4M1)."
 #endif
 
 #ifndef MWINGS_H
@@ -165,14 +166,22 @@ private:
 
     inline void turnOnIndicator() {
         if (not (_indicatorPin < 0)) {
+#if defined(ARDUINO_ARCH_RENESAS)
+            digitalWrite(_indicatorPin, HIGH);
+#else
             digitalWrite(_indicatorPin, LOW);
+#endif
             _isIndicatorOn = true;
         }
     }
 
     inline void turnOffIndicator() {
         if (not (_indicatorPin < 0)) {
+#if defined(ARDUINO_ARCH_RENESAS)
+            digitalWrite(_indicatorPin, LOW);
+#else
             digitalWrite(_indicatorPin, HIGH);
+#endif
             _isIndicatorOn = false;
         }
     }

@@ -36,7 +36,7 @@ See details for [Installing MWings Library](https://twelite.net/manuals/twelite-
 
 ## Requirements
 
-Built for ESP32.
+Built for ESP32 modules (e.g. TWELITE SPOT) and Arduino UNO R4 series.
 <!-- Built for 32-bit Arduino boards (esp32, esp8266, stm32, sam, rp2040). Tested on ESP32 series. -->
 
 **8-bit Arduino boards (like UNO R3) are NOT supported.**
