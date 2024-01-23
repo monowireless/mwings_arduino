@@ -30,13 +30,13 @@ struct BarePacket {
         return static_cast<int8_t>(u8At(index));
     }
     inline uint16_t u16At(const int index) const {
-        return ((index < u16PayloadSize) ? ((u8Payload[index] << 8) | u8Payload[index+1]) : 0x0000);
+        return ((index + 1 < u16PayloadSize) ? ((u8Payload[index] << 8) | u8Payload[index+1]) : 0x0000);
     }
     inline int16_t i16At(const int index) const {
         return static_cast<int16_t>(u16At(index));
     }
     inline uint32_t u32At(const int index) const {
-        return ((index < u16PayloadSize)
+        return ((index + 3 < u16PayloadSize)
                 ? ((u8Payload[index+0] << 24) | (u8Payload[index+1] << 16) | (u8Payload[index+2] << 8) | (u8Payload[index+3] << 0))
                 : 0x00000000);
     }
