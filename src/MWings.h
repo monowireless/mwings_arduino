@@ -45,6 +45,8 @@
 
 //// AppTweliteCommandSerializer for App_Twelite
 #include "serializer/AppTweliteCommandSerializer.h"
+//// AppIoCommandSerializer for App_Io
+#include "serializer/AppIoCommandSerializer.h"
 //// AppUartAsciiCommand for App_Uart (Mode A)
 #include "serializer/AppUartAsciiCommand.h"
 //// AppPalNoticeCommandSerializer for App_PAL (NOTICE)
@@ -369,6 +371,16 @@ public:
         uint8_t payload[fixedSize];
         uint8_t checksum;
         if (AppTweliteCommandSerializer.serialize(&command, payload, fixedSize, &checksum)) {
+            return send(payload, fixedSize, checksum);
+        }
+        return false;
+    }
+    //// AppIoCommandSerializer for App_Io
+    inline bool send(AppIoCommand& command) {
+        constexpr int fixedSize = GetAppIoSerializedCommandPayloadSize();
+        uint8_t payload[fixedSize];
+        uint8_t checksum;
+        if (AppIoCommandSerializer.serialize(&command, payload, fixedSize, &checksum)) {
             return send(payload, fixedSize, checksum);
         }
         return false;

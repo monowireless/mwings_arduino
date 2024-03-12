@@ -104,6 +104,10 @@ It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent
   - Pre-installed on [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) and [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) series.
   - Example:
     - [`commander_spot_app_twelite.ino`](./examples/commander_spot_app_twelite/commander_spot_app_twelite.ino)
+- App_IO
+  - Set digital output states.
+  - Example:
+    - [`commander_spot_app_io.ino`](./examples/commander_spot_app_io/commander_spot_app_io.ino)
 - App_Uart (Mode A, Simplified ASCII format)
   - Set serial data to send on TWELITE child devices.
   - Pre-installed on [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) series.

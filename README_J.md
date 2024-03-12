@@ -100,6 +100,10 @@ TWELITE SPOT などの ESP32 モジュール および Arduino UNO R4 シリー�
   - [TWELITE (SMD)](https://mono-wireless.com/jp/products/TWE-LITE/index.html) および [TWELITE DIP](https://mono-wireless.com/jp/products/TWE-Lite-DIP/index.html) にプリインストールされています。
   - 使用例：
     - [`commander_spot_app_twelite.ino`](./examples/commander_spot_app_twelite/commander_spot_app_twelite.ino)
+- App_IO
+  - デジタル出力の状態を設定します。
+  - 使用例：
+    - [`commander_spot_app_io.ino`](./examples/commander_spot_app_io/commander_spot_app_io.ino)
 - App_Uart (Mode A, アスキー書式の簡易形式)
   - TWELITE 子機から送信するシリアルデータを設定します。
   - [TWELITE UART](https://mono-wireless.com/jp/products/twelite-uart/index.html) にプリインストールされています。
@@ -133,6 +137,6 @@ TWELITE SPOT などの ESP32 モジュール および Arduino UNO R4 シリー�
 ## ライセンス
 
 ``` plain
-Copyright (C) 2023 Mono Wireless Inc. All Rights Reserved.
+Copyright (C) 2023-2024 Mono Wireless Inc. All Rights Reserved.
 Released under MW-OSSLA-1J,1E (MONO WIRELESS OPEN SOURCE SOFTWARE LICENSE AGREEMENT).
 ```
