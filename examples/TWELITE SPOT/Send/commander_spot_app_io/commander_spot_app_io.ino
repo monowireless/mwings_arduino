@@ -1,5 +1,10 @@
 // Commander example for TWELITE SPOT: Send 0x80 command to App_IO
 
+// Caution: Requires App_Wings v1.3.2+.
+// At this time (early 2024), MWSDK has old version.
+// You can download them from the below link.
+// - https://twelite.net/files/App_Wings_TWELITESPOT_BLUE_L1305_V1-3-2.bin
+
 #include <Arduino.h>
 #include "MWings.h"
 
