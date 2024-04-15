@@ -99,7 +99,7 @@ It is strongly recommended to use **App_Wings (>= v1.3.0) for the TWELITE parent
 - Act
   - Get binary data from acts
   - Example:
-    - [`monitor_spot_act.ino`](./examples/TWELITE%20SPOT/Receive/monitor_spot_any/monitor_spot_act.ino)
+    - [`monitor_spot_act.ino`](./examples/TWELITE%20SPOT/Receive/monitor_spot_act/monitor_spot_act.ino)
 
 ### Serialize and Send Commands to
 

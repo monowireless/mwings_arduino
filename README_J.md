@@ -95,7 +95,7 @@ TWELITE SPOT などの ESP32 モジュール および Arduino UNO R4 シリー�
 - act が動作する TWELITE
   - 論理デバイスIDやLQIなどに加えて、バイナリデータを取得します。
   - 使用例：
-    - [`monitor_spot_act.ino`](./examples/TWELITE%20SPOT/Receive/monitor_spot_any/monitor_spot_act.ino)
+    - [`monitor_spot_act.ino`](./examples/TWELITE%20SPOT/Receive/monitor_spot_act/monitor_spot_act.ino)
 
 ### パケットの生成と送信
 
