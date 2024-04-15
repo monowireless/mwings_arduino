@@ -59,6 +59,8 @@ bool MWings::begin(HardwareSerial& serial,
     _onAppUartAsciiPacket = nullptr;
     //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
     _onAppUartAsciiExtendedPacket = nullptr;
+    //// ActPacketParser for Act
+    _onActPacket = nullptr;
 
     _onBarePacket = nullptr;
 
@@ -335,6 +337,15 @@ void MWings::update()
                 }
             }
             //// End: AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
+
+            //// Start: ActPacketParser for Act
+            if (ActPacketParser.isValid(barePacket) and _onActPacket) {
+                ParsedActPacket parsedActPacket;
+                if (ActPacketParser.parse(barePacket, &parsedActPacket)) {
+                    _onActPacket(parsedActPacket);
+                }
+            }
+            //// End: ActPacketParser for Act
         }
     }
 

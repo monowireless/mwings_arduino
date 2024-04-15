@@ -42,6 +42,8 @@
 #include "parser/AppUartAsciiPacketParser.h"
 //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
 #include "parser/AppUartAsciiExtendedPacketParser.h"
+//// ActPacketParser for Act
+#include "parser/ActPacketParser.h"
 
 //// AppTweliteCommandSerializer for App_Twelite
 #include "serializer/AppTweliteCommandSerializer.h"
@@ -120,6 +122,8 @@ public:
         _onAppUartAsciiPacket = nullptr;
         //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
         _onAppUartAsciiExtendedPacket = nullptr;
+        //// ActPacketParser for Act
+        _onActPacket = nullptr;
         _onBarePacket = nullptr;
     }
 
@@ -301,6 +305,8 @@ public:
     inline void on(void (*callback)(const ParsedAppUartAsciiPacket& packet)) { _onAppUartAsciiPacket = callback; }
     //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
     inline void on(void (*callback)(const ParsedAppUartAsciiExtendedPacket& packet)) { _onAppUartAsciiExtendedPacket = callback; }
+    //// ActPacketParser for Act
+    inline void on(void (*callback)(const ParsedActPacket& packet)) { _onActPacket = callback; }
 
     inline void on(void (*callback)(const BarePacket& packet)) { _onBarePacket = callback; }
 
@@ -449,6 +455,8 @@ private:
     void (*_onAppUartAsciiPacket)(const ParsedAppUartAsciiPacket& packet);
     //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
     void (*_onAppUartAsciiExtendedPacket)(const ParsedAppUartAsciiExtendedPacket& packet);
+    //// ActPacketParser for Act
+    void (*_onActPacket)(const ParsedActPacket& packet);
 
     void (*_onBarePacket)(const BarePacket& packet);
 };
