@@ -7,6 +7,9 @@ const int RST_PIN = 5;
 const int PRG_PIN = 4;
 const int LED_PIN = 18;
 
+const int8_t RX1_PIN = 16;
+const int8_t TX1_PIN = 17;
+
 const uint8_t TWE_CHANNEL = 18;
 const uint32_t TWE_APP_ID = 0x67720102;
 const uint8_t TWE_RETRY_COUNT = 2;
@@ -24,7 +27,7 @@ void setup()
     // Initialize serial ports
     Serial.begin(115200);
     Serial.println("Commander example for TWELITE SPOT: App_Twelite");
-    Serial2.begin(115200, SERIAL_8N1);
+    Serial2.begin(115200, SERIAL_8N1, RX1_PIN, TX1_PIN);
 
     // Initialize TWELITE
     Twelite.begin(Serial2,
