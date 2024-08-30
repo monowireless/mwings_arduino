@@ -61,6 +61,8 @@ bool MWings::begin(HardwareSerial& serial,
     _onAppUartAsciiExtendedPacket = nullptr;
     //// ActPacketParser for Act
     _onActPacket = nullptr;
+    //// AppTagAdcPacketParser for App_Tag (ADC)
+    _onAppTagAdcPacket = nullptr;
 
     _onBarePacket = nullptr;
 
@@ -346,6 +348,15 @@ void MWings::update()
                 }
             }
             //// End: ActPacketParser for Act
+
+            //// Start: AppTagAdcPacketParser for App_Tag (ADC)
+            if (AppTagAdcPacketParser.isValid(barePacket) and _onAppTagAdcPacket) {
+                ParsedAppTagAdcPacket parsedAppTagAdcPacket;
+                if (AppTagAdcPacketParser.parse(barePacket, &parsedAppTagAdcPacket)) {
+                    _onAppTagAdcPacket(parsedAppTagAdcPacket);
+                }
+            }
+            //// End: AppTagAdcPacketParser for App_Tag (ADC)
         }
     }
 

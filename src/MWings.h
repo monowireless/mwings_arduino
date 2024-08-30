@@ -44,6 +44,8 @@
 #include "parser/AppUartAsciiExtendedPacketParser.h"
 //// ActPacketParser for Act
 #include "parser/ActPacketParser.h"
+//// AppTagAdcPacketParser for App_Tag (ADC)
+#include "parser/AppTagAdcPacketParser.h"
 
 //// AppTweliteCommandSerializer for App_Twelite
 #include "serializer/AppTweliteCommandSerializer.h"
@@ -87,6 +89,8 @@ public:
                _onAppUartAsciiExtendedPacket(nullptr),
                //// ActPacketParser for Act
                _onActPacket(nullptr),
+               //// AppTagAdcPacketParser for App_Tag (ADC)
+               _onAppTagAdcPacket(nullptr),
                _onBarePacket()
         {}
     ~MWings();
@@ -126,6 +130,8 @@ public:
         _onAppUartAsciiExtendedPacket = nullptr;
         //// ActPacketParser for Act
         _onActPacket = nullptr;
+        //// AppTagAdcPacketParser for App_Tag (ADC)
+        _onAppTagAdcPacket = nullptr;
         _onBarePacket = nullptr;
     }
 
@@ -309,6 +315,8 @@ public:
     inline void on(void (*callback)(const ParsedAppUartAsciiExtendedPacket& packet)) { _onAppUartAsciiExtendedPacket = callback; }
     //// ActPacketParser for Act
     inline void on(void (*callback)(const ParsedActPacket& packet)) { _onActPacket = callback; }
+    //// AppTagAdcPacketParser for App_Tag (ADC)
+    inline void on(void (*callback)(const ParsedAppTagAdcPacket& packet)) { _onAppTagAdcPacket = callback; }
 
     inline void on(void (*callback)(const BarePacket& packet)) { _onBarePacket = callback; }
 
@@ -459,6 +467,8 @@ private:
     void (*_onAppUartAsciiExtendedPacket)(const ParsedAppUartAsciiExtendedPacket& packet);
     //// ActPacketParser for Act
     void (*_onActPacket)(const ParsedActPacket& packet);
+    //// AppTagAdcPacketParser for App_Tag (ADC)
+    void (*_onAppTagAdcPacket)(const ParsedAppTagAdcPacket& packet);
 
     void (*_onBarePacket)(const BarePacket& packet);
 };
