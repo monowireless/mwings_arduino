@@ -85,6 +85,8 @@ public:
                _onAppUartAsciiPacket(nullptr),
                //// AppUartAsciiExtendedPacketParser for App_Uart (Mode A, extended)
                _onAppUartAsciiExtendedPacket(nullptr),
+               //// ActPacketParser for Act
+               _onActPacket(nullptr),
                _onBarePacket()
         {}
     ~MWings();
