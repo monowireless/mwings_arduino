@@ -21,6 +21,7 @@ bool apppalopenclose::PacketParser::parse(const BarePacket& barePacket, mwings::
     parsedAppPalOpenClosePacket->u8Lqi = barePacket.u8At(4);
     parsedAppPalOpenClosePacket->u16SupplyVoltage = barePacket.u16At(19);
 
+    parsedAppPalOpenClosePacket->u32RouterSerialId = barePacket.u32At(0);
     parsedAppPalOpenClosePacket->u16Ai1Voltage = barePacket.u16At(25);
 
     const uint8_t rawMagnetState = barePacket.u8At(31);

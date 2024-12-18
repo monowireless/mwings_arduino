@@ -21,6 +21,7 @@ bool apppalamb::PacketParser::parse(const BarePacket& barePacket, mwings::Parsed
     parsedAppPalAmbPacket->u8Lqi = barePacket.u8At(4);
     parsedAppPalAmbPacket->u16SupplyVoltage = barePacket.u16At(19);
 
+    parsedAppPalAmbPacket->u32RouterSerialId = barePacket.u32At(0);
     parsedAppPalAmbPacket->u16Ai1Voltage = barePacket.u16At(25);
 
     parsedAppPalAmbPacket->i16Temp100x = barePacket.i16At(31);

@@ -21,6 +21,8 @@ bool apparia::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPa
     parsedAppAriaPacket->u8Lqi = barePacket.u8At(4);
     parsedAppAriaPacket->u16SupplyVoltage = barePacket.u16At(34);
 
+    parsedAppAriaPacket->u32RouterSerialId = barePacket.u32At(0);
+
     parsedAppAriaPacket->i16Temp100x = barePacket.i16At(51);
     parsedAppAriaPacket->u16Humid100x = barePacket.u16At(57);
 

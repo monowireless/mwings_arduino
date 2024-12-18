@@ -21,6 +21,8 @@ bool appcue::PacketParser::parse(const BarePacket& barePacket, mwings::ParsedPac
     parsedAppCuePacket->u8Lqi = barePacket.u8At(4);
     parsedAppCuePacket->u16SupplyVoltage = barePacket.u16At(34);
 
+    parsedAppCuePacket->u32RouterSerialId = barePacket.u32At(0);
+
     const uint8_t accelEventSource = barePacket.u8At(24);
     const uint8_t accelEventId = barePacket.u8At(26);
     if (accelEventSource == 0x04) {

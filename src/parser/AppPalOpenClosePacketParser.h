@@ -16,6 +16,7 @@
  * @brief  Packet content for App_PAL
  */
 struct ParsedAppPalOpenClosePacket final : public mwings::ParsedPacketBase {
+    uint32_t u32RouterSerialId;
     uint16_t u16Ai1Voltage;
     uint8_t u8MagnetState;
     bool bMagnetStateChanged;

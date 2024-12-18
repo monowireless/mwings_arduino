@@ -16,6 +16,7 @@
  * @brief  Packet content for App_CUE
  */
 struct ParsedAppCuePacket final : public mwings::ParsedPacketBase {
+    uint32_t u32RouterSerialId;
     int16_t i16SamplesX[10];
     int16_t i16SamplesY[10];
     int16_t i16SamplesZ[10];

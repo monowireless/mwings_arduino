@@ -21,6 +21,7 @@ bool apppalmot::PacketParser::parse(const BarePacket& barePacket, mwings::Parsed
     parsedAppPalMotPacket->u8Lqi = barePacket.u8At(4);
     parsedAppPalMotPacket->u16SupplyVoltage = barePacket.u16At(19);
 
+    parsedAppPalMotPacket->u32RouterSerialId = barePacket.u32At(0);
     parsedAppPalMotPacket->u16Ai1Voltage = barePacket.u16At(25);
 
     const uint8_t extensionByte = barePacket.u8At(29);

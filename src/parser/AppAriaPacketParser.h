@@ -16,6 +16,7 @@
  * @brief  Packet content for App_ARIA
  */
 struct ParsedAppAriaPacket final : public mwings::ParsedPacketBase {
+    uint32_t u32RouterSerialId;
     int16_t i16Temp100x;
     uint16_t u16Humid100x;
     uint8_t u8MagnetState;

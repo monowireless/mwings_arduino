@@ -16,6 +16,7 @@
  * @brief  Packet content for App_PAL
  */
 struct ParsedAppPalAmbPacket final : public mwings::ParsedPacketBase {
+    uint32_t u32RouterSerialId;
     uint16_t u16Ai1Voltage;
     int16_t i16Temp100x;
     uint16_t u16Humid100x;
