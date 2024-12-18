@@ -53,6 +53,7 @@ u8SourceLogicalId			KEYWORD2
 u16SequenceNumber			KEYWORD2
 u8Lqi					KEYWORD2
 u16SupplyVoltage			KEYWORD2
+u32RouterSerialId			KEYWORD2
 i16Temp100x				KEYWORD2
 u16Humid100x				KEYWORD2
 u8MagnetState				KEYWORD2
