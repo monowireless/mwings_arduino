@@ -24,6 +24,7 @@ bool MWings::begin(HardwareSerial& serial,
                    const uint8_t channel, const uint32_t appId,
                    const uint8_t retryCount, const uint8_t txPower,
                    const int rxBufferSize, const int timeout,
+                   const uint32_t encryptKey,
                    HardwareSerial* debugSerial)
 {
     _serial = &serial;
@@ -175,6 +176,39 @@ bool MWings::begin(HardwareSerial& serial,
         }
 
         debugPrint("Successfully set the retry count and tx power.");
+
+        // Set encrypt key and enable encryption (optional)
+        const uint32_t optionBits = encryptKey > 0 ? 0x03001000 : 0x03000000;
+        for (int i = 0; i < commandAttempts; i++) {
+            beginCommand();
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(0x01));
+            Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Parameter::OPTION_BITS));
+            Utils::WriteInAscii(_serial, static_cast<uint32_t>(optionBits));
+            endCommand();
+            if (ensureParameterSet(timeout)) {
+                break;
+            } else if (not ((i+1) < commandAttempts)) {
+                debugPrint("Failed to set the option bits for encryption.");
+                return false;   // No remaining attempts
+            }
+        }
+        if (encryptKey > 0) {
+            for (int i = 0; i < commandAttempts; i++) {
+                beginCommand();
+                Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Command::SET_PARAMETER));
+                Utils::WriteInAscii(_serial, static_cast<uint8_t>(0x01));
+                Utils::WriteInAscii(_serial, static_cast<uint8_t>(MWings::Parameter::ENCRYPTION));
+                Utils::WriteInAscii(_serial, static_cast<uint32_t>(encryptKey));
+                endCommand();
+                if (ensureParameterSet(timeout)) {
+                    break;
+                } else if (not ((i+1) < commandAttempts)) {
+                    debugPrint("Failed to set the encryption key.");
+                    return false;   // No remaining attempts
+                }
+            }
+        }
 
         // Save
         bool modified;

@@ -95,11 +95,28 @@ public:
         {}
     ~MWings();
 
+    static constexpr int DefaultIndicatorPin = -1; // Disabled
+    static constexpr int DefaultResetPin = -1; // Disabled
+    static constexpr int DefaultProgramPin = -1; // Disabled
+    static constexpr uint8_t DefaultChannel = 18;
+    static constexpr uint32_t DefaultAppId = 0x67720102;
+    static constexpr uint8_t DefaultRetryCount = 2;
+    static constexpr uint8_t DefaultTxPower = 3;
+    static constexpr int DefaultRxBufferSize = 1024;
+    static constexpr int DefaultTimeout = 100;
+    static constexpr uint32_t DefaultEncryptKey = 0; // Disabled
+
     bool begin(HardwareSerial& serial,
-               const int indicatorPin = -1, const int resetPin = -1, const int programPin = -1,
-               const uint8_t channel = 18, const uint32_t appId = 0x67720102,
-               const uint8_t retryCount = 2, const uint8_t txPower = 3,
-               const int rxBufferSize = 1024, const int timeout = 100,
+               const int indicatorPin = DefaultIndicatorPin,
+               const int resetPin = DefaultResetPin,
+               const int programPin = DefaultProgramPin,
+               const uint8_t channel = DefaultChannel,
+               const uint32_t appId = DefaultAppId,
+               const uint8_t retryCount = DefaultRetryCount,
+               const uint8_t txPower = DefaultTxPower,
+               const int rxBufferSize = DefaultRxBufferSize,
+               const int timeout = DefaultTimeout,
+               const uint32_t encryptKey = DefaultEncryptKey,
                HardwareSerial* debugSerial = nullptr);
 
     inline void end() {
